@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { HeroSection } from '@components/landing/HeroSection.jsx'
+import { FeaturesSection } from '@components/landing/features/FeaturesSection.jsx'
+import { HowItWorksSection } from '@components/landing/how-it-works/HowItWorksSection.jsx'
 import { LandingSkeleton } from '@components/skeleton/LandingSkeleton.jsx'
 
 /**
  * HomePage — slim orchestrator.
  * All section logic lives in src/components/landing/.
- * Future sections (Features, Pricing, FAQ, Footer) slot in below HeroSection.
+ * Future sections (Pricing, FAQ, Footer) slot in below HowItWorksSection.
  */
 export function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -29,16 +31,15 @@ export function HomePage() {
         className="w-full"
       >
         <HeroSection />
+        <FeaturesSection />
+        <HowItWorksSection />
 
         {/* ── Future sections slot in here ─────────────── */}
-        {/* <FeaturesSection />   */}
         {/* <PricingSection />    */}
         {/* <FAQSection />        */}
         {/* <FooterSection />     */}
 
         {/* Scroll anchors — keep Navbar scroll-spy working */}
-        <div id="features"     className="pointer-events-none h-px" aria-hidden="true" />
-        <div id="how-it-works" className="pointer-events-none h-px" aria-hidden="true" />
         <div id="pricing"      className="pointer-events-none h-px" aria-hidden="true" />
         <div id="faq"          className="pointer-events-none h-px" aria-hidden="true" />
       </motion.div>
