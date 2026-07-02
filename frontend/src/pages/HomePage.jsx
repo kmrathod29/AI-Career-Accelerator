@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { HeroSection } from '@components/landing/HeroSection.jsx'
 import { FeaturesSection } from '@components/landing/features/FeaturesSection.jsx'
 import { HowItWorksSection } from '@components/landing/how-it-works/HowItWorksSection.jsx'
+import { ProductShowcaseSection } from '@components/landing/showcase/ProductShowcaseSection.jsx'
 import { LandingSkeleton } from '@components/skeleton/LandingSkeleton.jsx'
 
 /**
@@ -33,6 +34,7 @@ export function HomePage() {
         <HeroSection />
         <FeaturesSection />
         <HowItWorksSection />
+        <ProductShowcaseSection />
 
         {/* ── Future sections slot in here ─────────────── */}
         {/* <PricingSection />    */}
