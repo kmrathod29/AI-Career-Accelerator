@@ -11,7 +11,6 @@ import { APP_ROUTES } from '@constants/routes.js'
 import { cn } from '@utils/classNames.js'
 import logoSrc from '@assets/logo/AI-Career-Accelerator-only-logo.png'
 import { SidebarItem } from './SidebarItem.jsx'
-import { UpgradeCard } from './UpgradeCard.jsx'
 
 /** Map icon name strings → Lucide components */
 const ICON_MAP = {
@@ -128,9 +127,6 @@ export function Sidebar() {
 					</div>
 				))}
 			</nav>
-
-			{/* ── Upgrade Card (expanded only) ── */}
-			{!isCollapsed && <UpgradeCard />}
 
 			{/* ── Collapse Toggle ── */}
 			<div className={cn(
