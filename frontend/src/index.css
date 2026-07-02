@@ -192,3 +192,22 @@ body.menu-open #root {
 .animate-float-1 { animation: float-subtle  7s  ease-in-out infinite; }
 .animate-float-2 { animation: float-subtle  9s  ease-in-out infinite 1.5s; }
 .animate-float-3 { animation: float-subtle  8s  ease-in-out infinite 0.8s; }
+
+/* ─── Dashboard — Sidebar scrollbar ────────────────────────────── */
+.sidebar-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-surface-3) transparent;
+}
+.sidebar-scrollbar::-webkit-scrollbar {
+	width: 4px;
+}
+.sidebar-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+	background-color: var(--color-surface-3);
+	border-radius: 9999px;
+}
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+	background-color: var(--color-muted);
+}
