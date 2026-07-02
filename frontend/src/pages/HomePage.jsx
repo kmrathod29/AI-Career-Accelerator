@@ -4,6 +4,8 @@ import { HeroSection } from '@components/landing/HeroSection.jsx'
 import { FeaturesSection } from '@components/landing/features/FeaturesSection.jsx'
 import { HowItWorksSection } from '@components/landing/how-it-works/HowItWorksSection.jsx'
 import { ProductShowcaseSection } from '@components/landing/showcase/ProductShowcaseSection.jsx'
+import { TestimonialsSection } from '@components/landing/testimonials/TestimonialsSection.jsx'
+import { FAQSection } from '@components/landing/faq/FAQSection.jsx'
 import { LandingSkeleton } from '@components/skeleton/LandingSkeleton.jsx'
 
 /**
@@ -35,15 +37,15 @@ export function HomePage() {
         <FeaturesSection />
         <HowItWorksSection />
         <ProductShowcaseSection />
+        <TestimonialsSection />
+        <FAQSection />
 
         {/* ── Future sections slot in here ─────────────── */}
         {/* <PricingSection />    */}
-        {/* <FAQSection />        */}
         {/* <FooterSection />     */}
 
         {/* Scroll anchors — keep Navbar scroll-spy working */}
-        <div id="pricing"      className="pointer-events-none h-px" aria-hidden="true" />
-        <div id="faq"          className="pointer-events-none h-px" aria-hidden="true" />
+        <div id="pricing" className="pointer-events-none h-px" aria-hidden="true" />
       </motion.div>
     </AnimatePresence>
   )
