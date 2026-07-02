@@ -84,7 +84,7 @@ export const FloatingCards = memo(function FloatingCards() {
         iconBg="bg-emerald-500/15" iconColor="text-emerald-500"
         title="ATS Score"  value="94%"  sub="↑ 6% this week"
         delay={0.30}  floatCls="animate-float-1"
-        className="right-0 top-0 z-30 w-[118px]"
+        className="right-14 top-0 z-30 w-[118px]"
       />
 
       {/* 2 – AI Coach: bottom-left area */}
@@ -93,7 +93,7 @@ export const FloatingCards = memo(function FloatingCards() {
         iconBg="bg-rose-500/15" iconColor="text-rose-500"
         title="AI Coach"  value="Resume ✓"  sub="Improved +12 pts"
         delay={0.50}  floatCls="animate-float-3"
-        className="bottom-[80px] left-0 z-[25] w-[140px]"
+        className="bottom-[80px] left-2 z-[25] w-[140px]"
       />
 
       {/* 3 – Today's Goal: lower-right corner */}
@@ -102,7 +102,7 @@ export const FloatingCards = memo(function FloatingCards() {
         iconBg="bg-teal-500/15" iconColor="text-teal-500"
         title="Today's Goal"  value="Interview #4"  sub="Complete in 2h"
         delay={0.70}  floatCls="animate-float-2"
-        className="bottom-[20px] right-[10px] z-[25] w-[140px]"
+        className="bottom-[-15px] right-[-25px] z-[25] w-[140px]"
       />
     </>
   )

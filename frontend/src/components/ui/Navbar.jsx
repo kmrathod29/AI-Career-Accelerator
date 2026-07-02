@@ -89,7 +89,7 @@ export function Navbar() {
             </Link>
 
             <Link to={APP_ROUTES.REGISTER}>
-              <PrimaryButton className="rounded-xl px-5 py-2 text-sm">
+              <PrimaryButton className="rounded-4xl px-5 py-2 text-sm">
                 Get Started
               </PrimaryButton>
             </Link>
@@ -163,11 +163,6 @@ export function Navbar() {
 
                 {/* Bottom: CTAs — SAME components as desktop */}
                 <div className="space-y-3 border-t border-[var(--color-border)] pt-6">
-                  {/* Theme toggle in drawer too */}
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="text-sm font-medium text-[var(--color-muted)]">Appearance</span>
-                    <ThemeToggle />
-                  </div>
 
                   <Link
                     to={APP_ROUTES.LOGIN}

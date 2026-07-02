@@ -1,24 +1,25 @@
-import { memo } from 'react'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowRight, Star } from 'lucide-react'
-import { PrimaryButton } from '@components/ui/PrimaryButton.jsx'
-import { HeroDashboard } from './HeroDashboard.jsx'
-import { APP_ROUTES } from '@constants/routes.js'
+import { memo } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowRight, Star } from "lucide-react";
+import { PrimaryButton } from "@components/ui/PrimaryButton.jsx";
+import { HeroDashboard } from "./HeroDashboard.jsx";
+import { APP_ROUTES } from "@constants/routes.js";
 
 /* ─── Framer Motion presets ─────────────────────────────────────── */
 const FADE_UP = {
-  hidden:  { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
-    opacity: 1, y: 0,
+    opacity: 1,
+    y: 0,
     transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] },
   },
-}
+};
 
 const STAGGER = {
-  hidden:  {},
+  hidden: {},
   visible: { transition: { staggerChildren: 0.11, delayChildren: 0.05 } },
-}
+};
 
 /* ─── Sub-components (all memoised) ────────────────────────────── */
 
@@ -30,10 +31,10 @@ const HeroHeading = memo(function HeroHeading() {
     >
       Your AI Career Coach,
       <br />
-      <span style={{ color: 'var(--color-primary)' }}>always ready.</span>
+      <span style={{ color: "var(--color-primary)" }}>always ready.</span>
     </motion.h1>
-  )
-})
+  );
+});
 
 const HeroSubtitle = memo(function HeroSubtitle() {
   return (
@@ -41,16 +42,16 @@ const HeroSubtitle = memo(function HeroSubtitle() {
       variants={FADE_UP}
       className="max-w-[440px] text-base leading-relaxed text-[var(--color-muted)] sm:text-[1.05rem]"
     >
-      Build an ATS-ready résumé, close skill gaps, and get a personalised
-      career roadmap — in minutes, not months.
+      Build an ATS-ready résumé, close skill gaps, and get a personalised career
+      roadmap — in minutes, not months.
     </motion.p>
-  )
-})
+  );
+});
 
 const HeroCTAs = memo(function HeroCTAs() {
   const scrollToFeatures = () => {
-    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
-  }
+    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <motion.div
@@ -60,7 +61,7 @@ const HeroCTAs = memo(function HeroCTAs() {
       {/* Primary — solid blue, gradient on hover */}
       <Link to={APP_ROUTES.REGISTER}>
         <PrimaryButton
-          className="group gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold"
+          className="group gap-2 rounded-3xl px-7 py-3 text-sm font-semibold"
           aria-label="Create your free account"
         >
           Get Started
@@ -75,27 +76,24 @@ const HeroCTAs = memo(function HeroCTAs() {
       <button
         onClick={scrollToFeatures}
         className={[
-          'inline-flex items-center gap-2 rounded-xl',
-          'border border-[var(--color-border)] px-7 py-3.5',
-          'text-sm font-medium text-[var(--color-muted)] shadow-sm',
-          'transition-all duration-150',
-          'hover:border-[var(--color-surface-3)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] hover:shadow-md',
-          'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
-        ].join(' ')}
-        style={{ backgroundColor: 'var(--color-surface)' }}
+          "inline-flex items-center gap-2 rounded-3xl",
+          "border border-[var(--color-border)] px-7 py-3",
+          "text-sm font-medium text-[var(--color-muted)] shadow-sm",
+          "transition-all duration-150",
+          "hover:border-[var(--color-surface-3)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] hover:shadow-md",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500",
+        ].join(" ")}
+        style={{ backgroundColor: "var(--color-surface)" }}
       >
         Explore Features
       </button>
     </motion.div>
-  )
-})
+  );
+});
 
 const TrustRow = memo(function TrustRow() {
   return (
-    <motion.div
-      variants={FADE_UP}
-      className="flex items-center gap-2.5"
-    >
+    <motion.div variants={FADE_UP} className="flex items-center gap-2.5">
       {/* Star rating */}
       <div
         className="flex items-center gap-0.5"
@@ -113,11 +111,12 @@ const TrustRow = memo(function TrustRow() {
 
       {/* User count */}
       <p className="text-xs text-[var(--color-muted)]">
-        <span className="font-semibold text-[var(--color-text)]">10,000+</span> students
+        <span className="font-semibold text-[var(--color-text)]">10,000+</span>{" "}
+        students
       </p>
     </motion.div>
-  )
-})
+  );
+});
 
 /* ─── HeroSection ───────────────────────────────────────────────── */
 
@@ -130,7 +129,6 @@ export function HeroSection() {
     >
       <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[45%_55%] lg:gap-6 xl:gap-10">
-
           {/* ── Left: hero copy ─────────────────────────────── */}
           <motion.div
             variants={STAGGER}
@@ -146,9 +144,8 @@ export function HeroSection() {
 
           {/* ── Right: product dashboard ─────────────────────── */}
           <HeroDashboard />
-
         </div>
       </div>
     </section>
-  )
+  );
 }
