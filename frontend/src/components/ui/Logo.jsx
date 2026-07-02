@@ -6,7 +6,7 @@ export function Logo() {
   return (
     <Link
       to={APP_ROUTES.HOME}
-      className="inline-flex items-center gap-2.5 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)]"
+      className="inline-flex items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)]"
       aria-label="AI Career Accelerator — go to home"
     >
       <img
@@ -14,9 +14,9 @@ export function Logo() {
         alt=""
         aria-hidden="true"
         draggable={false}
-        className="h-7 w-7 shrink-0 object-contain"
+        className="h-8 w-8 shrink-0 object-contain"
       />
-      <span className="text-sm font-semibold tracking-tight text-[var(--color-text)]">
+      <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text)]">
         AI Career Accelerator
       </span>
     </Link>

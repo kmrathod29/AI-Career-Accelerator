@@ -4,6 +4,9 @@ import { motion } from 'framer-motion'
 /**
  * CircularProgress — SVG ring with animated stroke-dashoffset on mount.
  * Uses Framer Motion so the ring draws in smoothly.
+ *
+ * Track colour uses --progress-track CSS variable
+ * so it adapts to dark mode (#1E293B) vs light (#F1F5F9).
  */
 export const CircularProgress = memo(function CircularProgress({
   value,
@@ -27,10 +30,10 @@ export const CircularProgress = memo(function CircularProgress({
     >
       <div className="relative flex items-center justify-center">
         <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
-          {/* Track */}
+          {/* Track — theme-aware via CSS variable */}
           <circle
             cx={size / 2} cy={size / 2} r={r}
-            fill="none" stroke="#F1F5F9" strokeWidth={strokeWidth}
+            fill="none" stroke="var(--progress-track)" strokeWidth={strokeWidth}
           />
           {/* Animated fill */}
           <motion.circle
@@ -44,13 +47,13 @@ export const CircularProgress = memo(function CircularProgress({
           />
         </svg>
         {/* Centre label */}
-        <span className="absolute text-[10px] font-bold text-slate-800">
+        <span className="absolute text-[10px] font-bold text-[var(--color-text)]">
           {value}%
         </span>
       </div>
 
       {label && (
-        <span className="text-center text-[9px] font-medium leading-tight text-slate-400">
+        <span className="text-center text-[9px] font-medium leading-tight text-[var(--color-muted)]">
           {label}
         </span>
       )}

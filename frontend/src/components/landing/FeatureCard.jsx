@@ -10,11 +10,14 @@ import { cn } from '@utils/classNames.js'
  *   icon         — Lucide icon component
  *   className    — extra classes for the outer container
  *   children     — card body content
+ *
+ * Badge colours use CSS variables so they adapt to dark mode
+ * (e.g. emerald-50 → emerald-500/15 with lighter text).
  */
 const BADGE_STYLES = {
   blue:  'bg-[var(--color-surface-2)] text-[var(--color-primary)]',
-  green: 'bg-emerald-50 text-emerald-700',
-  amber: 'bg-amber-50 text-amber-700',
+  green: 'bg-[var(--badge-green-bg)] text-[var(--badge-green-text)]',
+  amber: 'bg-[var(--badge-amber-bg)] text-[var(--badge-amber-text)]',
   none:  '',
 }
 

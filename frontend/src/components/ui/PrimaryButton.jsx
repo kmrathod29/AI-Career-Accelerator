@@ -6,6 +6,7 @@ import { cn } from '@utils/classNames.js'
  * PrimaryButton
  * Default: solid brand blue (#2563EB)
  * Hover:   gradient overlay fades in (from-primary → to-secondary)
+ *          + subtle lift (scale 1.03, y -1) + soft glow in dark mode.
  * No green/teal. Gradient only on hover — not the default state.
  */
 export const PrimaryButton = forwardRef(function PrimaryButton(
@@ -16,6 +17,7 @@ export const PrimaryButton = forwardRef(function PrimaryButton(
     <motion.button
       ref={ref}
       type={type}
+      whileHover={{ scale: 1.03, y: -1, transition: { duration: 0.2, ease: 'easeOut' } }}
       whileTap={{ scale: 0.97 }}
       className={cn(
         // Layout & shape
@@ -24,8 +26,8 @@ export const PrimaryButton = forwardRef(function PrimaryButton(
         'bg-[var(--color-primary)] text-[var(--color-primary-foreground)]',
         // Sizing defaults (overridable via className)
         'px-6 py-3 text-sm font-semibold',
-        // Shadow & transition
-        'shadow-sm transition-shadow duration-200 hover:shadow-md',
+        // Shadow & transition — subtle blue glow in dark mode via CSS var
+        'shadow-sm transition-shadow duration-200 hover:shadow-[var(--shadow-glow),0_4px_12px_rgba(37,99,235,0.25)]',
         // Focus ring
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)]',
         'disabled:pointer-events-none disabled:opacity-60',

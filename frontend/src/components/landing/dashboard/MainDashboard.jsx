@@ -19,13 +19,25 @@ const RECENT = [
 ]
 
 /* ── Component ──────────────────────────────────────────────────── */
+/**
+ * MainDashboard — the hero product illustration.
+ *
+ * Dark mode uses --color-dashboard-bg (#1B2435) as base surface,
+ * with inner cards at --color-surface-card (#222C3D) for elevation
+ * hierarchy. This prevents the "flat black box" appearance.
+ */
 export const MainDashboard = memo(function MainDashboard() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="h-full overflow-auto rounded-[24px] border border-slate-200/80 bg-white p-5 shadow-[0_20px_70px_rgba(0,0,0,0.11),0_4px_16px_rgba(0,0,0,0.05)]"
+      className="h-full overflow-auto rounded-[24px] border p-5"
+      style={{
+        backgroundColor: 'var(--color-dashboard-bg)',
+        borderColor: 'var(--dashboard-border)',
+        boxShadow: 'var(--dashboard-shadow)',
+      }}
     >
       {/* ── Header ──────────────────────────────────────── */}
       <div className="mb-5 flex items-center justify-between">
@@ -39,10 +51,10 @@ export const MainDashboard = memo(function MainDashboard() {
             AJ
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-slate-900">
+            <p className="truncate text-sm font-semibold text-[var(--color-text)]">
               Welcome back, Alex 👋
             </p>
-            <p className="text-[10px] text-slate-400">
+            <p className="text-[10px] text-[var(--color-muted)]">
               Senior Job Seeker · 38-day streak 🔥
             </p>
           </div>
@@ -50,16 +62,21 @@ export const MainDashboard = memo(function MainDashboard() {
 
         {/* Notification bell */}
         <button
-          className="flex h-8 w-8 shrink-0 cursor-default items-center justify-center rounded-full border border-slate-100 bg-slate-50 transition-colors hover:bg-slate-100"
+          className="flex h-8 w-8 shrink-0 cursor-default items-center justify-center rounded-full border border-[var(--color-border)] transition-colors hover:bg-[var(--color-surface-2)]"
+          style={{ backgroundColor: 'var(--color-surface-card)' }}
           aria-label="Notifications"
           tabIndex={-1}
         >
-          <Bell className="h-[14px] w-[14px] text-slate-400" aria-hidden="true" />
+          <Bell className="h-[14px] w-[14px] text-[var(--color-muted)]" aria-hidden="true" />
         </button>
       </div>
 
       {/* ── Circular progress stats ──────────────────────── */}
-      <div className="mb-5 grid grid-cols-4 gap-1 rounded-2xl bg-slate-50/70 px-2 py-4">
+      {/* Inner card uses --color-surface-card for hierarchy */}
+      <div
+        className="mb-5 grid grid-cols-4 gap-1 rounded-2xl px-2 py-4"
+        style={{ backgroundColor: 'var(--color-surface-card)' }}
+      >
         {STATS.map((s) => (
           <CircularProgress
             key={s.label}
@@ -75,19 +92,22 @@ export const MainDashboard = memo(function MainDashboard() {
       {/* ── Activity graph ───────────────────────────────── */}
       <div className="mb-5">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-[9px] font-semibold uppercase tracking-widest text-slate-400">
+          <p className="text-[9px] font-semibold uppercase tracking-widest text-[var(--color-muted)]">
             Activity · Last 30 days
           </p>
-          <span className="text-[9px] font-medium text-slate-400">38 actions</span>
+          <span className="text-[9px] font-medium text-[var(--color-muted)]">38 actions</span>
         </div>
-        <div className="overflow-hidden rounded-xl bg-slate-50/50 px-2 py-2">
+        <div
+          className="overflow-hidden rounded-xl px-2 py-2"
+          style={{ backgroundColor: 'var(--color-surface-card)' }}
+        >
           <ActivityGraph />
         </div>
       </div>
 
       {/* ── Recent activity ──────────────────────────────── */}
       <div>
-        <p className="mb-2.5 text-[9px] font-semibold uppercase tracking-widest text-slate-400">
+        <p className="mb-2.5 text-[9px] font-semibold uppercase tracking-widest text-[var(--color-muted)]">
           Recent Activity
         </p>
         <ul className="space-y-2.5" aria-label="Recent activity items">
@@ -99,9 +119,9 @@ export const MainDashboard = memo(function MainDashboard() {
                   style={{ backgroundColor: dot }}
                   aria-hidden="true"
                 />
-                <span className="truncate text-xs text-slate-600">{text}</span>
+                <span className="truncate text-xs text-[var(--color-muted)]">{text}</span>
               </div>
-              <span className="shrink-0 text-[10px] text-slate-400">{time}</span>
+              <span className="shrink-0 text-[10px] text-[var(--color-muted)]">{time}</span>
             </li>
           ))}
         </ul>

@@ -16,6 +16,11 @@
 	--color-surface-2: #EFF6FF;
 	--color-surface-3: #E2E8F0;
 
+	/* Dashboard hierarchy (light — just white) */
+	--color-dashboard-bg:   #FFFFFF;
+	--color-surface-card:   #F8FAFC;
+	--color-surface-inset:  #F1F5F9;
+
 	/* Typography */
 	--color-text:  #0F172A;
 	--color-muted: #64748B;
@@ -33,41 +38,89 @@
 	/* Shadows */
 	--shadow-card:     0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.05);
 	--shadow-elevated: 0 8px 40px rgba(15, 23, 42, 0.10);
+	--shadow-glow:     none;
 
 	/* Navbar glass */
 	--navbar-bg:       rgba(255, 255, 255, 0.78);
 	--navbar-bg-solid: rgba(255, 255, 255, 0.96);
 	--navbar-border:   rgba(15, 23, 42, 0.07);
 	--navbar-shadow:   0 1px 3px rgba(0, 0, 0, 0.05);
+
+	/* Floating card base */
+	--floating-bg:     rgba(255, 255, 255, 0.96);
+	--floating-border: rgba(226, 232, 240, 0.90);
+	--floating-shadow: 0 8px 32px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
+
+	/* Badge variants */
+	--badge-green-bg:  #ECFDF5;
+	--badge-green-text: #047857;
+	--badge-amber-bg:  #FFFBEB;
+	--badge-amber-text: #B45309;
+
+	/* Circular progress track */
+	--progress-track: #F1F5F9;
+
+	/* Dashboard specific */
+	--dashboard-shadow: 0 20px 70px rgba(0, 0, 0, 0.11), 0 4px 16px rgba(0, 0, 0, 0.05);
+	--dashboard-border: rgba(226, 232, 240, 0.80);
 }
 
 /* ─── Dark theme ────────────────────────────────────────────────── */
 [data-theme='dark'] {
 	color-scheme: dark;
 
-	--color-bg:        #08111F;
+	/* Premium dark palette — Linear / Vercel / Raycast inspired */
+	--color-bg:        #0B1220;
 	--color-surface:   #111827;
-	--color-surface-2: #1A2744;
+	--color-surface-2: #161F2E;
 	--color-surface-3: #1E293B;
 
+	/* Dashboard hierarchy — NOT flat black */
+	--color-dashboard-bg:   #1B2435;
+	--color-surface-card:   #222C3D;
+	--color-surface-inset:  #1A2332;
+
+	/* Typography — clear hierarchy */
 	--color-text:  #F1F5F9;
 	--color-muted: #94A3B8;
 
 	--color-border: rgba(255, 255, 255, 0.08);
 
+	/* Brand — slightly brighter in dark */
 	--color-primary:            #3B82F6;
 	--color-secondary:          #2563EB;
 	--color-primary-foreground: #FFFFFF;
 	--color-accent:             #60A5FA;
 	--color-danger:             #F87171;
 
-	--shadow-card:     0 1px 3px rgba(0, 0, 0, 0.35), 0 4px 20px rgba(0, 0, 0, 0.28);
-	--shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.55);
+	/* Shadows — softer, with subtle blue glow */
+	--shadow-card:     0 1px 3px rgba(0, 0, 0, 0.40), 0 4px 20px rgba(0, 0, 0, 0.30);
+	--shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.50), 0 0 1px rgba(59, 130, 246, 0.10);
+	--shadow-glow:     0 0 20px rgba(59, 130, 246, 0.08), 0 0 40px rgba(59, 130, 246, 0.04);
 
+	/* Navbar — neutral dark gray, NOT blue */
 	--navbar-bg:       rgba(17, 24, 39, 0.82);
 	--navbar-bg-solid: rgba(17, 24, 39, 0.97);
 	--navbar-border:   rgba(255, 255, 255, 0.08);
 	--navbar-shadow:   0 1px 3px rgba(0, 0, 0, 0.30);
+
+	/* Floating card base — dark surfaces */
+	--floating-bg:     rgba(22, 31, 46, 0.96);
+	--floating-border: rgba(255, 255, 255, 0.08);
+	--floating-shadow: 0 8px 32px rgba(0, 0, 0, 0.40), 0 2px 8px rgba(0, 0, 0, 0.25), 0 0 20px rgba(59, 130, 246, 0.06);
+
+	/* Badge variants — dark mode */
+	--badge-green-bg:  rgba(16, 185, 129, 0.15);
+	--badge-green-text: #34D399;
+	--badge-amber-bg:  rgba(245, 158, 11, 0.15);
+	--badge-amber-text: #FBBF24;
+
+	/* Circular progress track */
+	--progress-track: #1E293B;
+
+	/* Dashboard specific */
+	--dashboard-shadow: 0 20px 70px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.30), 0 0 1px rgba(59, 130, 246, 0.10);
+	--dashboard-border: rgba(255, 255, 255, 0.06);
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────── */
@@ -86,6 +139,8 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	/* Smooth theme transition */
+	transition: background-color 0.35s ease, color 0.25s ease;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -93,6 +148,16 @@ a { color: inherit; text-decoration: none; }
 button, input, textarea, select { font: inherit; }
 
 #root { min-height: 100vh; }
+
+/* ─── Mobile menu blur ─────────────────────────────────────────── */
+/* When mobile drawer is open, blur ALL page content (including navbar).
+   The drawer itself renders via createPortal to document.body,
+   so it sits outside #root and is unaffected. */
+body.menu-open #root {
+	filter: blur(6px) saturate(0.7);
+	pointer-events: none;
+	transition: filter 0.25s ease;
+}
 
 /* ─── Keyframes ─────────────────────────────────────────────────── */
 @keyframes shimmer {
@@ -127,4 +192,3 @@ button, input, textarea, select { font: inherit; }
 .animate-float-1 { animation: float-subtle  7s  ease-in-out infinite; }
 .animate-float-2 { animation: float-subtle  9s  ease-in-out infinite 1.5s; }
 .animate-float-3 { animation: float-subtle  8s  ease-in-out infinite 0.8s; }
-

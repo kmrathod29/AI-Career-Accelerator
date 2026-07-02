@@ -26,11 +26,11 @@ const HeroHeading = memo(function HeroHeading() {
   return (
     <motion.h1
       variants={FADE_UP}
-      className="text-[2.55rem] font-bold leading-[1.10] tracking-tight text-slate-900 sm:text-[3rem] lg:text-[3.2rem]"
+      className="text-[2.55rem] font-bold leading-[1.10] tracking-tight text-[var(--color-text)] sm:text-[3rem] lg:text-[3.2rem]"
     >
       Your AI Career Coach,
       <br />
-      <span style={{ color: '#2563EB' }}>always ready.</span>
+      <span style={{ color: 'var(--color-primary)' }}>always ready.</span>
     </motion.h1>
   )
 })
@@ -39,7 +39,7 @@ const HeroSubtitle = memo(function HeroSubtitle() {
   return (
     <motion.p
       variants={FADE_UP}
-      className="max-w-[440px] text-base leading-relaxed text-slate-500 sm:text-[1.05rem]"
+      className="max-w-[440px] text-base leading-relaxed text-[var(--color-muted)] sm:text-[1.05rem]"
     >
       Build an ATS-ready résumé, close skill gaps, and get a personalised
       career roadmap — in minutes, not months.
@@ -71,20 +71,18 @@ const HeroCTAs = memo(function HeroCTAs() {
         </PrimaryButton>
       </Link>
 
-      {/*
-        Secondary ghost — hardcoded slate colours so it always looks premium
-        in light mode regardless of the CSS-var theme (hero is always white).
-      */}
+      {/* Secondary ghost — uses CSS variables for dark mode support */}
       <button
         onClick={scrollToFeatures}
         className={[
           'inline-flex items-center gap-2 rounded-xl',
-          'border border-slate-200 bg-white px-7 py-3.5',
-          'text-sm font-medium text-slate-600 shadow-sm',
+          'border border-[var(--color-border)] px-7 py-3.5',
+          'text-sm font-medium text-[var(--color-muted)] shadow-sm',
           'transition-all duration-150',
-          'hover:border-slate-300 hover:bg-slate-50 hover:shadow-md',
+          'hover:border-[var(--color-surface-3)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] hover:shadow-md',
           'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
         ].join(' ')}
+        style={{ backgroundColor: 'var(--color-surface)' }}
       >
         Explore Features
       </button>
@@ -114,8 +112,8 @@ const TrustRow = memo(function TrustRow() {
       </div>
 
       {/* User count */}
-      <p className="text-xs text-slate-500">
-        <span className="font-semibold text-slate-800">10,000+</span> students
+      <p className="text-xs text-[var(--color-muted)]">
+        <span className="font-semibold text-[var(--color-text)]">10,000+</span> students
       </p>
     </motion.div>
   )
