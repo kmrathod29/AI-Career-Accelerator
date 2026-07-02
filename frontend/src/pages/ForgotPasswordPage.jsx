@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
-import { LoginForm } from '@components/auth/LoginForm.jsx'
+import { ForgotPasswordForm } from '@components/auth/ForgotPasswordForm.jsx'
 
-export function LoginPage() {
+export function ForgotPasswordPage() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -10,7 +10,7 @@ export function LoginPage() {
       transition={{ duration: 0.25, ease: 'easeInOut' }}
       className="w-full"
     >
-      <LoginForm />
+      <ForgotPasswordForm />
     </motion.div>
   )
 }

@@ -26,7 +26,7 @@ import { APP_ROUTES } from '@constants/routes.js'
  */
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [isOpen,     setIsOpen]     = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   /* Solidify shadow on scroll */
   useEffect(() => {
@@ -87,12 +87,6 @@ export function Navbar() {
             >
               Log in
             </Link>
-
-            <Link to={APP_ROUTES.REGISTER}>
-              <PrimaryButton className="rounded-4xl px-5 py-2 text-sm">
-                Get Started
-              </PrimaryButton>
-            </Link>
           </div>
 
           {/* Mobile: theme + hamburger */}
@@ -105,7 +99,7 @@ export function Navbar() {
               className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
             >
               {isOpen ? (
-                <X    className="h-4 w-4" aria-hidden="true" />
+                <X className="h-4 w-4" aria-hidden="true" />
               ) : (
                 <Menu className="h-4 w-4" aria-hidden="true" />
               )}
@@ -164,26 +158,25 @@ export function Navbar() {
                 {/* Bottom: CTAs — SAME components as desktop */}
                 <div className="space-y-3 border-t border-[var(--color-border)] pt-6">
 
+
                   <Link
                     to={APP_ROUTES.LOGIN}
                     onClick={() => setIsOpen(false)}
                     className="block w-full rounded-xl border border-[var(--color-border)] py-3 text-center text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)]"
                     style={{ backgroundColor: 'var(--color-surface)' }}
                   >
-                    Log in
-                  </Link>
-                  <Link to={APP_ROUTES.REGISTER} onClick={() => setIsOpen(false)}>
-                    <PrimaryButton className="w-full justify-center py-3 text-sm">
-                      Get Started
+                    <PrimaryButton className="rounded-4xl px-5 py-2 text-sm">
+                      Log in
                     </PrimaryButton>
                   </Link>
                 </div>
               </motion.div>
             </>
           )}
-        </AnimatePresence>,
+        </AnimatePresence >,
         document.body,
-      )}
+      )
+      }
     </>
   )
 }
