@@ -6,12 +6,13 @@ import { HowItWorksSection } from '@components/landing/how-it-works/HowItWorksSe
 import { ProductShowcaseSection } from '@components/landing/showcase/ProductShowcaseSection.jsx'
 import { TestimonialsSection } from '@components/landing/testimonials/TestimonialsSection.jsx'
 import { FAQSection } from '@components/landing/faq/FAQSection.jsx'
+import { CTASection } from '@components/landing/cta/CTASection.jsx'
+import { Footer } from '@components/landing/footer/Footer.jsx'
 import { LandingSkeleton } from '@components/skeleton/LandingSkeleton.jsx'
 
 /**
  * HomePage — slim orchestrator.
  * All section logic lives in src/components/landing/.
- * Future sections (Pricing, FAQ, Footer) slot in below HowItWorksSection.
  */
 export function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -39,13 +40,8 @@ export function HomePage() {
         <ProductShowcaseSection />
         <TestimonialsSection />
         <FAQSection />
-
-        {/* ── Future sections slot in here ─────────────── */}
-        {/* <PricingSection />    */}
-        {/* <FooterSection />     */}
-
-        {/* Scroll anchors — keep Navbar scroll-spy working */}
-        <div id="pricing" className="pointer-events-none h-px" aria-hidden="true" />
+        <CTASection />
+        <Footer />
       </motion.div>
     </AnimatePresence>
   )
