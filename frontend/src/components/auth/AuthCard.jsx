@@ -16,7 +16,7 @@ export const AuthCard = memo(function AuthCard({ children, className }) {
   return (
     <div
       className={cn(
-        'w-full max-w-[480px] rounded-[32px] border border-[var(--color-border)] p-8 shadow-[var(--shadow-elevated)] backdrop-blur-xl sm:p-10',
+        'w-full max-w-full rounded-[32px] border border-[var(--color-border)] p-8 shadow-[var(--shadow-elevated)] backdrop-blur-xl sm:p-10',
         className,
       )}
       style={{

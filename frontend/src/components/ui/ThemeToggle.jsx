@@ -6,34 +6,63 @@ import { useTheme } from '@providers/useTheme.js'
 /**
  * ThemeToggle — Premium Day/Night capsule switch.
  *
- * A large rounded pill (128×44px desktop, 115px tablet, 105px mobile)
- * inspired by Apple hardware controls. The circular thumb slides
- * between left (☀ Light) and right (🌙 Dark) via Framer Motion spring.
- *
- * Props: none — reads from existing ThemeContext via useTheme().
- * Drop-in replacement for the old ThemeToggle — same export name & file path.
+ * Props:
+ *   variant: 'auth' (custom sizes for auth page header: desktop 120x42, tablet 110x40, mobile 92x36)
+ *   size: 'sm' (for mobile drawer toggle: 105x40)
  */
-export function ThemeToggle() {
+export function ThemeToggle({ variant, size }) {
   const { isDark, toggleTheme } = useTheme()
+  const isSm = size === 'sm'
+  const isAuth = variant === 'auth'
 
-  /* ── Responsive track width ────────────────────────────── */
-  const [trackW, setTrackW] = useState(128)
+  /* ── Responsive track width & height ────────────────────── */
+  const [windowW, setWindowW] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200)
 
   useEffect(() => {
-    const update = () => {
-      const w = window.innerWidth
-      setTrackW(w < 768 ? 105 : w < 1024 ? 115 : 128)
-    }
-    update()
+    if (isSm) return
+    const update = () => setWindowW(window.innerWidth)
     window.addEventListener('resize', update, { passive: true })
     return () => window.removeEventListener('resize', update)
-  }, [])
+  }, [isSm])
+
+  let trackW = 124
+  let H = 44
+
+  if (isSm) {
+    trackW = 105
+    H = 40
+  } else if (isAuth) {
+    if (windowW < 768) {
+      trackW = 92
+      H = 36
+    } else if (windowW < 1024) {
+      trackW = 110
+      H = 40
+    } else {
+      trackW = 120
+      H = 42
+    }
+  } else {
+    if (windowW < 768) {
+      trackW = 105
+      H = 40
+    } else if (windowW < 1024) {
+      trackW = 115
+      H = 44
+    } else {
+      trackW = 124
+      H = 44
+    }
+  }
 
   /* ── Layout constants (px) ─────────────────────────────── */
-  const H = 44             // track height
-  const PAD = 4              // inner padding
-  const THUMB = H - PAD * 2   // 36px thumb diameter
-  const TRAVEL = trackW - PAD * 2 - THUMB  // how far the thumb slides
+  const PAD = isSm || (isAuth && windowW < 768) || windowW < 768 ? 3 : 4
+  const THUMB = H - PAD * 2
+  const TRAVEL = trackW - PAD * 2 - THUMB
+
+  const fontSz = isSm || (isAuth && windowW < 768) || windowW < 768 ? 10.5 : 12.5
+  const iconSz = isSm || (isAuth && windowW < 768) || windowW < 768 ? 12 : 14.5
+  const sparkleSz = isSm || (isAuth && windowW < 768) || windowW < 768 ? 8 : 9.5
 
   return (
     <motion.button
@@ -54,20 +83,19 @@ export function ThemeToggle() {
         backgroundColor: { duration: 0.30 },
         borderColor: { duration: 0.30 },
         boxShadow: { duration: 0.30 },
-        scale: { duration: 0.15 },  // snap hover/tap faster
+        scale: { duration: 0.15 },
       }}
 
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.98 }}
 
-      /* Focus ring via Tailwind (ring uses box-shadow, not outline) */
       className="focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
 
       style={{
         width: trackW,
         height: H,
         borderRadius: 9999,
-        border: '1px solid',   /* borderColor is driven by animate above */
+        border: '1px solid',
         padding: PAD,
         cursor: 'pointer',
         position: 'relative',
@@ -75,22 +103,21 @@ export function ThemeToggle() {
         display: 'inline-flex',
         alignItems: 'center',
         flexShrink: 0,
-        outline: 'none',        /* replaced by focus-visible ring above  */
+        outline: 'none',
       }}
     >
 
       {/* ── "Light" label ────────────────────────────────────── */}
-      {/* Right-side of track; fades away when switching to dark */}
       <motion.span
         aria-hidden="true"
         animate={{ opacity: isDark ? 0 : 1 }}
         transition={{ duration: 0.15 }}
         style={{
           position: 'absolute',
-          left: PAD + THUMB + 4,  /* starts just after thumb */
+          left: PAD + THUMB + 4,
           right: PAD + 2,
           textAlign: 'center',
-          fontSize: 13,
+          fontSize: fontSz,
           fontWeight: 600,
           color: '#111827',
           letterSpacing: '0.015em',
@@ -103,7 +130,6 @@ export function ThemeToggle() {
       </motion.span>
 
       {/* ── "Dark" label + optional Sparkles ─────────────────── */}
-      {/* Left-side of track; fades away when switching to light */}
       <motion.div
         aria-hidden="true"
         animate={{ opacity: isDark ? 1 : 0 }}
@@ -111,7 +137,7 @@ export function ThemeToggle() {
         style={{
           position: 'absolute',
           left: PAD + 2,
-          right: PAD + THUMB + 4,  /* ends just before thumb */
+          right: PAD + THUMB + 4,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -120,12 +146,12 @@ export function ThemeToggle() {
         }}
       >
         <Sparkles
-          style={{ width: 10, height: 10, color: '#93C5FD', flexShrink: 0 }}
+          style={{ width: sparkleSz, height: sparkleSz, color: '#93C5FD', flexShrink: 0 }}
           aria-hidden="true"
         />
         <span
           style={{
-            fontSize: 13,
+            fontSize: fontSz,
             fontWeight: 600,
             color: '#FFFFFF',
             letterSpacing: '0.015em',
@@ -152,7 +178,6 @@ export function ThemeToggle() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          /* Consistent white-thumb shadow looks good on both tracks */
           boxShadow: '0 2px 10px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.08)',
           border: '1px solid rgba(0,0,0,0.06)',
         }}
@@ -170,7 +195,7 @@ export function ThemeToggle() {
               aria-hidden="true"
             >
               <Moon
-                style={{ width: 15, height: 15, color: '#1E293B', strokeWidth: 2.5 }}
+                style={{ width: iconSz, height: iconSz, color: '#1E293B', strokeWidth: 2.5 }}
               />
             </motion.div>
           ) : (
@@ -183,7 +208,7 @@ export function ThemeToggle() {
               aria-hidden="true"
             >
               <Sun
-                style={{ width: 15, height: 15, color: '#111827', strokeWidth: 2.5 }}
+                style={{ width: iconSz, height: iconSz, color: '#111827', strokeWidth: 2.5 }}
               />
             </motion.div>
           )}

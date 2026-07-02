@@ -10,7 +10,6 @@ import { AuthTabs } from './AuthTabs.jsx'
 import { PasswordInput } from './PasswordInput.jsx'
 import { PrimaryButton } from '@components/ui/PrimaryButton.jsx'
 import { cn } from '@utils/classNames.js'
-import logoSrc from '@assets/logo/AI-Career-Accelerator-only-logo.png'
 
 export const RegisterForm = memo(function RegisterForm() {
   const navigate = useNavigate()
@@ -42,9 +41,8 @@ export const RegisterForm = memo(function RegisterForm() {
   return (
     <div className="w-full">
       <AuthHeader
-        imageSrc={logoSrc}
-        title="Create Account"
-        subtitle="Start your career acceleration journey."
+        title="Create Your Account"
+        subtitle="Start your AI-powered career journey."
       />
 
       <AuthTabs />

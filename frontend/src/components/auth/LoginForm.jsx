@@ -13,7 +13,6 @@ import { GoogleButton } from './GoogleButton.jsx'
 import { DeveloperCredentials } from './DeveloperCredentials.jsx'
 import { PrimaryButton } from '@components/ui/PrimaryButton.jsx'
 import { cn } from '@utils/classNames.js'
-import logoSrc from '@assets/logo/AI-Career-Accelerator-only-logo.png'
 
 const DEMO_EMAIL = 'demo@careeraccelerator.ai'
 const DEMO_PASS = 'Demo@123'
@@ -55,7 +54,6 @@ export const LoginForm = memo(function LoginForm() {
   return (
     <div className="w-full">
       <AuthHeader
-        imageSrc={logoSrc}
         title="Welcome Back"
         subtitle="Continue your AI-powered career journey."
       />

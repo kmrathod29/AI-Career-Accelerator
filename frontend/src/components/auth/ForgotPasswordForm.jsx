@@ -8,7 +8,6 @@ import { APP_ROUTES } from '@constants/routes.js'
 import { AuthHeader } from './AuthHeader.jsx'
 import { PrimaryButton } from '@components/ui/PrimaryButton.jsx'
 import { cn } from '@utils/classNames.js'
-import logoSrc from '@assets/logo/AI-Career-Accelerator-only-logo.png'
 
 export const ForgotPasswordForm = memo(function ForgotPasswordForm() {
   const {
@@ -30,9 +29,8 @@ export const ForgotPasswordForm = memo(function ForgotPasswordForm() {
   return (
     <div className="w-full">
       <AuthHeader
-        imageSrc={logoSrc}
         title="Forgot Password"
-        subtitle="Enter your email and we'll send you a reset link."
+        subtitle="This feature is currently under development."
       />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full space-y-4">
