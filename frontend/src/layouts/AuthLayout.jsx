@@ -13,7 +13,7 @@ import { APP_ROUTES } from '@constants/routes.js'
  */
 export function AuthLayout() {
   return (
-    <div className="relative flex min-h-dvh w-full flex-col overflow-x-hidden bg-[var(--color-bg)] text-[var(--color-text)] transition-colors duration-300">
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden overflow-y-auto bg-[var(--color-bg)] text-[var(--color-text)] transition-colors duration-300">
       {/* Subtle background ambient glows - centered to prevent scrollbars */}
       <div
         className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full opacity-40 mix-blend-screen"
