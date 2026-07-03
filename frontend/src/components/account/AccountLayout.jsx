@@ -11,19 +11,19 @@ export function AccountLayout({ activeSection, onSectionChange, children }) {
 	const { collapsed, toggleCollapse } = useSidebarCollapse()
 
 	return (
-		<div className="mx-auto max-w-6xl">
-			<div className="mb-6">
-				<h1 className="text-xl font-semibold tracking-tight text-[var(--color-text)] sm:text-2xl">
+		<div className="mx-auto min-w-0 max-w-6xl overflow-x-hidden">
+			<div className="mb-4 sm:mb-6">
+				<h1 className="text-lg font-semibold tracking-tight text-[var(--color-text)] sm:text-2xl">
 					Account Center
 				</h1>
-				<p className="mt-1 text-sm text-[var(--color-muted)]">
+				<p className="mt-0.5 text-xs text-[var(--color-muted)] sm:mt-1 sm:text-sm">
 					Manage your profile, preferences, and account security.
 				</p>
 			</div>
 
 			<AccountMobileNav activeSection={activeSection} onSectionChange={onSectionChange} />
 
-			<div className="mt-4 flex flex-col gap-6 lg:flex-row lg:gap-8">
+			<div className="mt-3 flex flex-col gap-4 md:mt-4 md:flex-row md:gap-6 lg:gap-8">
 				<AccountSidebar
 					activeSection={activeSection}
 					onSectionChange={onSectionChange}

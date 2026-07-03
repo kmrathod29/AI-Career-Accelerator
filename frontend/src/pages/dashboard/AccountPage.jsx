@@ -67,24 +67,84 @@ function getSafeSectionId(sectionId) {
 	return VALID_SECTION_IDS.has(sectionId) ? sectionId : OVERVIEW_SECTION_ID
 }
 
-function OverviewSection({ onNavigate, onUploadAvatar }) {
+function AccountQuickActions({ onNavigate, onUploadAvatar }) {
+	return (
+		<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-card)] sm:p-5">
+			<h3 className="text-sm font-semibold text-[var(--color-text)]">Quick Actions</h3>
+			<div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-3">
+				{[
+					{ label: 'Edit Profile', icon: Pencil, action: () => onNavigate('personal') },
+					{ label: 'Upload Avatar', icon: Camera, action: onUploadAvatar },
+					{ label: 'Download Resume', icon: Download, action: () => toast.info('Coming Soon', { description: 'Resume download will be available from the Resume Builder.' }) },
+				].map(({ label, icon: Icon, action }) => (
+					<motion.button
+						key={label}
+						type="button"
+						whileHover={{ y: -1 }}
+						whileTap={{ scale: 0.98 }}
+						onClick={action}
+						className="flex min-w-0 items-center gap-3 rounded-xl border border-[var(--color-border)] px-3 py-2.5 text-left text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)] sm:px-4 sm:py-3"
+					>
+						<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-2)] text-[var(--color-primary)] sm:h-9 sm:w-9">
+							<Icon className="h-4 w-4" strokeWidth={1.8} />
+						</div>
+						<span className="truncate">{label}</span>
+					</motion.button>
+				))}
+			</div>
+		</div>
+	)
+}
+
+function AccountMobileSummary({ onNavigate, onUploadAvatar }) {
 	const profile = useProfile()
 	const stats = useAccountStats()
-	const completion = calculateProfileCompletion(profile)
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-3 md:hidden">
 			<ProfileHeader
 				profile={profile}
 				onUploadAvatar={onUploadAvatar}
 				onEditProfile={() => onNavigate('personal')}
 			/>
 
-			<div className="grid gap-4 lg:grid-cols-3">
+			<div className="grid grid-cols-2 gap-2">
+				{STAT_CONFIG.map(({ key, label, icon, color }) => (
+					<QuickStatCard
+						key={key}
+						label={label}
+						value={stats[key]}
+						icon={icon}
+						colorClass={color}
+					/>
+				))}
+			</div>
+
+			<AccountQuickActions onNavigate={onNavigate} onUploadAvatar={onUploadAvatar} />
+		</div>
+	)
+}
+
+function OverviewSection({ onNavigate, onUploadAvatar }) {
+	const profile = useProfile()
+	const stats = useAccountStats()
+	const completion = calculateProfileCompletion(profile)
+
+	return (
+		<div className="space-y-3 sm:space-y-4">
+			<div className="hidden md:block">
+				<ProfileHeader
+					profile={profile}
+					onUploadAvatar={onUploadAvatar}
+					onEditProfile={() => onNavigate('personal')}
+				/>
+			</div>
+
+			<div className="grid gap-3 lg:grid-cols-3 lg:gap-4">
 				<div className="lg:col-span-1">
 					<ProfileCompletion percentage={completion} />
 				</div>
-				<div className="grid grid-cols-2 gap-3 lg:col-span-2 lg:grid-cols-2">
+				<div className="hidden grid-cols-2 gap-2 md:grid lg:col-span-2 lg:gap-3">
 					{STAT_CONFIG.map(({ key, label, icon, color }) => (
 						<QuickStatCard
 							key={key}
@@ -97,29 +157,8 @@ function OverviewSection({ onNavigate, onUploadAvatar }) {
 				</div>
 			</div>
 
-			<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)]">
-				<h3 className="text-sm font-semibold text-[var(--color-text)]">Quick Actions</h3>
-				<div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-					{[
-						{ label: 'Edit Profile', icon: Pencil, action: () => onNavigate('personal') },
-						{ label: 'Upload Avatar', icon: Camera, action: onUploadAvatar },
-						{ label: 'Download Resume', icon: Download, action: () => toast.info('Coming Soon', { description: 'Resume download will be available from the Resume Builder.' }) },
-					].map(({ label, icon: Icon, action }) => (
-						<motion.button
-							key={label}
-							type="button"
-							whileHover={{ y: -1 }}
-							whileTap={{ scale: 0.98 }}
-							onClick={action}
-							className="flex items-center gap-3 rounded-xl border border-[var(--color-border)] px-4 py-3 text-left text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)]"
-						>
-							<div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-surface-2)] text-[var(--color-primary)]">
-								<Icon className="h-4 w-4" strokeWidth={1.8} />
-							</div>
-							{label}
-						</motion.button>
-					))}
-				</div>
+			<div className="hidden md:block">
+				<AccountQuickActions onNavigate={onNavigate} onUploadAvatar={onUploadAvatar} />
 			</div>
 		</div>
 	)
@@ -151,7 +190,7 @@ class AccountSectionErrorBoundary extends Component {
 		}
 
 		return (
-			<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-card)]">
+			<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-card)] sm:p-6">
 				<h3 className="text-base font-semibold text-[var(--color-text)]">Section unavailable</h3>
 				<p className="mt-2 text-sm text-[var(--color-muted)]">
 					Something went wrong while rendering this section.
@@ -219,19 +258,29 @@ export function AccountPage() {
 
 	return (
 		<AccountLayout activeSection={activeSection} onSectionChange={handleSectionChange}>
+			<AccountMobileSummary
+				onNavigate={handleSectionChange}
+				onUploadAvatar={handleAvatarUpload}
+			/>
+
 			{activeSection !== 'overview' && (
-				<SectionHeader title={meta.title} description={meta.description} />
+				<div className="mt-3 md:mt-0">
+					<SectionHeader title={meta.title} description={meta.description} />
+				</div>
 			)}
+
 			<AccountSectionErrorBoundary
 				resetKey={activeSection}
 				onRecover={() => navigateToSection(OVERVIEW_SECTION_ID, { replace: true })}
 			>
-				<Outlet
-					context={{
-						onNavigate: handleSectionChange,
-						onUploadAvatar: handleAvatarUpload,
-					}}
-				/>
+				<div className="mt-3 md:mt-0">
+					<Outlet
+						context={{
+							onNavigate: handleSectionChange,
+							onUploadAvatar: handleAvatarUpload,
+						}}
+					/>
+				</div>
 			</AccountSectionErrorBoundary>
 		</AccountLayout>
 	)

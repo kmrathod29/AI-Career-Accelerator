@@ -30,7 +30,7 @@ export function AccountSidebar({ activeSection, onSectionChange, collapsed, onTo
 					<button
 						type="button"
 						onClick={onToggleCollapse}
-						className="hidden rounded-lg p-1.5 text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] md:flex"
+						className="flex rounded-lg p-1.5 text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]"
 						aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
 					>
 						{collapsed ? (
@@ -86,31 +86,33 @@ export function AccountSidebar({ activeSection, onSectionChange, collapsed, onTo
 export function AccountMobileNav({ activeSection, onSectionChange }) {
 	return (
 		<nav
-			className="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 md:hidden"
+			className="scrollbar-none w-full max-w-full overflow-x-auto pb-2 md:hidden"
 			aria-label="Account sections"
 		>
-			{ACCOUNT_SECTIONS.map(({ id, label }) => {
-				const isActive = activeSection === id
-				const isDanger = id === 'danger'
+			<div className="flex w-max gap-1.5">
+				{ACCOUNT_SECTIONS.map(({ id, label }) => {
+					const isActive = activeSection === id
+					const isDanger = id === 'danger'
 
-				return (
-					<button
-						key={id}
-						type="button"
-						onClick={() => onSectionChange(id)}
-						className={cn(
-							'shrink-0 rounded-full border px-4 py-2 text-xs font-medium transition-colors duration-200',
-							isActive
-								? isDanger
-									? 'border-[var(--notif-error)] bg-[var(--notif-error-bg)] text-[var(--notif-error)]'
-									: 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white'
-								: 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)]',
-						)}
-					>
-						{label}
-					</button>
-				)
-			})}
+					return (
+						<button
+							key={id}
+							type="button"
+							onClick={() => onSectionChange(id)}
+							className={cn(
+								'shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200',
+								isActive
+									? isDanger
+										? 'border-[var(--notif-error)] bg-[var(--notif-error-bg)] text-[var(--notif-error)]'
+										: 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white'
+									: 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)]',
+							)}
+						>
+							{label}
+						</button>
+					)
+				})}
+			</div>
 		</nav>
 	)
 }

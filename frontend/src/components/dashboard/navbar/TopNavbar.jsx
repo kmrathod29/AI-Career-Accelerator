@@ -1,3 +1,4 @@
+import { Component } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Menu } from 'lucide-react'
 import { PAGE_META } from '@constants/dashboardNav.js'
@@ -5,6 +6,32 @@ import { ThemeToggle } from '@components/ui/ThemeToggle.jsx'
 import { SearchBar } from './SearchBar.jsx'
 import { NotificationBell } from './NotificationBell.jsx'
 import { UserMenu } from '@components/ui/UserMenu.jsx'
+
+class NavbarWidgetErrorBoundary extends Component {
+	constructor(props) {
+		super(props)
+		this.state = { hasError: false }
+	}
+
+	static getDerivedStateFromError() {
+		return { hasError: true }
+	}
+
+	render() {
+		if (!this.state.hasError) {
+			return this.props.children
+		}
+
+		return (
+			<div
+				className="flex h-9 w-9 items-center justify-center rounded-xl text-(--color-muted)"
+				aria-hidden="true"
+			>
+				!
+			</div>
+		)
+	}
+}
 
 /**
  * TopNavbar — sticky top bar for the dashboard.
@@ -18,7 +45,7 @@ export function TopNavbar({ onMenuClick }) {
 
 	return (
 		<header
-			className="sticky top-0 z-30 flex h-16 shrink-0 items-center border-b border-(--color-border) px-4 backdrop-blur-xl sm:px-6"
+			className="sticky top-0 z-30 flex h-16 min-w-0 shrink-0 items-center overflow-hidden border-b border-(--color-border) px-4 backdrop-blur-xl sm:px-6"
 			style={{ backgroundColor: 'var(--navbar-bg-solid)' }}
 		>
 			{/* Left section */}
@@ -55,7 +82,9 @@ export function TopNavbar({ onMenuClick }) {
 				<div className="hidden sm:block">
 					<ThemeToggle size="sm" />
 				</div>
-				<NotificationBell />
+				<NavbarWidgetErrorBoundary>
+					<NotificationBell />
+				</NavbarWidgetErrorBoundary>
 				<UserMenu />
 			</div>
 		</header>

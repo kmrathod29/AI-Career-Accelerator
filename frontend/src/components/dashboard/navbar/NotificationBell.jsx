@@ -1,4 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
+import {
+	useFloating,
+	autoUpdate,
+	offset,
+	flip,
+	shift,
+	size,
+	useDismiss,
+	useClick,
+	useRole,
+	useInteractions,
+	FloatingPortal,
+} from '@floating-ui/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Bell } from 'lucide-react'
 import { NotificationPopup } from '@components/notifications/NotificationPopup.jsx'
@@ -10,19 +23,48 @@ import {
 	notificationStore,
 } from '@/stores/notificationStore.js'
 
+const POPUP_MAX_WIDTH = 380
+const VIEWPORT_PADDING = 12
+
 /**
  * NotificationBell — bell icon with unread badge, arrival animation, and popup.
- * Synced with the central notification store.
+ * Popup is portaled and positioned with Floating UI collision detection.
  */
 export function NotificationBell() {
 	const [isOpen, setIsOpen] = useState(false)
 	const [isRinging, setIsRinging] = useState(false)
-	const ref = useRef(null)
 	const unreadCount = useUnreadCount()
 	const popupNotifications = usePopupNotifications()
 	const isLoading = useNotificationLoading()
 	const lastArrivalAt = useLastArrivalAt()
 	const prevArrivalRef = useRef(lastArrivalAt)
+
+	const { refs, floatingStyles, context } = useFloating({
+		open: isOpen,
+		onOpenChange: setIsOpen,
+		placement: 'bottom-end',
+		whileElementsMounted: autoUpdate,
+		middleware: [
+			offset(8),
+			flip({ padding: VIEWPORT_PADDING }),
+			shift({ padding: VIEWPORT_PADDING }),
+			size({
+				padding: VIEWPORT_PADDING,
+				apply({ availableWidth, elements }) {
+					const width = Math.min(POPUP_MAX_WIDTH, availableWidth)
+					Object.assign(elements.floating.style, {
+						width: `${width}px`,
+						maxWidth: `min(${POPUP_MAX_WIDTH}px, calc(100vw - ${VIEWPORT_PADDING * 2}px))`,
+					})
+				},
+			}),
+		],
+	})
+
+	const click = useClick(context)
+	const dismiss = useDismiss(context, { outsidePressEvent: 'mousedown' })
+	const role = useRole(context)
+	const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role])
 
 	/* Animate bell when new notification arrives */
 	useEffect(() => {
@@ -37,34 +79,15 @@ export function NotificationBell() {
 		}
 	}, [lastArrivalAt])
 
-	/* Close on outside click */
-	useEffect(() => {
-		if (!isOpen) return
-		const handler = (e) => {
-			if (ref.current && !ref.current.contains(e.target)) setIsOpen(false)
-		}
-		document.addEventListener('mousedown', handler)
-		return () => document.removeEventListener('mousedown', handler)
-	}, [isOpen])
-
-	/* Close on Escape */
-	useEffect(() => {
-		if (!isOpen) return
-		const handler = (e) => {
-			if (e.key === 'Escape') setIsOpen(false)
-		}
-		document.addEventListener('keydown', handler)
-		return () => document.removeEventListener('keydown', handler)
-	}, [isOpen])
-
 	return (
-		<div ref={ref} className="relative">
+		<div className="relative">
 			<button
-				onClick={() => setIsOpen((o) => !o)}
+				ref={refs.setReference}
 				aria-label={`Notifications${unreadCount ? ` — ${unreadCount} unread` : ''}`}
 				aria-expanded={isOpen}
 				aria-haspopup="true"
 				className="relative flex h-9 w-9 items-center justify-center rounded-xl text-[var(--color-muted)] transition-colors duration-200 hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]"
+				{...getReferenceProps()}
 			>
 				<motion.div
 					animate={
@@ -77,7 +100,6 @@ export function NotificationBell() {
 					<Bell className="h-[18px] w-[18px]" strokeWidth={1.8} />
 				</motion.div>
 
-				{/* Unread badge */}
 				<AnimatePresence>
 					{unreadCount > 0 && (
 						<motion.span
@@ -94,16 +116,34 @@ export function NotificationBell() {
 				</AnimatePresence>
 			</button>
 
-			<AnimatePresence>
-				{isOpen && (
-					<NotificationPopup
-						notifications={popupNotifications}
-						unreadCount={unreadCount}
-						isLoading={isLoading}
-						onClose={() => setIsOpen(false)}
-					/>
-				)}
-			</AnimatePresence>
+			<FloatingPortal>
+				<AnimatePresence>
+					{isOpen && (
+						<motion.div
+							ref={refs.setFloating}
+							style={{
+								...floatingStyles,
+								backgroundColor: 'var(--floating-bg)',
+								borderColor: 'var(--floating-border)',
+								boxShadow: 'var(--floating-shadow)',
+							}}
+							initial={{ opacity: 0, y: 8, scale: 0.96 }}
+							animate={{ opacity: 1, y: 0, scale: 1 }}
+							exit={{ opacity: 0, y: 8, scale: 0.96 }}
+							transition={{ duration: 0.18, ease: 'easeOut' }}
+							className="z-50 flex max-w-[min(380px,calc(100vw-24px))] flex-col overflow-hidden rounded-2xl border shadow-lg"
+							{...getFloatingProps()}
+						>
+							<NotificationPopup
+								notifications={popupNotifications}
+								unreadCount={unreadCount}
+								isLoading={isLoading}
+								onClose={() => setIsOpen(false)}
+							/>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</FloatingPortal>
 		</div>
 	)
 }

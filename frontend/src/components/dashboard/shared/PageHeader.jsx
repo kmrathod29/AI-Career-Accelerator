@@ -4,8 +4,8 @@
  */
 export function PageHeader({ title, subtitle }) {
 	return (
-		<div className="mb-6">
-			<h2 className="text-xl font-semibold tracking-tight text-[var(--color-text)] sm:text-2xl">
+		<div className="mb-4 min-w-0 sm:mb-6">
+			<h2 className="text-lg font-semibold tracking-tight text-[var(--color-text)] sm:text-2xl">
 				{title}
 			</h2>
 			{subtitle && (

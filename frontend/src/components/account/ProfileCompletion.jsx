@@ -6,7 +6,7 @@ export function ProfileCompletion({ percentage }) {
 	const offset = circumference - (percentage / 100) * circumference
 
 	return (
-		<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)]">
+		<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-card)] sm:p-5">
 			<div className="flex items-center gap-5">
 				<div className="relative h-[88px] w-[88px] shrink-0">
 					<svg className="h-full w-full -rotate-90" viewBox="0 0 88 88">

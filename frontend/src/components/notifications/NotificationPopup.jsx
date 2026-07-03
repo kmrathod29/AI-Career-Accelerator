@@ -43,7 +43,7 @@ function NotificationGroup({ label, notifications, onMarkRead, onDelete, onOpen 
 }
 
 /**
- * Premium floating notification popup — synced with central store.
+ * Premium floating notification popup — portaled and positioned via Floating UI.
  */
 export function NotificationPopup({
 	notifications,
@@ -60,21 +60,9 @@ export function NotificationPopup({
 	const handleClearPopup = () => notificationStore.clearPopup()
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 8, scale: 0.96 }}
-			animate={{ opacity: 1, y: 0, scale: 1 }}
-			exit={{ opacity: 0, y: 8, scale: 0.96 }}
-			transition={{ duration: 0.18, ease: 'easeOut' }}
-			className="absolute right-0 top-full z-50 mt-2 flex w-[min(100vw-2rem,22rem)] flex-col overflow-hidden rounded-2xl border shadow-lg sm:w-96"
-			style={{
-				backgroundColor: 'var(--floating-bg)',
-				borderColor: 'var(--floating-border)',
-				boxShadow: 'var(--floating-shadow)',
-			}}
-		>
-			{/* Header */}
+		<>
 			<div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
-				<div>
+				<div className="min-w-0">
 					<p className="text-sm font-semibold text-[var(--color-text)]">Notifications</p>
 					{unreadCount > 0 && (
 						<p className="text-[11px] text-[var(--color-muted)]">
@@ -84,7 +72,7 @@ export function NotificationPopup({
 				</div>
 
 				{hasNotifications && (
-					<div className="flex items-center gap-1">
+					<div className="flex shrink-0 items-center gap-1">
 						{unreadCount > 0 && (
 							<button
 								type="button"
@@ -109,8 +97,7 @@ export function NotificationPopup({
 				)}
 			</div>
 
-			{/* List */}
-			<div className="max-h-[min(60vh,22rem)] overflow-y-auto">
+			<div className="max-h-[min(60vh,22rem)] overflow-y-auto overflow-x-hidden">
 				{isLoading ? (
 					<NotificationSkeleton count={4} compact />
 				) : !hasNotifications ? (
@@ -146,7 +133,6 @@ export function NotificationPopup({
 				)}
 			</div>
 
-			{/* Footer */}
 			<div className="border-t border-[var(--color-border)] px-4 py-2.5">
 				<Link
 					to={APP_ROUTES.NOTIFICATIONS}
@@ -157,6 +143,6 @@ export function NotificationPopup({
 					<ExternalLink className="h-3 w-3" strokeWidth={2} />
 				</Link>
 			</div>
-		</motion.div>
+		</>
 	)
 }

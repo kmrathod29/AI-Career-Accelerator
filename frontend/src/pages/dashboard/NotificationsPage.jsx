@@ -107,7 +107,7 @@ export function NotificationsPage() {
 			initial="initial"
 			animate="animate"
 			transition={{ staggerChildren: 0.05 }}
-			className="mx-auto max-w-4xl"
+			className="mx-auto min-w-0 max-w-4xl overflow-x-hidden"
 		>
 			<motion.div variants={fadeUp} transition={{ duration: 0.35 }}>
 				<PageHeader
@@ -147,9 +147,8 @@ export function NotificationsPage() {
 				transition={{ duration: 0.35 }}
 				className="mb-4 space-y-3"
 			>
-				<div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-					{/* Search */}
-					<div className="relative flex-1">
+				<div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
+					<div className="relative min-w-0 flex-1">
 						<Search
 							className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-muted)]"
 							strokeWidth={1.8}
@@ -164,12 +163,11 @@ export function NotificationsPage() {
 						/>
 					</div>
 
-					<div className="flex items-center gap-2">
-						{/* Sort */}
+					<div className="flex min-w-0 flex-wrap items-center gap-2">
 						<select
 							value={sortBy}
 							onChange={(e) => setSortBy(e.target.value)}
-							className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-sm text-[var(--color-text)] outline-none transition-colors focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
+							className="min-w-0 max-w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-sm text-[var(--color-text)] outline-none transition-colors focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
 							aria-label="Sort notifications"
 						>
 							{NOTIFICATION_SORT_OPTIONS.map((opt) => (

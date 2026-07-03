@@ -77,13 +77,12 @@ export function DashboardLayout() {
 
 			{/* Main content area — margin shifts with sidebar width */}
 			<div
-				className="flex min-h-screen flex-1 flex-col transition-[margin-left] duration-300 ease-in-out"
+				className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden transition-[margin-left] duration-300 ease-in-out"
 				style={{ marginLeft }}
 			>
 				<TopNavbar onMenuClick={openMobile} />
 
-				{/* Page content with route transition */}
-				<main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+				<main className="min-w-0 flex-1 overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
 					<AnimatePresence mode="wait">
 						<motion.div
 							key={location.pathname}
