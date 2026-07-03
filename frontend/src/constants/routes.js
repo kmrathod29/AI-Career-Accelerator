@@ -15,7 +15,14 @@ export const APP_ROUTES = {
 	AI_COACH: '/dashboard/ai-coach',
 	NOTIFICATIONS: '/dashboard/notifications',
 	ACCOUNT: '/dashboard/account',
+	ACCOUNT_SECTION_PARAM: ':sectionId',
+	ACCOUNT_OVERVIEW: '/dashboard/account/overview',
+	ACCOUNT_APPEARANCE: '/dashboard/account/appearance',
 	PROFILE: '/dashboard/profile',
 	SETTINGS: '/dashboard/settings',
 	NOT_FOUND: '*',
+}
+
+export function getAccountSectionRoute(sectionId) {
+	return `${APP_ROUTES.ACCOUNT}/${sectionId}`
 }

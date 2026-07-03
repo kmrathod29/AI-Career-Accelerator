@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react'
+import { Component, useCallback } from 'react'
+import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
 	FileText,
@@ -13,6 +14,8 @@ import { toast } from 'sonner'
 import { AccountLayout } from '@components/account/AccountLayout.jsx'
 import { AccountSkeleton } from '@components/account/shared/AccountSkeleton.jsx'
 import { SectionHeader } from '@components/account/shared/SettingsCard.jsx'
+import { PageLoader } from '@components/feedback/PageLoader.jsx'
+import { Button } from '@components/ui/Button.jsx'
 import { ProfileHeader, QuickStatCard } from '@components/account/ProfileHeader.jsx'
 import { ProfileCompletion } from '@components/account/ProfileCompletion.jsx'
 import { PersonalInfoForm } from '@components/account/PersonalInfoForm.jsx'
@@ -33,6 +36,7 @@ import {
 	accountStore,
 } from '@/stores/accountStore.js'
 import { calculateProfileCompletion } from '@utils/accountHelpers.js'
+import { getAccountSectionRoute } from '@constants/routes.js'
 
 const SECTION_META = {
 	overview: { title: 'Overview', description: 'Your account at a glance.' },
@@ -54,6 +58,14 @@ const STAT_CONFIG = [
 	{ key: 'mockInterviews', label: 'Mock Interviews', icon: Mic, color: 'from-violet-500 to-violet-600' },
 	{ key: 'careerRoadmaps', label: 'Career Roadmaps', icon: Map, color: 'from-cyan-500 to-cyan-600' },
 ]
+
+const OVERVIEW_SECTION_ID = 'overview'
+const VALID_SECTION_IDS = new Set(ACCOUNT_SECTIONS.map((section) => section.id))
+
+function getSafeSectionId(sectionId) {
+	if (typeof sectionId !== 'string') return OVERVIEW_SECTION_ID
+	return VALID_SECTION_IDS.has(sectionId) ? sectionId : OVERVIEW_SECTION_ID
+}
 
 function OverviewSection({ onNavigate, onUploadAvatar }) {
 	const profile = useProfile()
@@ -113,27 +125,71 @@ function OverviewSection({ onNavigate, onUploadAvatar }) {
 	)
 }
 
+class AccountSectionErrorBoundary extends Component {
+	constructor(props) {
+		super(props)
+		this.state = { hasError: false }
+	}
+
+	static getDerivedStateFromError() {
+		return { hasError: true }
+	}
+
+	componentDidCatch() {
+		toast.error('Unable to render this section. Showing Overview instead.')
+	}
+
+	componentDidUpdate(prevProps) {
+		if (prevProps.resetKey !== this.props.resetKey && this.state.hasError) {
+			this.setState({ hasError: false })
+		}
+	}
+
+	render() {
+		if (!this.state.hasError) {
+			return this.props.children
+		}
+
+		return (
+			<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-card)]">
+				<h3 className="text-base font-semibold text-[var(--color-text)]">Section unavailable</h3>
+				<p className="mt-2 text-sm text-[var(--color-muted)]">
+					Something went wrong while rendering this section.
+				</p>
+				<div className="mt-4">
+					<Button type="button" onClick={this.props.onRecover}>
+						Go to Overview
+					</Button>
+				</div>
+			</div>
+		)
+	}
+}
+
+function useAccountSectionNavigation() {
+	const navigate = useNavigate()
+
+	return useCallback(
+		(sectionId, options) => {
+			const targetSection = getSafeSectionId(sectionId)
+			navigate(getAccountSectionRoute(targetSection), options)
+		},
+		[navigate],
+	)
+}
+
 export function AccountPage() {
 	const isLoading = useAccountLoading()
-	const [activeSection, setActiveSection] = useState('overview')
+	const { sectionId } = useParams()
+	const navigateToSection = useAccountSectionNavigation()
+	const activeSection = getSafeSectionId(sectionId)
 
-	const syncHash = useCallback(() => {
-		const hash = window.location.hash.slice(1)
-		if (hash && ACCOUNT_SECTIONS.some((s) => s.id === hash)) {
-			setActiveSection(hash)
-		}
-	}, [])
-
-	useEffect(() => {
-		syncHash()
-		window.addEventListener('hashchange', syncHash)
-		return () => window.removeEventListener('hashchange', syncHash)
-	}, [syncHash])
-
-	const handleSectionChange = (id) => {
-		setActiveSection(id)
-		window.history.replaceState(null, '', `#${id}`)
-	}
+	const handleSectionChange = useCallback(
+		(id) => {
+			navigateToSection(id)
+		},
+		[navigateToSection],
+	)
 
 	const handleAvatarUpload = () => {
 		const input = document.createElement('input')
@@ -159,48 +215,62 @@ export function AccountPage() {
 
 	if (isLoading) return <AccountSkeleton />
 
-	const meta = SECTION_META[activeSection]
-
-	const renderSection = () => {
-		switch (activeSection) {
-			case 'overview':
-				return (
-					<OverviewSection
-						onNavigate={handleSectionChange}
-						onUploadAvatar={handleAvatarUpload}
-					/>
-				)
-			case 'personal':
-				return <PersonalInfoForm />
-			case 'career':
-				return <CareerForm />
-			case 'social':
-				return <SocialLinksForm />
-			case 'appearance':
-				return <AppearanceSettings />
-			case 'notifications':
-				return <NotificationSettings />
-			case 'security':
-				return <SecuritySettings />
-			case 'privacy':
-				return <PrivacySettings />
-			case 'sessions':
-				return <SessionsCard />
-			case 'data':
-				return <DataExportCard />
-			case 'danger':
-				return <DangerZoneCard />
-			default:
-				return null
-		}
-	}
+	const meta = SECTION_META[activeSection] ?? SECTION_META[OVERVIEW_SECTION_ID]
 
 	return (
 		<AccountLayout activeSection={activeSection} onSectionChange={handleSectionChange}>
 			{activeSection !== 'overview' && (
 				<SectionHeader title={meta.title} description={meta.description} />
 			)}
-			{renderSection()}
+			<AccountSectionErrorBoundary
+				resetKey={activeSection}
+				onRecover={() => navigateToSection(OVERVIEW_SECTION_ID, { replace: true })}
+			>
+				<Outlet
+					context={{
+						onNavigate: handleSectionChange,
+						onUploadAvatar: handleAvatarUpload,
+					}}
+				/>
+			</AccountSectionErrorBoundary>
 		</AccountLayout>
 	)
+}
+
+export function AccountSectionRenderer() {
+	const { sectionId } = useParams()
+	const { onNavigate, onUploadAvatar } = useOutletContext()
+	const activeSection = getSafeSectionId(sectionId)
+
+	switch (activeSection) {
+		case 'overview':
+			return (
+				<OverviewSection
+					onNavigate={onNavigate}
+					onUploadAvatar={onUploadAvatar}
+				/>
+			)
+		case 'personal':
+			return <PersonalInfoForm />
+		case 'career':
+			return <CareerForm />
+		case 'social':
+			return <SocialLinksForm />
+		case 'appearance':
+			return <AppearanceSettings />
+		case 'notifications':
+			return <NotificationSettings />
+		case 'security':
+			return <SecuritySettings />
+		case 'privacy':
+			return <PrivacySettings />
+		case 'sessions':
+			return <SessionsCard />
+		case 'data':
+			return <DataExportCard />
+		case 'danger':
+			return <DangerZoneCard />
+		default:
+			return <PageLoader />
+	}
 }

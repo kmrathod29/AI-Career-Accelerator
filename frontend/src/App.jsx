@@ -37,6 +37,9 @@ import { NotificationsPage } from '@pages/dashboard/NotificationsPage.jsx'
 const AccountPage = lazy(() =>
 	import('@pages/dashboard/AccountPage.jsx').then((m) => ({ default: m.AccountPage })),
 )
+const AccountSectionRenderer = lazy(() =>
+	import('@pages/dashboard/AccountPage.jsx').then((m) => ({ default: m.AccountSectionRenderer })),
+)
 
 export default function App() {
 	return (
@@ -67,9 +70,20 @@ export default function App() {
 							<AccountPage />
 						</Suspense>
 					}
-				/>
+				>
+					<Route index element={<Navigate to="overview" replace />} />
+					<Route
+						path={APP_ROUTES.ACCOUNT_SECTION_PARAM}
+						element={
+							<Suspense fallback={<PageLoader />}>
+								<AccountSectionRenderer />
+							</Suspense>
+						}
+					/>
+					<Route path="*" element={<Navigate to="overview" replace />} />
+				</Route>
 				<Route path={APP_ROUTES.PROFILE} element={<Navigate to={APP_ROUTES.ACCOUNT} replace />} />
-				<Route path={APP_ROUTES.SETTINGS} element={<Navigate to={`${APP_ROUTES.ACCOUNT}#appearance`} replace />} />
+				<Route path={APP_ROUTES.SETTINGS} element={<Navigate to={APP_ROUTES.ACCOUNT_APPEARANCE} replace />} />
 			</Route>
 			<Route path={APP_ROUTES.ROOT} element={<Navigate to={APP_ROUTES.HOME} replace />} />
 			<Route path={APP_ROUTES.NOT_FOUND} element={<NotFoundPage />} />
