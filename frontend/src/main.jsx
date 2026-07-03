@@ -4,6 +4,9 @@ import { Toaster } from 'sonner'
 import App from './App.jsx'
 import './index.css'
 import { ThemeProvider } from '@providers/ThemeProvider.jsx'
+import { notificationStore } from '@/stores/notificationStore.js'
+
+notificationStore.init()
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>

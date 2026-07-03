@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { loginSchema } from '@constants/authSchemas.js'
 import { APP_ROUTES } from '@constants/routes.js'
+import { notificationEvents } from '@/services/notificationService.js'
 import { AuthHeader } from './AuthHeader.jsx'
 import { AuthTabs } from './AuthTabs.jsx'
 import { PasswordInput } from './PasswordInput.jsx'
@@ -40,6 +41,7 @@ export const LoginForm = memo(function LoginForm() {
     // Temporary frontend-only demo auth
     if (data.email === DEMO_EMAIL && data.password === DEMO_PASS) {
       toast.success('Welcome back!', { id: loadingId })
+      notificationEvents.welcomeBack('Krunal')
       setTimeout(() => navigate(APP_ROUTES.DASHBOARD), 600)
     } else {
       toast.error('Invalid email or password.', { id: loadingId })

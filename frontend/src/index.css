@@ -63,6 +63,32 @@
 	/* Dashboard specific */
 	--dashboard-shadow: 0 20px 70px rgba(0, 0, 0, 0.11), 0 4px 16px rgba(0, 0, 0, 0.05);
 	--dashboard-border: rgba(226, 232, 240, 0.80);
+
+	/* Notification type colors */
+	--notif-success:       #059669;
+	--notif-success-bg:    #ECFDF5;
+	--notif-error:         #DC2626;
+	--notif-error-bg:      #FEF2F2;
+	--notif-warning:       #D97706;
+	--notif-warning-bg:    #FFFBEB;
+	--notif-info:          #2563EB;
+	--notif-info-bg:       #EFF6FF;
+	--notif-ai:            #7C3AED;
+	--notif-ai-bg:         #F5F3FF;
+	--notif-job:           #2563EB;
+	--notif-job-bg:        #EFF6FF;
+	--notif-resume:        #2563EB;
+	--notif-resume-bg:     #EFF6FF;
+	--notif-interview:     #7C3AED;
+	--notif-interview-bg:  #F5F3FF;
+	--notif-ats:           #059669;
+	--notif-ats-bg:        #ECFDF5;
+	--notif-roadmap:       #0891B2;
+	--notif-roadmap-bg:    #ECFEFF;
+	--notif-subscription:  #D97706;
+	--notif-subscription-bg: #FFFBEB;
+	--notif-system:        #64748B;
+	--notif-system-bg:     #F1F5F9;
 }
 
 /* ─── Dark theme ────────────────────────────────────────────────── */
@@ -121,6 +147,32 @@
 	/* Dashboard specific */
 	--dashboard-shadow: 0 20px 70px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.30), 0 0 1px rgba(59, 130, 246, 0.10);
 	--dashboard-border: rgba(255, 255, 255, 0.06);
+
+	/* Notification type colors — dark */
+	--notif-success:       #34D399;
+	--notif-success-bg:    rgba(16, 185, 129, 0.12);
+	--notif-error:         #F87171;
+	--notif-error-bg:      rgba(239, 68, 68, 0.12);
+	--notif-warning:       #FBBF24;
+	--notif-warning-bg:    rgba(245, 158, 11, 0.12);
+	--notif-info:          #60A5FA;
+	--notif-info-bg:       rgba(59, 130, 246, 0.12);
+	--notif-ai:            #A78BFA;
+	--notif-ai-bg:         rgba(139, 92, 246, 0.12);
+	--notif-job:           #60A5FA;
+	--notif-job-bg:        rgba(59, 130, 246, 0.12);
+	--notif-resume:        #60A5FA;
+	--notif-resume-bg:     rgba(59, 130, 246, 0.12);
+	--notif-interview:     #A78BFA;
+	--notif-interview-bg:  rgba(139, 92, 246, 0.12);
+	--notif-ats:           #34D399;
+	--notif-ats-bg:        rgba(16, 185, 129, 0.12);
+	--notif-roadmap:       #22D3EE;
+	--notif-roadmap-bg:    rgba(6, 182, 212, 0.12);
+	--notif-subscription:  #FBBF24;
+	--notif-subscription-bg: rgba(245, 158, 11, 0.12);
+	--notif-system:        #94A3B8;
+	--notif-system-bg:     rgba(148, 163, 184, 0.12);
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────── */
