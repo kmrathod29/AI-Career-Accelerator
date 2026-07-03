@@ -12,6 +12,17 @@ import { RegisterPage } from '@pages/RegisterPage.jsx'
 import { ForgotPasswordPage } from '@pages/ForgotPasswordPage.jsx'
 import { ResetPasswordPage } from '@pages/ResetPasswordPage.jsx'
 import { NotFoundPage } from '@pages/NotFoundPage.jsx'
+import { useAuth } from '@providers/useAuth.js'
+
+function RequireAuth({ children }) {
+	const { isAuthenticated } = useAuth()
+
+	if (!isAuthenticated) {
+		return <Navigate to={APP_ROUTES.LOGIN} replace />
+	}
+
+	return children
+}
 
 /* Dashboard feature pages */
 import { ResumeBuilderPage } from '@pages/dashboard/ResumeBuilderPage.jsx'
@@ -39,7 +50,7 @@ export default function App() {
 				<Route path={APP_ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
 				<Route path={APP_ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
 			</Route>
-			<Route element={<DashboardLayout />}>
+			<Route element={<RequireAuth><DashboardLayout /></RequireAuth>}>
 				<Route path={APP_ROUTES.DASHBOARD} element={<DashboardPage />} />
 				<Route path={APP_ROUTES.RESUME_BUILDER} element={<ResumeBuilderPage />} />
 				<Route path={APP_ROUTES.ATS_ANALYZER} element={<AtsAnalyzerPage />} />

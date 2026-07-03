@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { Logo } from './Logo.jsx'
 import { ThemeToggle } from './ThemeToggle.jsx'
-import { PrimaryButton } from './PrimaryButton.jsx'
-import { APP_ROUTES } from '@constants/routes.js'
+import { UserMenu } from './UserMenu.jsx'
 
 /**
  * Navbar — floating pill design.
@@ -15,7 +13,7 @@ import { APP_ROUTES } from '@constants/routes.js'
  * with a transparent gap between the pill and the window edges.
  * Inspired by Raycast, Arc Browser, Linear.
  *
- * Per brief: Logo | (empty centre) | Log in | Get Started
+ * Per brief: Logo | (empty centre) | auth-aware user actions
  * No navigation links — intentionally minimal.
  *
  * Dark mode: neutral dark gray (--navbar-bg), NOT blue,
@@ -71,22 +69,16 @@ export function Navbar() {
               : 'var(--navbar-shadow)',
           }}
           transition={{ duration: 0.25 }}
-          className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-[var(--navbar-border)] px-5 py-2.5 backdrop-blur-xl"
+          className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-(--navbar-border) px-5 py-2.5 backdrop-blur-xl"
           style={{ backgroundColor: 'var(--navbar-bg)' }}
         >
           {/* Logo — left */}
           <Logo />
 
-          {/* Desktop CTAs — right */}
+          {/* Desktop actions — right */}
           <div className="hidden items-center gap-2.5 md:flex">
             <ThemeToggle />
-
-            <Link
-              to={APP_ROUTES.LOGIN}
-              className="rounded-xl px-4 py-2 text-sm font-medium text-[var(--color-muted)] transition-colors duration-150 hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
-            >
-              Log in
-            </Link>
+            <UserMenu />
           </div>
 
           {/* Mobile: theme + hamburger */}
@@ -96,7 +88,7 @@ export function Navbar() {
               onClick={() => setIsOpen((o) => !o)}
               aria-expanded={isOpen}
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
-              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-(--color-border) bg-(--color-surface) text-(--color-muted) transition-colors hover:bg-(--color-surface-2) focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             >
               {isOpen ? (
                 <X className="h-4 w-4" aria-hidden="true" />
@@ -123,7 +115,7 @@ export function Navbar() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-md"
+                className="fixed inset-0 z-9998 bg-black/50 backdrop-blur-md"
                 onClick={() => setIsOpen(false)}
                 aria-hidden="true"
               />
@@ -138,7 +130,7 @@ export function Navbar() {
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 28, stiffness: 230 }}
-                className="fixed inset-y-0 right-0 z-[9999] flex w-full max-w-xs flex-col justify-between border-l border-[var(--color-border)] p-6 shadow-2xl"
+                className="fixed inset-y-0 right-0 z-9999 flex w-full max-w-xs flex-col justify-between border-l border-(--color-border) p-6 shadow-2xl"
                 style={{ backgroundColor: 'var(--color-surface)' }}
               >
                 {/* Top: logo + close */}
@@ -148,27 +140,16 @@ export function Navbar() {
                     <button
                       onClick={() => setIsOpen(false)}
                       aria-label="Close menu"
-                      className="cursor-pointer rounded-xl border border-[var(--color-border)] p-2 text-[var(--color-muted)] transition-colors hover:bg-[var(--color-surface-2)]"
+                      className="cursor-pointer rounded-xl border border-(--color-border) p-2 text-(--color-muted) transition-colors hover:bg-(--color-surface-2)"
                     >
                       <X className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
 
-                {/* Bottom: CTAs — SAME components as desktop */}
-                <div className="space-y-3 border-t border-[var(--color-border)] pt-6">
-
-
-                  <Link
-                    to={APP_ROUTES.LOGIN}
-                    onClick={() => setIsOpen(false)}
-                    className="block w-full rounded-xl border border-[var(--color-border)] py-3 text-center text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)]"
-                    style={{ backgroundColor: 'var(--color-surface)' }}
-                  >
-                    <PrimaryButton className="rounded-4xl px-5 py-2 text-sm">
-                      Log in
-                    </PrimaryButton>
-                  </Link>
+                {/* Bottom: auth-aware actions */}
+                <div className="space-y-3 border-t border-(--color-border) pt-6">
+                  <UserMenu guestLayout="stacked" className="w-full" />
                 </div>
               </motion.div>
             </>

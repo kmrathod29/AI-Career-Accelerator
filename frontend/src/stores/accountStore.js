@@ -163,6 +163,15 @@ export const accountStore = {
 		}
 		emit()
 	},
+
+	reset() {
+		state = {
+			...createDefaultState(),
+			isLoading: false,
+			hasUnsavedChanges: false,
+		}
+		emit()
+	},
 }
 
 export function useAccountStore(selector) {

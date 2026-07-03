@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { loginSchema } from '@constants/authSchemas.js'
 import { APP_ROUTES } from '@constants/routes.js'
 import { notificationEvents } from '@/services/notificationService.js'
+import { useAuth } from '@providers/useAuth.js'
 import { AuthHeader } from './AuthHeader.jsx'
 import { AuthTabs } from './AuthTabs.jsx'
 import { PasswordInput } from './PasswordInput.jsx'
@@ -20,6 +21,7 @@ const DEMO_PASS = 'Demo@123'
 
 export const LoginForm = memo(function LoginForm() {
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const {
     register,
@@ -40,6 +42,7 @@ export const LoginForm = memo(function LoginForm() {
 
     // Temporary frontend-only demo auth
     if (data.email === DEMO_EMAIL && data.password === DEMO_PASS) {
+      login({ userEmail: data.email })
       toast.success('Welcome back!', { id: loadingId })
       notificationEvents.welcomeBack('Krunal')
       setTimeout(() => navigate(APP_ROUTES.DASHBOARD), 600)
@@ -65,7 +68,7 @@ export const LoginForm = memo(function LoginForm() {
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full space-y-4">
         {/* Email */}
         <div>
-          <label htmlFor="login-email" className="mb-1.5 block text-sm font-medium text-[var(--color-text)]">
+          <label htmlFor="login-email" className="mb-1.5 block text-sm font-medium text-(--color-text)">
             Email
           </label>
           <input
@@ -74,10 +77,10 @@ export const LoginForm = memo(function LoginForm() {
             autoComplete="email"
             placeholder="you@example.com"
             className={cn(
-              'w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] outline-none transition-colors duration-200',
-              'placeholder:text-[var(--color-muted)]',
-              'focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20',
-              errors.email ? 'border-red-400' : 'border-[var(--color-border)]',
+              'w-full rounded-xl border bg-(--color-surface) px-4 py-3 text-sm text-(--color-text) outline-none transition-colors duration-200',
+              'placeholder:text-(--color-muted)',
+              'focus:border-(--color-primary) focus:ring-2 focus:ring-(--color-primary)/20',
+              errors.email ? 'border-red-400' : 'border-(--color-border)',
             )}
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'login-email-error' : undefined}
@@ -106,7 +109,7 @@ export const LoginForm = memo(function LoginForm() {
         <div className="text-right">
           <Link
             to={APP_ROUTES.FORGOT_PASSWORD}
-            className="text-xs font-medium text-[var(--color-primary)] transition-colors hover:text-[var(--color-secondary)]"
+            className="text-xs font-medium text-(--color-primary) transition-colors hover:text-(--color-secondary)"
           >
             Forgot password?
           </Link>
@@ -128,11 +131,11 @@ export const LoginForm = memo(function LoginForm() {
       <GoogleButton />
 
       {/* Register link */}
-      <p className="mt-6 text-center text-sm text-[var(--color-muted)]">
+      <p className="mt-6 text-center text-sm text-(--color-muted)">
         Don&apos;t have an account?{' '}
         <Link
           to={APP_ROUTES.REGISTER}
-          className="font-semibold text-[var(--color-primary)] transition-colors hover:text-[var(--color-secondary)]"
+          className="font-semibold text-(--color-primary) transition-colors hover:text-(--color-secondary)"
         >
           Create account
         </Link>

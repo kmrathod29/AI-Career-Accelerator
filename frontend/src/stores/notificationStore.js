@@ -319,6 +319,16 @@ export const notificationStore = {
 	setLoading(isLoading) {
 		setState({ isLoading })
 	},
+
+	reset() {
+		state = {
+			notifications: createSeedNotifications(),
+			popupDismissedIds: [],
+			isLoading: false,
+			lastArrivalAt: null,
+		}
+		emit()
+	},
 }
 
 /**
