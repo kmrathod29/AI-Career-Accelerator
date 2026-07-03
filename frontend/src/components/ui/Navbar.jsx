@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { Logo } from './Logo.jsx'
 import { ThemeToggle } from './ThemeToggle.jsx'
-import { UserMenu } from './UserMenu.jsx'
+import { ProfileDropdown } from './ProfileDropdown.jsx'
 
 /**
  * Navbar — floating pill design.
@@ -78,7 +78,7 @@ export function Navbar() {
           {/* Desktop actions — right */}
           <div className="hidden items-center gap-2.5 md:flex">
             <ThemeToggle />
-            <UserMenu />
+            <ProfileDropdown />
           </div>
 
           {/* Mobile: theme + hamburger */}
@@ -149,7 +149,7 @@ export function Navbar() {
 
                 {/* Bottom: auth-aware actions */}
                 <div className="space-y-3 border-t border-(--color-border) pt-6">
-                  <UserMenu guestLayout="stacked" className="w-full" />
+                  <ProfileDropdown guestLayout="stacked" className="w-full" />
                 </div>
               </motion.div>
             </>

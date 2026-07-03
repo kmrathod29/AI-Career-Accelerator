@@ -1,5 +1,5 @@
 import { Component, useCallback } from 'react'
-import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router-dom'
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
 	FileText,
@@ -132,6 +132,8 @@ function OverviewSection({ onNavigate, onUploadAvatar }) {
 
 	return (
 		<div className="space-y-3 sm:space-y-4">
+			<AccountMobileSummary onNavigate={onNavigate} onUploadAvatar={onUploadAvatar} />
+
 			<div className="hidden md:block">
 				<ProfileHeader
 					profile={profile}
@@ -219,9 +221,7 @@ function useAccountSectionNavigation() {
 
 export function AccountPage() {
 	const isLoading = useAccountLoading()
-	const { sectionId } = useParams()
 	const navigateToSection = useAccountSectionNavigation()
-	const activeSection = getSafeSectionId(sectionId)
 
 	const handleSectionChange = useCallback(
 		(id) => {
@@ -254,72 +254,76 @@ export function AccountPage() {
 
 	if (isLoading) return <AccountSkeleton />
 
-	const meta = SECTION_META[activeSection] ?? SECTION_META[OVERVIEW_SECTION_ID]
-
 	return (
-		<AccountLayout activeSection={activeSection} onSectionChange={handleSectionChange}>
-			<AccountMobileSummary
-				onNavigate={handleSectionChange}
-				onUploadAvatar={handleAvatarUpload}
-			/>
-
-			{activeSection !== 'overview' && (
-				<div className="mt-3 md:mt-0">
-					<SectionHeader title={meta.title} description={meta.description} />
-				</div>
-			)}
-
-			<AccountSectionErrorBoundary
-				resetKey={activeSection}
-				onRecover={() => navigateToSection(OVERVIEW_SECTION_ID, { replace: true })}
-			>
-				<div className="mt-3 md:mt-0">
-					<Outlet
-						context={{
-							onNavigate: handleSectionChange,
-							onUploadAvatar: handleAvatarUpload,
-						}}
-					/>
-				</div>
-			</AccountSectionErrorBoundary>
-		</AccountLayout>
+		<AccountLayout
+			outletContext={{
+				onNavigate: handleSectionChange,
+				onUploadAvatar: handleAvatarUpload,
+				onRecover: () => navigateToSection(OVERVIEW_SECTION_ID, { replace: true }),
+			}}
+		/>
 	)
 }
 
 export function AccountSectionRenderer() {
 	const { sectionId } = useParams()
-	const { onNavigate, onUploadAvatar } = useOutletContext()
-	const activeSection = getSafeSectionId(sectionId)
+	const { onNavigate, onUploadAvatar, onRecover } = useOutletContext()
+	const section = getSafeSectionId(sectionId)
+	const meta = SECTION_META[section] ?? SECTION_META[OVERVIEW_SECTION_ID]
 
-	switch (activeSection) {
+	let content
+
+	switch (section) {
 		case 'overview':
-			return (
+			content = (
 				<OverviewSection
 					onNavigate={onNavigate}
 					onUploadAvatar={onUploadAvatar}
 				/>
 			)
+			break
 		case 'personal':
-			return <PersonalInfoForm />
+			content = <PersonalInfoForm />
+			break
 		case 'career':
-			return <CareerForm />
+			content = <CareerForm />
+			break
 		case 'social':
-			return <SocialLinksForm />
+			content = <SocialLinksForm />
+			break
 		case 'appearance':
-			return <AppearanceSettings />
+			content = <AppearanceSettings />
+			break
 		case 'notifications':
-			return <NotificationSettings />
+			content = <NotificationSettings />
+			break
 		case 'security':
-			return <SecuritySettings />
+			content = <SecuritySettings />
+			break
 		case 'privacy':
-			return <PrivacySettings />
+			content = <PrivacySettings />
+			break
 		case 'sessions':
-			return <SessionsCard />
+			content = <SessionsCard />
+			break
 		case 'data':
-			return <DataExportCard />
+			content = <DataExportCard />
+			break
 		case 'danger':
-			return <DangerZoneCard />
+			content = <DangerZoneCard />
+			break
 		default:
-			return <PageLoader />
+			content = <PageLoader />
 	}
+
+	return (
+		<AccountSectionErrorBoundary resetKey={section} onRecover={onRecover}>
+			{section !== 'overview' && (
+				<SectionHeader title={meta.title} description={meta.description} />
+			)}
+			<div className={section !== 'overview' ? 'mt-3 md:mt-4' : undefined}>
+				{content}
+			</div>
+		</AccountSectionErrorBoundary>
+	)
 }

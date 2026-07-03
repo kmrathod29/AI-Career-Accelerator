@@ -1,11 +1,20 @@
 import { Component } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Menu } from 'lucide-react'
+import { APP_ROUTES } from '@constants/routes.js'
 import { PAGE_META } from '@constants/dashboardNav.js'
 import { ThemeToggle } from '@components/ui/ThemeToggle.jsx'
 import { SearchBar } from './SearchBar.jsx'
 import { NotificationBell } from './NotificationBell.jsx'
-import { UserMenu } from '@components/ui/UserMenu.jsx'
+import { ProfileDropdown } from './ProfileDropdown.jsx'
+
+function getPageMeta(pathname) {
+	if (pathname === APP_ROUTES.ACCOUNT || pathname.startsWith(`${APP_ROUTES.ACCOUNT}/`)) {
+		return PAGE_META[APP_ROUTES.ACCOUNT]
+	}
+
+	return PAGE_META[pathname] || { title: 'Dashboard', subtitle: '' }
+}
 
 class NavbarWidgetErrorBoundary extends Component {
 	constructor(props) {
@@ -41,11 +50,11 @@ class NavbarWidgetErrorBoundary extends Component {
  */
 export function TopNavbar({ onMenuClick }) {
 	const { pathname } = useLocation()
-	const meta = PAGE_META[pathname] || { title: 'Dashboard', subtitle: '' }
+	const meta = getPageMeta(pathname)
 
 	return (
 		<header
-			className="sticky top-0 z-30 flex h-16 min-w-0 shrink-0 items-center overflow-hidden border-b border-(--color-border) px-4 backdrop-blur-xl sm:px-6"
+			className="sticky top-0 z-30 flex h-16 min-w-0 shrink-0 items-center border-b border-(--color-border) px-4 backdrop-blur-xl sm:px-6"
 			style={{ backgroundColor: 'var(--navbar-bg-solid)' }}
 		>
 			{/* Left section */}
@@ -85,7 +94,7 @@ export function TopNavbar({ onMenuClick }) {
 				<NavbarWidgetErrorBoundary>
 					<NotificationBell />
 				</NavbarWidgetErrorBoundary>
-				<UserMenu />
+				<ProfileDropdown />
 			</div>
 		</header>
 	)

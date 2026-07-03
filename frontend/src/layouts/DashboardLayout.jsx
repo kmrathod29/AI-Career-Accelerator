@@ -1,9 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { APP_ROUTES } from '@constants/routes.js'
 import { Sidebar, SIDEBAR_STORAGE_KEY } from '@components/dashboard/sidebar/Sidebar.jsx'
 import { MobileSidebar } from '@components/dashboard/sidebar/MobileSidebar.jsx'
 import { TopNavbar } from '@components/dashboard/navbar/TopNavbar.jsx'
+
+function getDashboardOutletKey(pathname) {
+	if (pathname === APP_ROUTES.ACCOUNT || pathname.startsWith(`${APP_ROUTES.ACCOUNT}/`)) {
+		return APP_ROUTES.ACCOUNT
+	}
+
+	return pathname
+}
 
 /**
  * DashboardLayout — persistent layout for all /dashboard/* routes.
@@ -16,6 +25,7 @@ import { TopNavbar } from '@components/dashboard/navbar/TopNavbar.jsx'
  */
 export function DashboardLayout() {
 	const location = useLocation()
+	const outletKey = getDashboardOutletKey(location.pathname)
 	const [isMobileOpen, setIsMobileOpen] = useState(false)
 	const [isMobile, setIsMobile] = useState(() =>
 		typeof window !== 'undefined' ? window.innerWidth < 768 : false,
@@ -85,7 +95,7 @@ export function DashboardLayout() {
 				<main className="min-w-0 flex-1 overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
 					<AnimatePresence mode="wait">
 						<motion.div
-							key={location.pathname}
+							key={outletKey}
 							initial={{ opacity: 0, y: 8 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: -8 }}

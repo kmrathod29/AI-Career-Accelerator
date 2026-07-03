@@ -1,1 +1,1 @@
-export { UserMenu as ProfileDropdown } from '@components/ui/UserMenu.jsx'
+export { ProfileDropdown } from '@components/ui/ProfileDropdown.jsx'
