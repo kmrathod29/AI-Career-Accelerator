@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, Settings, LogOut, ChevronDown } from 'lucide-react'
+import { User, LogOut, ChevronDown } from 'lucide-react'
 import { APP_ROUTES } from '@constants/routes.js'
 
 /** Generate initials from a full name. */
@@ -15,8 +15,7 @@ function getInitials(name) {
 }
 
 const MENU_ITEMS = [
-	{ label: 'Profile', path: APP_ROUTES.PROFILE, icon: User },
-	{ label: 'Settings', path: APP_ROUTES.SETTINGS, icon: Settings },
+	{ label: 'Account Center', path: APP_ROUTES.ACCOUNT, icon: User },
 ]
 
 /**

@@ -84,7 +84,7 @@ function createSeedNotifications() {
 			type: NOTIFICATION_TYPES.INFO,
 			timestamp: now - 2 * DAY,
 			read: true,
-			actionUrl: APP_ROUTES.PROFILE,
+			actionUrl: APP_ROUTES.ACCOUNT,
 			actionLabel: 'View Profile',
 		},
 		{
@@ -94,7 +94,7 @@ function createSeedNotifications() {
 			type: NOTIFICATION_TYPES.SUBSCRIPTION,
 			timestamp: now - 3 * DAY,
 			read: true,
-			actionUrl: APP_ROUTES.SETTINGS,
+			actionUrl: APP_ROUTES.ACCOUNT,
 			actionLabel: 'Manage Plan',
 		},
 		{

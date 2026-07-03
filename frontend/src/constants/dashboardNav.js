@@ -28,8 +28,7 @@ export const SIDEBAR_NAV = [
 		section: 'Account',
 		items: [
 			{ label: 'Notifications', path: APP_ROUTES.NOTIFICATIONS, icon: 'Bell' },
-			{ label: 'Profile', path: APP_ROUTES.PROFILE, icon: 'UserCircle' },
-			{ label: 'Settings', path: APP_ROUTES.SETTINGS, icon: 'Settings' },
+			{ label: 'Account', path: APP_ROUTES.ACCOUNT, icon: 'UserCircle' },
 		],
 	},
 ]
@@ -47,6 +46,7 @@ export const PAGE_META = {
 	[APP_ROUTES.CAREER_ROADMAP]: { title: 'Career Roadmap', subtitle: 'Plan your career trajectory' },
 	[APP_ROUTES.AI_COACH]: { title: 'AI Career Coach', subtitle: 'Get personalized career guidance' },
 	[APP_ROUTES.NOTIFICATIONS]: { title: 'Notifications', subtitle: 'Stay updated on your progress' },
-	[APP_ROUTES.PROFILE]: { title: 'Profile', subtitle: 'Manage your account details' },
-	[APP_ROUTES.SETTINGS]: { title: 'Settings', subtitle: 'Customize your experience' },
+	[APP_ROUTES.ACCOUNT]: { title: 'Account Center', subtitle: 'Manage your profile and preferences' },
+	[APP_ROUTES.PROFILE]: { title: 'Account Center', subtitle: 'Manage your profile and preferences' },
+	[APP_ROUTES.SETTINGS]: { title: 'Account Center', subtitle: 'Manage your profile and preferences' },
 }

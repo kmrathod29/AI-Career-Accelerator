@@ -1,8 +1,10 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { APP_ROUTES } from '@constants/routes.js'
 import { AuthLayout } from '@layouts/AuthLayout.jsx'
 import { DashboardLayout } from '@layouts/DashboardLayout.jsx'
 import { MainLayout } from '@layouts/MainLayout.jsx'
+import { PageLoader } from '@components/feedback/PageLoader.jsx'
 import { DashboardPage } from '@pages/DashboardPage.jsx'
 import { HomePage } from '@pages/HomePage.jsx'
 import { LoginPage } from '@pages/LoginPage.jsx'
@@ -20,8 +22,10 @@ import { SkillGapPage } from '@pages/dashboard/SkillGapPage.jsx'
 import { CareerRoadmapPage } from '@pages/dashboard/CareerRoadmapPage.jsx'
 import { AiCoachPage } from '@pages/dashboard/AiCoachPage.jsx'
 import { NotificationsPage } from '@pages/dashboard/NotificationsPage.jsx'
-import { ProfilePage } from '@pages/dashboard/ProfilePage.jsx'
-import { SettingsPage } from '@pages/dashboard/SettingsPage.jsx'
+
+const AccountPage = lazy(() =>
+	import('@pages/dashboard/AccountPage.jsx').then((m) => ({ default: m.AccountPage })),
+)
 
 export default function App() {
 	return (
@@ -45,8 +49,16 @@ export default function App() {
 				<Route path={APP_ROUTES.CAREER_ROADMAP} element={<CareerRoadmapPage />} />
 				<Route path={APP_ROUTES.AI_COACH} element={<AiCoachPage />} />
 				<Route path={APP_ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
-				<Route path={APP_ROUTES.PROFILE} element={<ProfilePage />} />
-				<Route path={APP_ROUTES.SETTINGS} element={<SettingsPage />} />
+				<Route
+					path={APP_ROUTES.ACCOUNT}
+					element={
+						<Suspense fallback={<PageLoader />}>
+							<AccountPage />
+						</Suspense>
+					}
+				/>
+				<Route path={APP_ROUTES.PROFILE} element={<Navigate to={APP_ROUTES.ACCOUNT} replace />} />
+				<Route path={APP_ROUTES.SETTINGS} element={<Navigate to={`${APP_ROUTES.ACCOUNT}#appearance`} replace />} />
 			</Route>
 			<Route path={APP_ROUTES.ROOT} element={<Navigate to={APP_ROUTES.HOME} replace />} />
 			<Route path={APP_ROUTES.NOT_FOUND} element={<NotFoundPage />} />

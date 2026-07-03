@@ -5,8 +5,10 @@ import App from './App.jsx'
 import './index.css'
 import { ThemeProvider } from '@providers/ThemeProvider.jsx'
 import { notificationStore } from '@/stores/notificationStore.js'
+import { accountStore } from '@/stores/accountStore.js'
 
 notificationStore.init()
+accountStore.init()
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>

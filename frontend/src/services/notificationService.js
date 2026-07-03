@@ -183,7 +183,7 @@ export const notificationEvents = {
 		return notify.info(
 			'Profile updated',
 			'Your career preferences and settings have been saved.',
-			{ actionUrl: APP_ROUTES.PROFILE, actionLabel: 'View Profile' },
+			{ actionUrl: APP_ROUTES.ACCOUNT, actionLabel: 'View Profile' },
 		)
 	},
 
@@ -191,7 +191,7 @@ export const notificationEvents = {
 		return notify.subscription(
 			'Subscription updated',
 			`Your plan has been changed to ${plan}.`,
-			{ actionUrl: APP_ROUTES.SETTINGS, actionLabel: 'Manage Plan' },
+			{ actionUrl: APP_ROUTES.ACCOUNT, actionLabel: 'Manage Plan' },
 		)
 	},
 

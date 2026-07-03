@@ -14,6 +14,7 @@ export const APP_ROUTES = {
 	CAREER_ROADMAP: '/dashboard/career-roadmap',
 	AI_COACH: '/dashboard/ai-coach',
 	NOTIFICATIONS: '/dashboard/notifications',
+	ACCOUNT: '/dashboard/account',
 	PROFILE: '/dashboard/profile',
 	SETTINGS: '/dashboard/settings',
 	NOT_FOUND: '*',
