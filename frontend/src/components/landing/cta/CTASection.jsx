@@ -31,7 +31,8 @@ const STAGGER = {
 export const CTASection = memo(function CTASection() {
   return (
     <section
-      className="relative overflow-hidden"
+      id="pricing"
+      className="relative overflow-hidden scroll-mt-24"
       aria-labelledby="cta-heading"
     >
       {/* Subtle blue radial glow */}

@@ -1,10 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { Logo } from './Logo.jsx'
 import { ThemeToggle } from './ThemeToggle.jsx'
 import { ProfileDropdown } from './ProfileDropdown.jsx'
+import { LANDING_NAV_LINKS } from '@constants/landingNav.js'
+import { cn } from '@utils/classNames.js'
+
+const DRAWER_LINK_STAGGER = {
+  hidden: { opacity: 0, x: 12 },
+  visible: (index) => ({
+    opacity: 1,
+    x: 0,
+    transition: {
+      delay: 0.04 + index * 0.04,
+      duration: 0.28,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  }),
+}
 
 /**
  * Navbar — floating pill design.
@@ -26,6 +41,8 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
+  const closeDrawer = useCallback(() => setIsOpen(false), [])
+
   /* Solidify shadow on scroll */
   useEffect(() => {
     const handler = () => setIsScrolled(window.scrollY > 12)
@@ -35,7 +52,7 @@ export function Navbar() {
 
   /* ESC key + body scroll lock + blur class for mobile drawer */
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape' && isOpen) setIsOpen(false) }
+    const onKey = (e) => { if (e.key === 'Escape' && isOpen) closeDrawer() }
     window.addEventListener('keydown', onKey)
 
     if (isOpen) {
@@ -51,7 +68,7 @@ export function Navbar() {
       document.body.style.overflow = ''
       document.body.classList.remove('menu-open')
     }
-  }, [isOpen])
+  }, [isOpen, closeDrawer])
 
   return (
     <>
@@ -81,9 +98,8 @@ export function Navbar() {
             <ProfileDropdown />
           </div>
 
-          {/* Mobile: theme + hamburger */}
-          <div className="flex items-center gap-2 md:hidden">
-            <ThemeToggle />
+          {/* Mobile: hamburger only — theme toggle lives in the drawer */}
+          <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsOpen((o) => !o)}
               aria-expanded={isOpen}
@@ -108,15 +124,15 @@ export function Navbar() {
         <AnimatePresence>
           {isOpen && (
             <>
-              {/* Backdrop — dark translucent + heavy blur */}
+              {/* Backdrop — dark translucent + blur */}
               <motion.div
                 key="backdrop"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="fixed inset-0 z-9998 bg-black/50 backdrop-blur-md"
-                onClick={() => setIsOpen(false)}
+                transition={{ duration: 0.28, ease: 'easeOut' }}
+                className="fixed inset-0 z-9998 bg-black/45 backdrop-blur-md"
+                onClick={closeDrawer}
                 aria-hidden="true"
               />
 
@@ -129,35 +145,74 @@ export function Navbar() {
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 28, stiffness: 230 }}
-                className="fixed inset-y-0 right-0 z-9999 flex w-full max-w-xs flex-col justify-between border-l border-(--color-border) p-6 shadow-2xl"
-                style={{ backgroundColor: 'var(--color-surface)' }}
+                transition={{ type: 'spring', damping: 30, stiffness: 280 }}
+                className="fixed inset-y-0 right-0 z-9999 flex w-full max-w-[min(100vw,20rem)] flex-col border-l border-(--color-border) shadow-2xl"
+                style={{
+                  backgroundColor: 'var(--color-surface)',
+                  paddingTop: 'max(1.5rem, env(safe-area-inset-top))',
+                  paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+                  paddingLeft: 'max(1.5rem, env(safe-area-inset-left))',
+                  paddingRight: 'max(1.5rem, env(safe-area-inset-right))',
+                }}
               >
-                {/* Top: logo + close */}
-                <div>
-                  <div className="mb-8 flex items-center justify-between">
-                    <Logo />
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      aria-label="Close menu"
-                      className="cursor-pointer rounded-xl border border-(--color-border) p-2 text-(--color-muted) transition-colors hover:bg-(--color-surface-2)"
-                    >
-                      <X className="h-4 w-4" aria-hidden="true" />
-                    </button>
-                  </div>
+                {/* Header */}
+                <div className="mb-6 flex shrink-0 items-center justify-between">
+                  <Logo />
+                  <button
+                    onClick={closeDrawer}
+                    aria-label="Close menu"
+                    className="cursor-pointer rounded-xl border border-(--color-border) p-2 text-(--color-muted) transition-colors hover:bg-(--color-surface-2) hover:text-(--color-text)"
+                  >
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </button>
                 </div>
 
-                {/* Bottom: auth-aware actions */}
-                <div className="space-y-3 border-t border-(--color-border) pt-6">
-                  <ProfileDropdown guestLayout="stacked" className="w-full" />
+                {/* Navigation links */}
+                <nav
+                  className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+                  aria-label="Primary"
+                >
+                  <ul className="space-y-1">
+                    {LANDING_NAV_LINKS.map((link, index) => (
+                      <motion.li
+                        key={link.label}
+                        custom={index}
+                        initial="hidden"
+                        animate="visible"
+                        variants={DRAWER_LINK_STAGGER}
+                      >
+                        <a
+                          href={link.href}
+                          onClick={closeDrawer}
+                          className={cn(
+                            'flex items-center rounded-xl px-3 py-3.5 text-[15px] font-medium tracking-[-0.01em] text-(--color-text)',
+                            'transition-colors duration-150 hover:bg-(--color-surface-2) active:bg-(--color-surface-2)',
+                          )}
+                        >
+                          {link.label}
+                        </a>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </nav>
+
+                {/* Sticky bottom actions — theme left, auth right */}
+                <div className="mt-6 shrink-0 border-t border-(--color-border) px-1 pt-5 pb-3">
+                  <div className="flex items-center justify-between gap-4">
+                    <ThemeToggle />
+                    <ProfileDropdown
+                      guestLayout="drawer"
+                      menuPlacement="top-end"
+                      onNavigate={closeDrawer}
+                    />
+                  </div>
                 </div>
               </motion.div>
             </>
           )}
-        </AnimatePresence >,
+        </AnimatePresence>,
         document.body,
-      )
-      }
+      )}
     </>
   )
 }
