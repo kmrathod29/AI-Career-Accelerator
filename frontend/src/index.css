@@ -264,6 +264,16 @@ body.menu-open #root {
 	background-color: var(--color-muted);
 }
 
+/* ─── ATS Analyzer — Score ring animation ───────────────────────── */
+@keyframes score-fill {
+	from { stroke-dashoffset: var(--score-circumference, 565); }
+	to   { stroke-dashoffset: var(--score-offset, 0); }
+}
+
+.animate-score-ring {
+	animation: score-fill 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 /* ─── Reduced motion preference ─────────────────────────────────── */
 [data-reduced-motion='true'] *,
 [data-reduced-motion='true'] *::before,

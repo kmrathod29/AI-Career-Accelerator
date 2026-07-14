@@ -46,7 +46,10 @@ export function NotificationBell() {
 		whileElementsMounted: autoUpdate,
 		middleware: [
 			offset(8),
-			flip({ padding: VIEWPORT_PADDING }),
+			flip({
+				padding: VIEWPORT_PADDING,
+				fallbackPlacements: ['bottom-start', 'top-end', 'top-start'],
+			}),
 			shift({ padding: VIEWPORT_PADDING }),
 			size({
 				padding: VIEWPORT_PADDING,
@@ -65,6 +68,13 @@ export function NotificationBell() {
 	const dismiss = useDismiss(context, { outsidePressEvent: 'mousedown' })
 	const role = useRole(context)
 	const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role])
+	const referenceRef = useRef(null)
+	const floatingRef = useRef(null)
+
+	useEffect(() => {
+		refs.setReference(referenceRef.current)
+		refs.setFloating(floatingRef.current)
+	}, [refs.setReference, refs.setFloating])
 
 	/* Animate bell when new notification arrives */
 	useEffect(() => {
@@ -82,7 +92,7 @@ export function NotificationBell() {
 	return (
 		<div className="relative">
 			<button
-				ref={refs.setReference}
+				ref={referenceRef}
 				aria-label={`Notifications${unreadCount ? ` — ${unreadCount} unread` : ''}`}
 				aria-expanded={isOpen}
 				aria-haspopup="true"
@@ -119,28 +129,31 @@ export function NotificationBell() {
 			<FloatingPortal>
 				<AnimatePresence>
 					{isOpen && (
-						<motion.div
-							ref={refs.setFloating}
+						<div
+							ref={floatingRef}
 							style={{
 								...floatingStyles,
 								backgroundColor: 'var(--floating-bg)',
 								borderColor: 'var(--floating-border)',
 								boxShadow: 'var(--floating-shadow)',
 							}}
-							initial={{ opacity: 0, y: 8, scale: 0.96 }}
-							animate={{ opacity: 1, y: 0, scale: 1 }}
-							exit={{ opacity: 0, y: 8, scale: 0.96 }}
-							transition={{ duration: 0.18, ease: 'easeOut' }}
 							className="z-50 flex max-w-[min(380px,calc(100vw-24px))] flex-col overflow-hidden rounded-2xl border shadow-lg"
 							{...getFloatingProps()}
 						>
-							<NotificationPopup
-								notifications={popupNotifications}
-								unreadCount={unreadCount}
-								isLoading={isLoading}
-								onClose={() => setIsOpen(false)}
-							/>
-						</motion.div>
+							<motion.div
+								initial={{ opacity: 0, y: 8, scale: 0.96 }}
+								animate={{ opacity: 1, y: 0, scale: 1 }}
+								exit={{ opacity: 0, y: 8, scale: 0.96 }}
+								transition={{ duration: 0.18, ease: 'easeOut' }}
+							>
+								<NotificationPopup
+									notifications={popupNotifications}
+									unreadCount={unreadCount}
+									isLoading={isLoading}
+									onClose={() => setIsOpen(false)}
+								/>
+							</motion.div>
+						</div>
 					)}
 				</AnimatePresence>
 			</FloatingPortal>
