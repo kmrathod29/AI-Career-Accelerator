@@ -78,24 +78,6 @@ export const notify = {
 		})
 	},
 
-	interview(title, description, options = {}) {
-		return notificationStore.addNotification({
-			title,
-			description,
-			type: NOTIFICATION_TYPES.INTERVIEW,
-			...options,
-		})
-	},
-
-	ats(title, description, options = {}) {
-		return notificationStore.addNotification({
-			title,
-			description,
-			type: NOTIFICATION_TYPES.ATS,
-			...options,
-		})
-	},
-
 	careerRoadmap(title, description, options = {}) {
 		return notificationStore.addNotification({
 			title,
@@ -152,14 +134,6 @@ export const notificationEvents = {
 			'ATS score completed',
 			`Your resume scored ${score}/100 on ATS compatibility.`,
 			{ actionUrl: APP_ROUTES.ATS_ANALYZER, actionLabel: 'View Report' },
-		)
-	},
-
-	interviewFinished() {
-		return notify.interview(
-			'Mock interview finished',
-			'Your session is complete. AI feedback and scores are ready.',
-			{ actionUrl: APP_ROUTES.MOCK_INTERVIEW, actionLabel: 'See Feedback' },
 		)
 	},
 

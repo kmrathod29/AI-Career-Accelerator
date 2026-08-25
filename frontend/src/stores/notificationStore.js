@@ -39,16 +39,6 @@ function createSeedNotifications() {
 		},
 		{
 			id: generateId(),
-			title: 'Mock interview finished',
-			description: 'Behavioral interview session complete. AI feedback and scores are available.',
-			type: NOTIFICATION_TYPES.INTERVIEW,
-			timestamp: now - 3 * HOUR,
-			read: false,
-			actionUrl: APP_ROUTES.MOCK_INTERVIEW,
-			actionLabel: 'See Feedback',
-		},
-		{
-			id: generateId(),
 			title: 'AI Roadmap generated',
 			description: 'Your personalized 90-day career roadmap with milestones is ready.',
 			type: NOTIFICATION_TYPES.AI,

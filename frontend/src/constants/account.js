@@ -55,14 +55,12 @@ export const DEFAULT_PROFILE = {
 export const DEFAULT_STATS = {
 	resumesCreated: 3,
 	atsAnalyses: 12,
-	mockInterviews: 8,
 	careerRoadmaps: 2,
 }
 
 export const DEFAULT_NOTIFICATION_PREFS = {
 	emailNotifications: true,
 	browserNotifications: true,
-	interviewUpdates: true,
 	atsUpdates: true,
 	roadmapUpdates: true,
 	marketingEmails: false,

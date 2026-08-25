@@ -22,25 +22,25 @@ const FEATURES = [
     icon: ScanSearch,
     title: 'ATS Resume Analyzer',
     description:
-      'Analyze your resume against ATS standards with actionable improvement suggestions.',
+      'Check whether your resume is ATS-friendly and identify formatting, keyword, and structure issues that could hurt your chances of getting shortlisted.',
   },
   {
     icon: GitCompare,
-    title: 'Resume vs Job Description',
+    title: 'Resume Match',
     description:
-      'Compare your resume with a target job description and discover missing keywords.',
+      'Compare your resume with a specific job description to see how closely your experience and skills match that job.',
   },
   {
     icon: TrendingUp,
     title: 'Skill Gap Analysis',
     description:
-      'Identify missing technical and soft skills required for your target role.',
+      'Find the skills you are missing for your target role and get clear recommendations on what to learn next.',
   },
   {
     icon: Map,
     title: 'Career Roadmap',
     description:
-      'Receive a personalized learning roadmap with milestones and progress tracking.',
+      'Follow a step-by-step career path from your current level to your target role, with skills, milestones, and progression stages.',
   },
   {
     icon: Bot,

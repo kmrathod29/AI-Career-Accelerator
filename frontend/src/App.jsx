@@ -28,7 +28,6 @@ function RequireAuth({ children }) {
 import { ResumeBuilderPage } from '@pages/dashboard/ResumeBuilderPage.jsx'
 import { AtsAnalyzerPage } from '@pages/dashboard/AtsAnalyzerPage.jsx'
 import { ResumeMatchPage } from '@pages/dashboard/ResumeMatchPage.jsx'
-import { MockInterviewPage } from '@pages/dashboard/MockInterviewPage.jsx'
 import { SkillGapPage } from '@pages/dashboard/SkillGapPage.jsx'
 import { CareerRoadmapPage } from '@pages/dashboard/CareerRoadmapPage.jsx'
 import { AiCoachPage } from '@pages/dashboard/AiCoachPage.jsx'
@@ -58,7 +57,6 @@ export default function App() {
 				<Route path={APP_ROUTES.RESUME_BUILDER} element={<ResumeBuilderPage />} />
 				<Route path={APP_ROUTES.ATS_ANALYZER} element={<AtsAnalyzerPage />} />
 				<Route path={APP_ROUTES.RESUME_MATCH} element={<ResumeMatchPage />} />
-				<Route path={APP_ROUTES.MOCK_INTERVIEW} element={<MockInterviewPage />} />
 				<Route path={APP_ROUTES.SKILL_GAP} element={<SkillGapPage />} />
 				<Route path={APP_ROUTES.CAREER_ROADMAP} element={<CareerRoadmapPage />} />
 				<Route path={APP_ROUTES.AI_COACH} element={<AiCoachPage />} />

@@ -14,23 +14,12 @@ import { APP_ROUTES } from '@constants/routes.js'
 export function AuthLayout() {
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden overflow-y-auto bg-[var(--color-bg)] text-[var(--color-text)] transition-colors duration-300">
-      {/* Subtle background ambient glows - centered to prevent scrollbars */}
-      <div
-        className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full opacity-40 mix-blend-screen"
-        style={{
-          background: 'radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%)',
-          filter: 'blur(70px)',
-        }}
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -bottom-40 left-1/2 h-[400px] w-[400px] -translate-x-1/2 rounded-full opacity-30 mix-blend-screen"
-        style={{
-          background: 'radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%)',
-          filter: 'blur(60px)',
-        }}
-        aria-hidden="true"
-      />
+      {/* Animated aurora background */}
+      <div className="aurora-bg" aria-hidden="true">
+        <div className="aurora-orb aurora-orb-1" />
+        <div className="aurora-orb aurora-orb-2" />
+        <div className="aurora-orb aurora-orb-3" />
+      </div>
 
       {/* ── Top navigation bar ── */}
       <header className="mx-auto flex w-full max-w-md items-center justify-between px-4 py-4">

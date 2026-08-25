@@ -17,10 +17,10 @@ import { cn } from '@utils/classNames.js'
 /* ── Feature data ───────────────────────────────────────────────── */
 const FEATURES = [
   { id: 'resume-builder', label: 'Resume Builder',           icon: FileText,   desc: 'Build ATS-optimized resumes with AI assistance.' },
-  { id: 'ats-analyzer',   label: 'ATS Analyzer',             icon: ScanSearch, desc: 'Get your ATS compatibility score instantly.' },
-  { id: 'resume-vs-jd',   label: 'Resume vs Job Description', icon: GitCompare, desc: 'Compare resume with target job postings.' },
-  { id: 'skill-gap',      label: 'Skill Gap Analysis',       icon: TrendingUp, desc: 'Identify skills you need to develop.' },
-  { id: 'career-roadmap', label: 'Career Roadmap',           icon: Map,        desc: 'Get a personalized career growth plan.' },
+  { id: 'ats-analyzer',   label: 'ATS Analyzer',             icon: ScanSearch, desc: 'Check whether your resume is ATS-friendly and identify formatting, keyword, and structure issues that could hurt your chances of getting shortlisted.' },
+  { id: 'resume-vs-jd',   label: 'Resume Match',            icon: GitCompare, desc: 'Compare your resume with a specific job description to see how closely your experience and skills match that job.' },
+  { id: 'skill-gap',      label: 'Skill Gap Analysis',       icon: TrendingUp, desc: 'Find the skills you are missing for your target role and get clear recommendations on what to learn next.' },
+  { id: 'career-roadmap', label: 'Career Roadmap',           icon: Map,        desc: 'Follow a step-by-step career path from your current level to your target role, with skills, milestones, and progression stages.' },
   { id: 'ai-coach',       label: 'AI Career Coach',          icon: Bot,        desc: 'Receive AI-powered career guidance.' },
 ]
 

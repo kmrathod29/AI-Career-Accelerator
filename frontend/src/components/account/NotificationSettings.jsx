@@ -6,7 +6,6 @@ import { accountStore, useNotificationPrefs } from '@/stores/accountStore.js'
 const NOTIFICATION_OPTIONS = [
 	{ key: 'emailNotifications', label: 'Email Notifications', description: 'Receive important updates via email.' },
 	{ key: 'browserNotifications', label: 'Browser Notifications', description: 'Get real-time alerts in your browser.' },
-	{ key: 'interviewUpdates', label: 'Interview Updates', description: 'Mock interview results, schedules, and feedback.' },
 	{ key: 'atsUpdates', label: 'ATS Updates', description: 'Resume analysis scores and optimization tips.' },
 	{ key: 'roadmapUpdates', label: 'Roadmap Updates', description: 'Career roadmap milestones and progress alerts.' },
 	{ key: 'marketingEmails', label: 'Marketing Emails', description: 'Product news, tips, and feature announcements.' },

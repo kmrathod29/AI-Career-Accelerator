@@ -9,7 +9,6 @@ export const APP_ROUTES = {
 	RESUME_BUILDER: '/dashboard/resume-builder',
 	ATS_ANALYZER: '/dashboard/ats-analyzer',
 	RESUME_MATCH: '/dashboard/resume-match',
-	MOCK_INTERVIEW: '/dashboard/mock-interview',
 	SKILL_GAP: '/dashboard/skill-gap',
 	CAREER_ROADMAP: '/dashboard/career-roadmap',
 	AI_COACH: '/dashboard/ai-coach',

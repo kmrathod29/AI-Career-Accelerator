@@ -16,7 +16,6 @@ const fadeUp = {
 const STATS = [
 	{ label: 'Total Resumes', value: '3', change: '+1 this week', icon: FileText, color: 'from-blue-500 to-blue-600' },
 	{ label: 'Avg. ATS Score', value: '87%', change: '+5% improvement', icon: Target, color: 'from-emerald-500 to-emerald-600' },
-	{ label: 'Mock Interviews', value: '12', change: '2 scheduled', icon: Mic, color: 'from-violet-500 to-violet-600' },
 	{ label: 'Career Progress', value: '64%', change: 'On track', icon: TrendingUp, color: 'from-amber-500 to-amber-600' },
 ]
 
@@ -24,7 +23,6 @@ const STATS = [
 const RECENT_ACTIVITY = [
 	{ text: 'Resume "Full Stack Developer" updated', time: '2 hours ago', icon: FileText, status: 'completed' },
 	{ text: 'ATS analysis completed — Score: 92/100', time: '5 hours ago', icon: ScanSearch, status: 'completed' },
-	{ text: 'Mock interview scheduled for tomorrow', time: 'Yesterday', icon: Mic, status: 'pending' },
 	{ text: 'Skill gap analysis — React mastery achieved', time: '2 days ago', icon: Award, status: 'completed' },
 	{ text: 'Career roadmap milestone reached', time: '3 days ago', icon: CheckCircle2, status: 'completed' },
 ]
@@ -33,7 +31,6 @@ const RECENT_ACTIVITY = [
 const QUICK_ACTIONS = [
 	{ label: 'Build Resume', icon: FileText, path: APP_ROUTES.RESUME_BUILDER, color: 'text-blue-500' },
 	{ label: 'Analyze ATS', icon: ScanSearch, path: APP_ROUTES.ATS_ANALYZER, color: 'text-emerald-500' },
-	{ label: 'Mock Interview', icon: Mic, path: APP_ROUTES.MOCK_INTERVIEW, color: 'text-violet-500' },
 	{ label: 'AI Coach', icon: Bot, path: APP_ROUTES.AI_COACH, color: 'text-amber-500' },
 	{ label: 'Skill Gap', icon: BrainCircuit, path: APP_ROUTES.SKILL_GAP, color: 'text-pink-500' },
 	{ label: 'Roadmap', icon: Map, path: APP_ROUTES.CAREER_ROADMAP, color: 'text-cyan-500' },

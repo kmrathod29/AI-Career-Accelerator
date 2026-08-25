@@ -55,7 +55,6 @@ const SECTION_META = {
 const STAT_CONFIG = [
 	{ key: 'resumesCreated', label: 'Resumes Created', icon: FileText, color: 'from-blue-500 to-blue-600' },
 	{ key: 'atsAnalyses', label: 'ATS Analyses', icon: ScanSearch, color: 'from-emerald-500 to-emerald-600' },
-	{ key: 'mockInterviews', label: 'Mock Interviews', icon: Mic, color: 'from-violet-500 to-violet-600' },
 	{ key: 'careerRoadmaps', label: 'Career Roadmaps', icon: Map, color: 'from-cyan-500 to-cyan-600' },
 ]
 
