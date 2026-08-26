@@ -86,7 +86,7 @@ export function Sidebar() {
 							initial={{ opacity: 0, x: -4 }}
 							animate={{ opacity: 1, x: 0 }}
 							transition={{ duration: 0.2 }}
-							className="text-[14px] font-semibold tracking-tight text-[var(--color-text)]"
+							className="text-[14px] font-bold tracking-tight text-[var(--color-text)]"
 						>
 							AI Career Accelerator
 						</motion.span>
@@ -103,7 +103,7 @@ export function Sidebar() {
 							<motion.p
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
-								className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-muted)]"
+								className="mb-2 px-3 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]"
 							>
 								{section.section}
 							</motion.p>

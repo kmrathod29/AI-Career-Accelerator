@@ -46,10 +46,10 @@ export function FeaturePreviewCards() {
 					</div>
 
 					{/* Title + value */}
-					<h4 className="text-sm font-semibold text-[var(--color-text)]">
+					<h4 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">
 						{feature.title}
 					</h4>
-					<p className="mt-0.5 text-xs font-medium text-[var(--color-primary)]">
+					<p className="mt-0.5 text-sm font-semibold text-[var(--color-primary)]">
 						{feature.value}
 					</p>
 

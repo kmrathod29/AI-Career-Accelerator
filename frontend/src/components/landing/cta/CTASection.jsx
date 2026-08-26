@@ -54,11 +54,18 @@ export const CTASection = memo(function CTASection() {
           viewport={{ once: true, margin: '-80px' }}
           className="mx-auto max-w-3xl text-center"
         >
+          <motion.p
+            variants={FADE_UP}
+            className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]"
+          >
+            GET STARTED
+          </motion.p>
+
           {/* Heading */}
           <motion.h2
             variants={FADE_UP}
             id="cta-heading"
-            className="text-3xl font-bold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-5xl lg:leading-tight"
+            className="text-[28px] font-black tracking-[-0.055em] leading-[1.05] text-[var(--color-text)] sm:text-4xl lg:text-5xl"
           >
             Ready to Accelerate
             <br />
@@ -68,7 +75,7 @@ export const CTASection = memo(function CTASection() {
           {/* Subtitle */}
           <motion.p
             variants={FADE_UP}
-            className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-[var(--color-muted)] sm:text-lg"
+            className="mx-auto mt-5 max-w-xl text-base leading-[1.6] text-[var(--color-muted)] sm:text-lg"
           >
             Build ATS-ready resumes, discover skill gaps, prepare for interviews
             and achieve your career goals with one AI-powered platform.
@@ -78,7 +85,7 @@ export const CTASection = memo(function CTASection() {
           <motion.div variants={FADE_UP} className="mt-9">
             <Link to={APP_ROUTES.REGISTER}>
               <PrimaryButton
-                className="group gap-2 rounded-xl px-8 py-4 text-base font-semibold"
+                className="group gap-2 rounded-full px-8 py-4 text-sm font-semibold"
                 aria-label="Create your free account"
               >
                 Get Started

@@ -21,7 +21,7 @@ export const PrimaryButton = forwardRef(function PrimaryButton(
       whileTap={{ scale: 0.97 }}
       className={cn(
         // Layout & shape
-        'group relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-xl',
+        'group relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-full',
         // Solid blue base
         'bg-[var(--color-primary)] text-[var(--color-primary-foreground)]',
         // Sizing defaults (overridable via className)

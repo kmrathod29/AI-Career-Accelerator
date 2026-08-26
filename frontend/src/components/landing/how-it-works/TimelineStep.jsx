@@ -124,10 +124,10 @@ export const TimelineStep = memo(function TimelineStep({
       </div>
 
       {/* ── Text ─── */}
-      <h3 className="mb-1.5 text-sm font-semibold tracking-tight text-[var(--color-text)] sm:text-base">
+      <h3 className="mb-1.5 text-base font-bold tracking-[-0.04em] leading-[1.25] text-[var(--color-text)] sm:text-lg">
         {title}
       </h3>
-      <p className="max-w-48 text-xs leading-relaxed text-[var(--color-muted)] sm:text-sm">
+      <p className="max-w-48 text-sm leading-[1.6] text-[var(--color-muted)]">
         {description}
       </p>
     </motion.div>

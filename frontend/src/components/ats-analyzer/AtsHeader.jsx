@@ -31,10 +31,13 @@ export function AtsHeader() {
 		>
 			{/* Left — title + subtitle */}
 			<div className="min-w-0">
-				<h2 className="text-lg font-semibold tracking-tight text-[var(--color-text)] sm:text-2xl">
+				<p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
+					ATS ANALYSIS
+				</p>
+				<h2 className="text-2xl font-black tracking-[-0.05em] leading-[1.05] text-[var(--color-text)] sm:text-[32px]">
 					ATS Resume Analyzer
 				</h2>
-				<p className="mt-0.5 text-sm text-[var(--color-muted)]">
+				<p className="mt-1 text-base leading-[1.6] text-[var(--color-muted)]">
 					Analyze your resume against modern ATS systems.
 				</p>
 			</div>

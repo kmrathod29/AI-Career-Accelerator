@@ -72,12 +72,12 @@ export const FeatureCard = memo(function FeatureCard({
       </div>
 
       {/* Title */}
-      <h3 className="mb-2 text-base font-semibold tracking-tight text-[var(--color-text)]">
+      <h3 className="mb-2 text-xl font-bold leading-[1.25] tracking-[-0.04em] text-[var(--color-text)]">
         {title}
       </h3>
 
       {/* Description */}
-      <p className="mb-5 flex-1 text-sm leading-relaxed text-[var(--color-muted)]">
+      <p className="mb-5 flex-1 text-base leading-[1.6] text-[var(--color-muted)]">
         {description}
       </p>
 

@@ -29,13 +29,13 @@ export function PlaceholderPage({ title, subtitle, icon: Icon }) {
 				</motion.div>
 
 				{/* Title */}
-				<h2 className="mb-2 text-xl font-semibold tracking-tight text-[var(--color-text)]">
+				<h2 className="mb-2 text-2xl font-black tracking-[-0.05em] text-[var(--color-text)]">
 					{title}
 				</h2>
 
 				{/* Subtitle */}
 				{subtitle && (
-					<p className="mx-auto mb-5 max-w-sm text-sm leading-relaxed text-[var(--color-muted)]">
+					<p className="mx-auto mb-5 max-w-sm text-sm leading-[1.5] text-[var(--color-muted)]">
 						{subtitle}
 					</p>
 				)}

@@ -70,7 +70,7 @@ export function TopNavbar({ onMenuClick }) {
 
 				{/* Page title */}
 				<div className="min-w-0">
-					<h1 className="truncate text-base font-semibold text-(--color-text)">
+					<h1 className="truncate text-lg font-bold tracking-[-0.03em] text-(--color-text)">
 						{meta.title}
 					</h1>
 					{meta.subtitle && (

@@ -94,13 +94,13 @@ export function UploadCardHero() {
 					initial={{ scale: 0.85, opacity: 0 }}
 					animate={{ scale: 1, opacity: 1 }}
 					transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-					className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-primary)]/10"
+					className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)]/10"
 				>
-					<Upload className="h-8 w-8 text-[var(--color-primary)]" strokeWidth={1.5} />
+					<Upload className="h-6 w-6 text-[var(--color-primary)]" strokeWidth={1.5} />
 				</motion.div>
 
 				{/* Headline + description */}
-				<h3 className="mb-2 text-center text-lg font-semibold tracking-tight text-[var(--color-text)]">
+				<h3 className="mb-2 text-center text-xl font-bold tracking-[-0.04em] text-[var(--color-text)]">
 					Upload your resume
 				</h3>
 				<p className="mx-auto mb-6 max-w-sm text-center text-sm leading-relaxed text-[var(--color-muted)]">
@@ -114,7 +114,7 @@ export function UploadCardHero() {
 					onDragLeave={handleDragLeave}
 					onClick={() => inputRef.current?.click()}
 					whileHover={{ scale: 1.01 }}
-					className={`flex min-h-[140px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 transition-colors duration-200 ${
+					className={`flex min-h-[110px] cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed p-6 transition-colors duration-200 ${
 						isDragging
 							? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
 							: 'border-[var(--color-border)] bg-[var(--color-surface-2)] hover:border-[var(--color-primary)]/40'
@@ -123,7 +123,7 @@ export function UploadCardHero() {
 					<div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-surface)]">
 						<FileText className="h-5 w-5 text-[var(--color-muted)]" strokeWidth={1.5} />
 					</div>
-					<p className="text-sm font-medium text-[var(--color-text)]">
+					<p className="text-sm font-semibold text-[var(--color-text)]">
 						Drag & drop your resume here
 					</p>
 					<p className="mt-1 text-xs text-[var(--color-muted)]">
@@ -137,7 +137,7 @@ export function UploadCardHero() {
 					whileHover={{ scale: 1.02 }}
 					whileTap={{ scale: 0.97 }}
 					onClick={() => inputRef.current?.click()}
-					className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+					className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
 				>
 					<Upload className="h-4 w-4" />
 					Upload Resume
@@ -175,7 +175,7 @@ export function UploadCardCompact({ showAnalyzeButton = false, isReAnalyze = fal
 
 				{/* File info */}
 				<div className="min-w-0 flex-1">
-					<p className="truncate text-sm font-medium text-[var(--color-text)]">
+					<p className="truncate text-sm font-semibold text-[var(--color-text)]">
 						{file.name}
 					</p>
 					<p className="mt-0.5 text-xs text-[var(--color-muted)]">
@@ -216,7 +216,7 @@ export function UploadCardCompact({ showAnalyzeButton = false, isReAnalyze = fal
 					whileHover={{ scale: 1.02 }}
 					whileTap={{ scale: 0.97 }}
 					onClick={() => atsStore.startAnalysis()}
-					className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+					className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
 				>
 					{isReAnalyze ? (
 						<>

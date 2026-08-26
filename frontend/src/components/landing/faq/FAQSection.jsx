@@ -89,14 +89,17 @@ export const FAQSection = memo(function FAQSection() {
           viewport={{ once: true, margin: '-80px' }}
           className="mb-12 text-center sm:mb-14 lg:mb-16"
         >
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
+            FAQ
+          </p>
           <h2
             id="faq-heading"
-            className="text-3xl font-bold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-[2.75rem] lg:leading-tight"
+            className="text-[28px] font-black tracking-[-0.055em] leading-[1.05] text-[var(--color-text)] sm:text-4xl lg:text-[36px]"
           >
             Frequently Asked{' '}
             <span className="text-[var(--color-primary)]">Questions</span>
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-[var(--color-muted)] sm:text-lg">
+          <p className="mt-4 text-base leading-[1.6] text-[var(--color-muted)] sm:text-lg">
             Everything you need to know before getting started.
           </p>
         </motion.div>

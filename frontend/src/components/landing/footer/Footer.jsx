@@ -68,7 +68,7 @@ export const Footer = memo(function Footer() {
             <div className="mb-4">
               <Logo />
             </div>
-            <p className="mb-5 max-w-xs text-sm leading-relaxed text-[var(--color-muted)]">
+            <p className="mb-5 max-w-xs text-sm leading-[1.5] text-[var(--color-muted)]">
               AI-powered career platform helping students and job seekers build
               resumes, close skill gaps, and get placement-ready.
             </p>

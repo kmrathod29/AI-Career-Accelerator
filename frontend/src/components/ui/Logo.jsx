@@ -16,7 +16,7 @@ export function Logo() {
         draggable={false}
         className="h-8 w-8 shrink-0 object-contain"
       />
-      <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text)]">
+      <span className="text-[15px] font-bold tracking-[-0.02em] text-[var(--color-text)]">
         AI Career Accelerator
       </span>
     </Link>

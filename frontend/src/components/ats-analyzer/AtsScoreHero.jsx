@@ -51,7 +51,7 @@ export function AtsScoreHero({ score = 0 }) {
 			transition={{ duration: 0.5 }}
 			className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-card)]"
 		>
-			<h3 className="mb-5 text-sm font-semibold text-[var(--color-text)]">
+			<h3 className="mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
 				Overall ATS Score
 			</h3>
 
@@ -90,7 +90,7 @@ export function AtsScoreHero({ score = 0 }) {
 
 					{/* Center text */}
 					<div className="absolute inset-0 flex flex-col items-center justify-center">
-						<span className="text-4xl font-bold tracking-tight text-[var(--color-text)]">
+						<span className="text-4xl font-black tracking-[-0.06em] text-[var(--color-text)]">
 							{displayScore}
 						</span>
 						<span className="text-sm text-[var(--color-muted)]">/ 100</span>

@@ -41,7 +41,8 @@ export const RegisterForm = memo(function RegisterForm() {
   return (
     <div className="w-full">
       <AuthHeader
-        title="Create Your Account"
+        eyebrow="CREATE ACCOUNT"
+        title="Register"
         subtitle="Start your AI-powered career journey."
       />
 

@@ -16,7 +16,7 @@ export function ResumeHeader() {
 		>
 			{/* Left — title + subtitle */}
 			<div className="min-w-0">
-				<h2 className="text-lg font-semibold tracking-tight text-[var(--color-text)] sm:text-2xl">
+				<h2 className="text-lg font-bold tracking-[-0.02em] text-[var(--color-text)] sm:text-2xl">
 					Resume Builder
 				</h2>
 				<p className="mt-0.5 text-sm text-[var(--color-muted)]">

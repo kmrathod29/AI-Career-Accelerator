@@ -20,7 +20,7 @@ export function SidebarItem({ label, path, icon: Icon, isCollapsed, onClick }) {
 			title={isCollapsed ? label : undefined}
 			className={({ isActive }) =>
 				cn(
-					'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
+					'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium tracking-[-0.01em] transition-all duration-200',
 					isActive
 						? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
 						: 'text-[var(--color-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]',

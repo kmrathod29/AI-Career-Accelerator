@@ -27,7 +27,7 @@ export const FooterColumn = memo(function FooterColumn({ title, links }) {
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
     >
-      <h3 className="mb-4 text-sm font-semibold tracking-wide text-[var(--color-text)]">
+      <h3 className="mb-4 text-sm font-bold tracking-normal text-[var(--color-text)]">
         {title}
       </h3>
       <ul className="space-y-2.5">

@@ -25,14 +25,18 @@ const STAGGER = {
 
 const HeroHeading = memo(function HeroHeading() {
   return (
-    <motion.h1
-      variants={FADE_UP}
-      className="text-[2.55rem] font-bold leading-[1.10] tracking-tight text-[var(--color-text)] sm:text-[3rem] lg:text-[3.2rem]"
-    >
-      Your AI Career Coach,
-      <br />
-      <span style={{ color: "var(--color-primary)" }}>always ready.</span>
-    </motion.h1>
+    <motion.div variants={FADE_UP}>
+      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
+        AI CAREER COACHING
+      </p>
+      <h1
+        className="text-[38px] font-black leading-[1] tracking-[-0.06em] text-[var(--color-text)] sm:text-[48px] lg:text-[56px]"
+      >
+        Your AI Career Coach,
+        <br />
+        <span style={{ color: "var(--color-primary)" }}>always ready.</span>
+      </h1>
+    </motion.div>
   );
 });
 
@@ -40,7 +44,7 @@ const HeroSubtitle = memo(function HeroSubtitle() {
   return (
     <motion.p
       variants={FADE_UP}
-      className="max-w-[440px] text-base leading-relaxed text-[var(--color-muted)] sm:text-[1.05rem]"
+      className="max-w-[440px] text-base leading-[1.6] text-[var(--color-muted)] sm:text-lg"
     >
       Build an ATS-ready résumé, close skill gaps, and get a personalised career
       roadmap — in minutes, not months.

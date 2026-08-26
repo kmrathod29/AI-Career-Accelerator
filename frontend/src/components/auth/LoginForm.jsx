@@ -59,7 +59,8 @@ export const LoginForm = memo(function LoginForm() {
   return (
     <div className="w-full">
       <AuthHeader
-        title="Welcome Back"
+        eyebrow="WELCOME BACK"
+        title="Login"
         subtitle="Continue your AI-powered career journey."
       />
 

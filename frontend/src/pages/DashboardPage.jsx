@@ -70,10 +70,13 @@ export function DashboardPage() {
 			<motion.div variants={fadeUp} transition={{ duration: 0.4 }}>
 				<div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
 					<div>
-						<h2 className="text-xl font-semibold tracking-tight text-[var(--color-text)] sm:text-2xl">
+						<p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
+							OVERVIEW
+						</p>
+						<h2 className="text-[32px] font-black tracking-[-0.05em] leading-[1.05] text-[var(--color-text)]">
 							{getGreeting()}, Krunal 👋
 						</h2>
-						<p className="mt-0.5 text-sm text-[var(--color-muted)]">
+						<p className="mt-1 text-base leading-[1.6] text-[var(--color-muted)]">
 							Here&apos;s what&apos;s happening with your career journey.
 						</p>
 					</div>
@@ -96,8 +99,8 @@ export function DashboardPage() {
 							</div>
 							<BarChart3 className="h-4 w-4 text-[var(--color-muted)] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 						</div>
-						<p className="text-2xl font-bold tracking-tight text-[var(--color-text)]">{stat.value}</p>
-						<p className="mt-0.5 text-[13px] text-[var(--color-muted)]">{stat.label}</p>
+						<p className="text-2xl font-black tracking-[-0.06em] text-[var(--color-text)]">{stat.value}</p>
+						<p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">{stat.label}</p>
 						<p className="mt-2 text-[11px] font-medium text-[var(--color-primary)]">{stat.change}</p>
 					</motion.div>
 				))}
@@ -112,7 +115,7 @@ export function DashboardPage() {
 					className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 lg:col-span-2"
 				>
 					<div className="mb-4 flex items-center justify-between">
-						<h3 className="text-sm font-semibold text-[var(--color-text)]">Recent Activity</h3>
+						<h3 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">Recent Activity</h3>
 						<button className="text-[12px] font-medium text-[var(--color-primary)] transition-colors hover:text-[var(--color-secondary)]">
 							View all
 						</button>
@@ -128,7 +131,7 @@ export function DashboardPage() {
 									<item.icon className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} />
 								</div>
 								<div className="min-w-0 flex-1">
-									<p className="truncate text-[13px] text-[var(--color-text)]">{item.text}</p>
+									<p className="truncate text-sm text-[var(--color-text)]">{item.text}</p>
 								</div>
 								<div className="flex shrink-0 items-center gap-2">
 									{item.status === 'completed' ? (
@@ -151,7 +154,7 @@ export function DashboardPage() {
 				>
 					<div className="mb-4 flex items-center gap-2">
 						<Sparkles className="h-4 w-4 text-[var(--color-primary)]" />
-						<h3 className="text-sm font-semibold text-[var(--color-text)]">Quick Actions</h3>
+						<h3 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">Quick Actions</h3>
 					</div>
 
 					<div className="grid grid-cols-2 gap-2">
@@ -176,7 +179,7 @@ export function DashboardPage() {
 				className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5"
 			>
 				<div className="mb-4 flex items-center justify-between">
-					<h3 className="text-sm font-semibold text-[var(--color-text)]">Learning Progress</h3>
+					<h3 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">Learning Progress</h3>
 					<button className="inline-flex items-center gap-1 text-[12px] font-medium text-[var(--color-primary)] transition-colors hover:text-[var(--color-secondary)]">
 						View details
 						<ArrowRight className="h-3 w-3" />

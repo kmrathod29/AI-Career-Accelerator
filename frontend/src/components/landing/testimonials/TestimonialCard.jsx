@@ -67,7 +67,7 @@ export const TestimonialCard = memo(function TestimonialCard({
           {initials}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-[var(--color-text)]">{name}</p>
+          <p className="truncate text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">{name}</p>
           <p className="truncate text-xs text-[var(--color-muted)]">{role}</p>
         </div>
       </div>
@@ -87,7 +87,7 @@ export const TestimonialCard = memo(function TestimonialCard({
       </div>
 
       {/* Feedback */}
-      <p className="mb-5 flex-1 text-sm leading-relaxed text-[var(--color-muted)]">
+      <p className="mb-5 flex-1 text-sm leading-[1.6] text-[var(--color-muted)]">
         &ldquo;{feedback}&rdquo;
       </p>
 

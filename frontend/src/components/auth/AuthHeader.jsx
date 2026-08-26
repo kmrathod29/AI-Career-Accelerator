@@ -6,12 +6,14 @@ import { memo } from 'react'
  * Props:
  *   icon        — Lucide icon component (optional)
  *   imageSrc    — logo image URL (optional, used instead of icon)
+ *   eyebrow     — small uppercase label above title (optional)
  *   title       — heading text
  *   subtitle    — description text
  */
 export const AuthHeader = memo(function AuthHeader({
   icon: Icon,
   imageSrc,
+  eyebrow,
   title,
   subtitle,
 }) {
@@ -34,11 +36,16 @@ export const AuthHeader = memo(function AuthHeader({
           />
         </div>
       ) : null}
-      <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
+      {eyebrow && (
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
+          {eyebrow}
+        </p>
+      )}
+      <h1 className="text-4xl font-black tracking-[-0.055em] leading-[1.05] text-[var(--color-text)]">
         {title}
       </h1>
       {subtitle && (
-        <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">
+        <p className="mt-3 text-base leading-[1.6] text-[var(--color-muted)]">
           {subtitle}
         </p>
       )}
