@@ -53,7 +53,7 @@ export function KeywordAnalysis({
 	return (
 		<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)]">
 			<div className="mb-4 flex items-center justify-between">
-				<h3 className="text-sm font-semibold text-[var(--color-text)]">
+				<h3 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">
 					Keyword Analysis
 				</h3>
 				<span className="text-xs text-[var(--color-muted)]">

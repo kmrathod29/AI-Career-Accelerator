@@ -318,7 +318,7 @@ export function AccountSectionRenderer() {
 	return (
 		<AccountSectionErrorBoundary resetKey={section} onRecover={onRecover}>
 			{section !== 'overview' && (
-				<SectionHeader title={meta.title} description={meta.description} />
+				<SectionHeader eyebrow="ACCOUNT" title={meta.title} description={meta.description} />
 			)}
 			<div className={section !== 'overview' ? 'mt-3 md:mt-4' : undefined}>
 				{content}

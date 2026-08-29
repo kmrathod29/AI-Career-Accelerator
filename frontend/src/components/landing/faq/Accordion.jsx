@@ -62,7 +62,7 @@ export const Accordion = memo(function Accordion({
       >
         <span
           className={cn(
-            'text-sm font-semibold transition-colors sm:text-base',
+            'text-base font-bold tracking-[-0.02em] transition-colors sm:text-lg',
             isOpen ? 'text-[var(--color-text)]' : 'text-[var(--color-text)]',
           )}
         >
@@ -88,7 +88,7 @@ export const Accordion = memo(function Accordion({
             className="overflow-hidden"
           >
             <div className="border-t border-[var(--color-border)] px-5 pb-5 pt-4 sm:px-6">
-              <p className="text-sm leading-relaxed text-[var(--color-muted)]">
+              <p className="text-base leading-[1.6] text-[var(--color-muted)]">
                 {answer}
               </p>
             </div>

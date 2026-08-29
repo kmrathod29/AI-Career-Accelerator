@@ -93,17 +93,14 @@ export function DashboardLayout() {
 				<TopNavbar onMenuClick={openMobile} />
 
 				<main className="min-w-0 flex-1 overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-					<AnimatePresence mode="wait">
-						<motion.div
-							key={outletKey}
-							initial={{ opacity: 0, y: 8 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -8 }}
-							transition={{ duration: 0.25, ease: 'easeInOut' }}
-						>
-							<Outlet />
-						</motion.div>
-					</AnimatePresence>
+					<motion.div
+						key={outletKey}
+						initial={{ opacity: 0, y: 6 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.2, ease: 'easeOut' }}
+					>
+						<Outlet />
+					</motion.div>
 				</main>
 			</div>
 		</div>

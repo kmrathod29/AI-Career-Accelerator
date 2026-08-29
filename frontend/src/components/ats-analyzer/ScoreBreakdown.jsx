@@ -15,7 +15,7 @@ const ICON_MAP = {
 export function ScoreBreakdown({ breakdown = [] }) {
 	return (
 		<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)]">
-			<h3 className="mb-4 text-sm font-semibold text-[var(--color-text)]">
+			<h3 className="mb-4 text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">
 				Score Breakdown
 			</h3>
 

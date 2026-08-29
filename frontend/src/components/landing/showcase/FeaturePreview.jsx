@@ -12,7 +12,7 @@ import { DashboardPreview } from './DashboardPreview.jsx'
 export const FeaturePreview = memo(function FeaturePreview({ activeId }) {
   return (
     <div
-      className="relative min-h-96 overflow-hidden rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-card)] lg:min-h-[460px]"
+      className="relative h-auto min-h-0 overflow-hidden rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-card)]"
     >
       <AnimatePresence mode="wait">
         <motion.div

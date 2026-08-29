@@ -47,7 +47,7 @@ export const FeatureCard = memo(function FeatureCard({
               <Icon className="h-3.5 w-3.5 text-[var(--color-primary)]" aria-hidden="true" />
             </div>
           )}
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-text)]">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
             {title}
           </span>
         </div>

@@ -30,12 +30,12 @@ export const HeroDashboard = memo(function HeroDashboard() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         aria-hidden="true"
-        className="relative hidden h-[580px] w-full select-none lg:block"
+        className="relative hidden h-[460px] w-full select-none lg:block"
       >
         {/* ── Ambient background glows ─────────────────────── */}
         {/* Primary blue glow — centred behind the dashboard */}
         <div
-          className="pointer-events-none absolute left-1/2 top-[40px] h-[380px] w-[380px] -translate-x-[35%] rounded-full"
+          className="pointer-events-none absolute left-1/2 top-[20px] h-[300px] w-[300px] -translate-x-[35%] rounded-full"
           style={{
             background:
               'radial-gradient(circle at center, rgba(37,99,235,0.07) 0%, transparent 70%)',
@@ -44,7 +44,7 @@ export const HeroDashboard = memo(function HeroDashboard() {
         />
         {/* Secondary violet glow — bottom-right accent */}
         <div
-          className="pointer-events-none absolute bottom-[40px] right-[60px] h-[200px] w-[200px] rounded-full"
+          className="pointer-events-none absolute bottom-[20px] right-[40px] h-[160px] w-[160px] rounded-full"
           style={{
             background:
               'radial-gradient(circle at center, rgba(99,102,241,0.05) 0%, transparent 70%)',
@@ -53,8 +53,8 @@ export const HeroDashboard = memo(function HeroDashboard() {
         />
 
         {/* ── Main Dashboard ───────────────────────────────── */}
-        {/* Offset left-[130px] so floating cards bleed onto its left edge */}
-        <div className="absolute bottom-0 right-0 top-[40px] z-10 w-[calc(100%-130px)]">
+        {/* Offset left-[90px] so floating cards bleed onto its left edge */}
+        <div className="absolute bottom-0 right-0 top-[20px] z-10 w-[calc(100%-90px)]">
           <MainDashboard />
         </div>
 

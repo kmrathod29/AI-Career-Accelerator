@@ -80,14 +80,14 @@ export const FAQSection = memo(function FAQSection() {
         aria-hidden="true"
       />
 
-      <div className="mx-auto w-full max-w-3xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-32">
+      <div className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         {/* ── Section header ─────────────────────────────── */}
         <motion.div
           variants={FADE_UP}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
-          className="mb-12 text-center sm:mb-14 lg:mb-16"
+          className="mb-10 text-center sm:mb-12 lg:mb-14"
         >
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
             FAQ
@@ -99,7 +99,7 @@ export const FAQSection = memo(function FAQSection() {
             Frequently Asked{' '}
             <span className="text-[var(--color-primary)]">Questions</span>
           </h2>
-          <p className="mt-4 text-base leading-[1.6] text-[var(--color-muted)] sm:text-lg">
+          <p className="mt-3 text-[15px] leading-6 text-[var(--color-muted)] sm:text-base">
             Everything you need to know before getting started.
           </p>
         </motion.div>

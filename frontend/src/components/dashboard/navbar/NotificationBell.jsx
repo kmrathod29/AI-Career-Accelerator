@@ -38,43 +38,7 @@ export function NotificationBell() {
 	const isLoading = useNotificationLoading()
 	const lastArrivalAt = useLastArrivalAt()
 	const prevArrivalRef = useRef(lastArrivalAt)
-
-	const { refs, floatingStyles, context } = useFloating({
-		open: isOpen,
-		onOpenChange: setIsOpen,
-		placement: 'bottom-end',
-		whileElementsMounted: autoUpdate,
-		middleware: [
-			offset(8),
-			flip({
-				padding: VIEWPORT_PADDING,
-				fallbackPlacements: ['bottom-start', 'top-end', 'top-start'],
-			}),
-			shift({ padding: VIEWPORT_PADDING }),
-			size({
-				padding: VIEWPORT_PADDING,
-				apply({ availableWidth, elements }) {
-					const width = Math.min(POPUP_MAX_WIDTH, availableWidth)
-					Object.assign(elements.floating.style, {
-						width: `${width}px`,
-						maxWidth: `min(${POPUP_MAX_WIDTH}px, calc(100vw - ${VIEWPORT_PADDING * 2}px))`,
-					})
-				},
-			}),
-		],
-	})
-
-	const click = useClick(context)
-	const dismiss = useDismiss(context, { outsidePressEvent: 'mousedown' })
-	const role = useRole(context)
-	const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role])
-	const referenceRef = useRef(null)
-	const floatingRef = useRef(null)
-
-	useEffect(() => {
-		refs.setReference(referenceRef.current)
-		refs.setFloating(floatingRef.current)
-	}, [refs.setReference, refs.setFloating])
+	const containerRef = useRef(null)
 
 	/* Animate bell when new notification arrives */
 	useEffect(() => {
@@ -89,15 +53,34 @@ export function NotificationBell() {
 		}
 	}, [lastArrivalAt])
 
+	/* Click outside and Escape key listener to close dropdown */
+	useEffect(() => {
+		if (!isOpen) return
+		const handleOutsideClick = (e) => {
+			if (containerRef.current && !containerRef.current.contains(e.target)) {
+				setIsOpen(false)
+			}
+		}
+		const handleKeyDown = (e) => {
+			if (e.key === 'Escape') setIsOpen(false)
+		}
+		document.addEventListener('mousedown', handleOutsideClick)
+		document.addEventListener('keydown', handleKeyDown)
+		return () => {
+			document.removeEventListener('mousedown', handleOutsideClick)
+			document.removeEventListener('keydown', handleKeyDown)
+		}
+	}, [isOpen])
+
 	return (
-		<div className="relative">
+		<div ref={containerRef} className="relative">
 			<button
-				ref={referenceRef}
+				type="button"
+				onClick={() => setIsOpen((prev) => !prev)}
 				aria-label={`Notifications${unreadCount ? ` — ${unreadCount} unread` : ''}`}
 				aria-expanded={isOpen}
 				aria-haspopup="true"
-				className="relative flex h-9 w-9 items-center justify-center rounded-xl text-[var(--color-muted)] transition-colors duration-200 hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]"
-				{...getReferenceProps()}
+				className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-[var(--color-muted)] transition-colors duration-200 hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]"
 			>
 				<motion.div
 					animate={
@@ -126,37 +109,32 @@ export function NotificationBell() {
 				</AnimatePresence>
 			</button>
 
-			<FloatingPortal>
-				<AnimatePresence>
-					{isOpen && (
-						<div
-							ref={floatingRef}
-							style={{
-								...floatingStyles,
-								backgroundColor: 'var(--floating-bg)',
-								borderColor: 'var(--floating-border)',
-								boxShadow: 'var(--floating-shadow)',
-							}}
-							className="z-50 flex max-w-[min(380px,calc(100vw-24px))] flex-col overflow-hidden rounded-2xl border shadow-lg"
-							{...getFloatingProps()}
+			<AnimatePresence>
+				{isOpen && (
+					<div
+						className="absolute right-0 top-full mt-2 z-50 w-[min(380px,calc(100vw-32px))] overflow-hidden rounded-2xl border shadow-lg"
+						style={{
+							backgroundColor: 'var(--floating-bg)',
+							borderColor: 'var(--floating-border)',
+							boxShadow: 'var(--floating-shadow)',
+						}}
+					>
+						<motion.div
+							initial={{ opacity: 0, y: 8, scale: 0.96 }}
+							animate={{ opacity: 1, y: 0, scale: 1 }}
+							exit={{ opacity: 0, y: 8, scale: 0.96 }}
+							transition={{ duration: 0.18, ease: 'easeOut' }}
 						>
-							<motion.div
-								initial={{ opacity: 0, y: 8, scale: 0.96 }}
-								animate={{ opacity: 1, y: 0, scale: 1 }}
-								exit={{ opacity: 0, y: 8, scale: 0.96 }}
-								transition={{ duration: 0.18, ease: 'easeOut' }}
-							>
-								<NotificationPopup
-									notifications={popupNotifications}
-									unreadCount={unreadCount}
-									isLoading={isLoading}
-									onClose={() => setIsOpen(false)}
-								/>
-							</motion.div>
-						</div>
-					)}
-				</AnimatePresence>
-			</FloatingPortal>
+							<NotificationPopup
+								notifications={popupNotifications}
+								unreadCount={unreadCount}
+								isLoading={isLoading}
+								onClose={() => setIsOpen(false)}
+							/>
+						</motion.div>
+					</div>
+				)}
+			</AnimatePresence>
 		</div>
 	)
 }

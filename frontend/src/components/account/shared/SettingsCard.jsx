@@ -7,10 +7,10 @@ export function SettingsCard({ title, description, children, className, footer }
 			{(title || description) && (
 				<div className="border-b border-[var(--color-border)] px-4 py-4 sm:px-6 sm:py-5">
 					{title && (
-						<h3 className="text-base font-semibold text-[var(--color-text)]">{title}</h3>
+						<h3 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">{title}</h3>
 					)}
 					{description && (
-						<p className="mt-1 text-sm text-[var(--color-muted)]">{description}</p>
+						<p className="mt-1 text-sm leading-[1.5] text-[var(--color-muted)]">{description}</p>
 					)}
 				</div>
 			)}
@@ -45,14 +45,19 @@ export function SettingsRow({ label, description, children, className }) {
 	)
 }
 
-export function SectionHeader({ title, description }) {
+export function SectionHeader({ eyebrow, title, description }) {
 	return (
 		<div className="mb-4 sm:mb-6">
-			<h2 className="text-lg font-semibold tracking-tight text-[var(--color-text)] sm:text-xl">
+			{eyebrow && (
+				<p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
+					{eyebrow}
+				</p>
+			)}
+			<h2 className="text-2xl font-black tracking-[-0.05em] leading-[1.05] text-[var(--color-text)] sm:text-[32px]">
 				{title}
 			</h2>
 			{description && (
-				<p className="mt-1 text-sm text-[var(--color-muted)]">{description}</p>
+				<p className="mt-1 text-base leading-[1.6] text-[var(--color-muted)]">{description}</p>
 			)}
 		</div>
 	)

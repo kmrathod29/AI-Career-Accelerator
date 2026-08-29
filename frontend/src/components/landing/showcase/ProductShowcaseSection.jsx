@@ -17,11 +17,11 @@ import { cn } from '@utils/classNames.js'
 /* ── Feature data ───────────────────────────────────────────────── */
 const FEATURES = [
   { id: 'resume-builder', label: 'Resume Builder',           icon: FileText,   desc: 'Build ATS-optimized resumes with AI assistance.' },
-  { id: 'ats-analyzer',   label: 'ATS Analyzer',             icon: ScanSearch, desc: 'Check whether your resume is ATS-friendly and identify formatting, keyword, and structure issues that could hurt your chances of getting shortlisted.' },
-  { id: 'resume-vs-jd',   label: 'Resume Match',            icon: GitCompare, desc: 'Compare your resume with a specific job description to see how closely your experience and skills match that job.' },
-  { id: 'skill-gap',      label: 'Skill Gap Analysis',       icon: TrendingUp, desc: 'Find the skills you are missing for your target role and get clear recommendations on what to learn next.' },
-  { id: 'career-roadmap', label: 'Career Roadmap',           icon: Map,        desc: 'Follow a step-by-step career path from your current level to your target role, with skills, milestones, and progression stages.' },
-  { id: 'ai-coach',       label: 'AI Career Coach',          icon: Bot,        desc: 'Receive AI-powered career guidance.' },
+  { id: 'ats-analyzer',   label: 'ATS Analyzer',             icon: ScanSearch, desc: 'Check your resume for ATS compatibility, formatting issues, and missing keywords before you apply.' },
+  { id: 'resume-vs-jd',   label: 'Resume Match',            icon: GitCompare, desc: 'Compare your resume with a specific job description to see how closely your experience matches the role.' },
+  { id: 'skill-gap',      label: 'Skill Gap Analysis',       icon: TrendingUp, desc: 'Identify the skills you are missing for your target role and see what you should learn or strengthen next.' },
+  { id: 'career-roadmap', label: 'Career Roadmap',           icon: Map,        desc: 'Build a step-by-step career plan showing what to learn, build, and achieve to move toward your target role.' },
+  { id: 'ai-coach',       label: 'AI Career Coach',          icon: Bot,        desc: 'Get personalized career guidance from your AI coach.' },
 ]
 
 /* ── Framer Motion presets ──────────────────────────────────────── */
@@ -54,14 +54,14 @@ export const ProductShowcaseSection = memo(function ProductShowcaseSection() {
         aria-hidden="true"
       />
 
-      <div className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-32">
+      <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         {/* ── Section header ─────────────────────────────── */}
         <motion.div
           variants={FADE_UP}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
-          className="mx-auto mb-14 max-w-2xl text-center sm:mb-16 lg:mb-20"
+          className="mx-auto mb-10 max-w-2xl text-center sm:mb-12 lg:mb-14"
         >
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
             PRODUCT SHOWCASE
@@ -73,7 +73,7 @@ export const ProductShowcaseSection = memo(function ProductShowcaseSection() {
             See AI Career Accelerator{' '}
             <span className="text-[var(--color-primary)]">in Action</span>
           </h2>
-          <p className="mt-4 text-base leading-[1.6] text-[var(--color-muted)] sm:text-lg">
+          <p className="mt-3 max-w-2xl text-[15px] leading-6 text-[var(--color-muted)] sm:text-base">
             Explore how each AI-powered module helps you become placement-ready.
           </p>
         </motion.div>

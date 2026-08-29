@@ -81,13 +81,13 @@ export const FeatureTabs = memo(function FeatureTabs({ features, activeId, onSel
             <div className="min-w-0 flex-1">
               <p
                 className={cn(
-                  'truncate text-sm font-semibold transition-colors',
+                  'truncate text-base font-bold tracking-[-0.02em] transition-colors',
                   isActive ? 'text-[var(--color-text)]' : 'text-[var(--color-muted)]',
                 )}
               >
                 {f.label}
               </p>
-              <p className="mt-0.5 truncate text-xs text-[var(--color-muted)]">
+              <p className="mt-0.5 truncate text-sm leading-[1.5] text-[var(--color-muted)]">
                 {f.desc}
               </p>
             </div>

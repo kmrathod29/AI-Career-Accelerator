@@ -2,9 +2,9 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Star } from "lucide-react";
-import { PrimaryButton } from "@components/ui/PrimaryButton.jsx";
 import { HeroDashboard } from "./HeroDashboard.jsx";
 import { APP_ROUTES } from "@constants/routes.js";
+import { useAuth } from "@providers/useAuth.js";
 
 /* ─── Framer Motion presets ─────────────────────────────────────── */
 const FADE_UP = {
@@ -30,7 +30,7 @@ const HeroHeading = memo(function HeroHeading() {
         AI CAREER COACHING
       </p>
       <h1
-        className="text-[38px] font-black leading-[1] tracking-[-0.06em] text-[var(--color-text)] sm:text-[48px] lg:text-[56px]"
+        className="text-[38px] font-black leading-[0.98] tracking-[-0.06em] text-[var(--color-text)] sm:text-[48px] lg:text-[58px]"
       >
         Your AI Career Coach,
         <br />
@@ -44,15 +44,18 @@ const HeroSubtitle = memo(function HeroSubtitle() {
   return (
     <motion.p
       variants={FADE_UP}
-      className="max-w-[440px] text-base leading-[1.6] text-[var(--color-muted)] sm:text-lg"
+      className="max-w-[480px] text-[15px] leading-6 text-[var(--color-muted)] sm:text-base"
     >
-      Build an ATS-ready résumé, close skill gaps, and get a personalised career
+      Build an ATS-ready resume, close skill gaps, and get a personalised career
       roadmap — in minutes, not months.
     </motion.p>
   );
 });
 
 const HeroCTAs = memo(function HeroCTAs() {
+  const { isAuthenticated } = useAuth();
+  const targetRoute = isAuthenticated ? APP_ROUTES.DASHBOARD : APP_ROUTES.REGISTER;
+
   const scrollToFeatures = () => {
     document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -62,34 +65,28 @@ const HeroCTAs = memo(function HeroCTAs() {
       variants={FADE_UP}
       className="flex flex-wrap items-center gap-3"
     >
-      {/* Primary — solid blue, gradient on hover */}
-      <Link to={APP_ROUTES.REGISTER}>
-        <PrimaryButton
-          className="group gap-2 rounded-3xl px-7 py-3 text-sm font-semibold"
-          aria-label="Create your free account"
+      {/* Primary CTA — text ALWAYS "Get Started" */}
+      <Link to={targetRoute}>
+        <button
+          type="button"
+          className="btn-ripple magnetic-btn group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(37,99,235,0.28)] dark:shadow-[0_10px_25px_rgba(37,99,235,0.2)] transition hover:-translate-y-0.5 cursor-pointer"
+          aria-label="Get Started"
         >
           Get Started
           <ArrowRight
             className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5"
             aria-hidden="true"
           />
-        </PrimaryButton>
+        </button>
       </Link>
 
-      {/* Secondary ghost — uses CSS variables for dark mode support */}
+      {/* Secondary CTA */}
       <button
+        type="button"
         onClick={scrollToFeatures}
-        className={[
-          "inline-flex items-center gap-2 rounded-3xl",
-          "border border-[var(--color-border)] px-7 py-3",
-          "text-sm font-medium text-[var(--color-muted)] shadow-sm",
-          "transition-all duration-150",
-          "hover:border-[var(--color-surface-3)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] hover:shadow-md",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500",
-        ].join(" ")}
-        style={{ backgroundColor: "var(--color-surface)" }}
+        className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-6 py-3.5 text-sm font-semibold text-slate-700 dark:text-slate-300 shadow-sm transition hover:border-blue-200 dark:hover:border-blue-700 hover:text-blue-700 dark:hover:text-blue-400 cursor-pointer"
       >
-        Explore Features
+        See how it works
       </button>
     </motion.div>
   );
@@ -132,7 +129,7 @@ export function HeroSection() {
       aria-label="Hero — AI Career Accelerator"
     >
       <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[45%_55%] lg:gap-6 xl:gap-10">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[56%_44%] lg:gap-8 xl:gap-12">
           {/* ── Left: hero copy ─────────────────────────────── */}
           <motion.div
             variants={STAGGER}

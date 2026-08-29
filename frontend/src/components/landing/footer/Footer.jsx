@@ -1,18 +1,10 @@
 import { memo } from 'react'
 import { motion } from 'framer-motion'
-import { Code, Briefcase, Globe } from 'lucide-react'
 import { Logo } from '@components/ui/Logo.jsx'
 import { FooterColumn } from './FooterColumn.jsx'
-import { SocialLinks } from './SocialLinks.jsx'
 import { APP_ROUTES } from '@constants/routes.js'
 
 /* ── Footer link data ───────────────────────────────────────────── */
-const SOCIAL_LINKS = [
-  { label: 'GitHub',   href: 'https://github.com',   icon: Code },
-  { label: 'LinkedIn', href: 'https://linkedin.com',  icon: Briefcase },
-  { label: 'Twitter',  href: 'https://twitter.com',   icon: Globe },
-]
-
 const PLATFORM_LINKS = [
   { label: 'Resume Builder', href: '#' },
   { label: 'ATS Analyzer',  href: '#' },
@@ -54,7 +46,7 @@ export const Footer = memo(function Footer() {
       className="border-t border-[var(--color-border)]"
       role="contentinfo"
     >
-      <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         {/* ── Top: 4-column grid ─────────────────────────── */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {/* Column 1: Brand */}
@@ -68,11 +60,10 @@ export const Footer = memo(function Footer() {
             <div className="mb-4">
               <Logo />
             </div>
-            <p className="mb-5 max-w-xs text-sm leading-[1.5] text-[var(--color-muted)]">
+            <p className="max-w-xs text-sm leading-relaxed text-[var(--color-muted)]">
               AI-powered career platform helping students and job seekers build
               resumes, close skill gaps, and get placement-ready.
             </p>
-            <SocialLinks links={SOCIAL_LINKS} />
           </motion.div>
 
           {/* Column 2: Platform */}

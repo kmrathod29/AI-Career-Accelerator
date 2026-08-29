@@ -17,7 +17,7 @@ export function AtsIssues({ issues = [] }) {
 			<div className="mb-4 flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					<AlertTriangle className="h-4 w-4 text-amber-500" strokeWidth={1.8} />
-					<h3 className="text-sm font-semibold text-[var(--color-text)]">
+					<h3 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">
 						ATS Issues
 					</h3>
 				</div>

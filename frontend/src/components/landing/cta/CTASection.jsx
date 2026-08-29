@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Check } from 'lucide-react'
 import { PrimaryButton } from '@components/ui/PrimaryButton.jsx'
 import { APP_ROUTES } from '@constants/routes.js'
+import { useAuth } from '@providers/useAuth.js'
 
 /* ── Trust indicators ───────────────────────────────────────────── */
 const TRUST_ITEMS = [
@@ -29,6 +30,9 @@ const STAGGER = {
 
 /* ── CTASection ─────────────────────────────────────────────────── */
 export const CTASection = memo(function CTASection() {
+  const { isAuthenticated } = useAuth()
+  const targetRoute = isAuthenticated ? APP_ROUTES.DASHBOARD : APP_ROUTES.REGISTER
+
   return (
     <section
       id="pricing"
@@ -46,7 +50,7 @@ export const CTASection = memo(function CTASection() {
         aria-hidden="true"
       />
 
-      <div className="mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
+      <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <motion.div
           variants={STAGGER}
           initial="hidden"
@@ -75,18 +79,18 @@ export const CTASection = memo(function CTASection() {
           {/* Subtitle */}
           <motion.p
             variants={FADE_UP}
-            className="mx-auto mt-5 max-w-xl text-base leading-[1.6] text-[var(--color-muted)] sm:text-lg"
+            className="mx-auto mt-3 max-w-xl text-[15px] leading-6 text-[var(--color-muted)] sm:text-base"
           >
             Build ATS-ready resumes, discover skill gaps, prepare for interviews
             and achieve your career goals with one AI-powered platform.
           </motion.p>
 
           {/* Primary CTA */}
-          <motion.div variants={FADE_UP} className="mt-9">
-            <Link to={APP_ROUTES.REGISTER}>
+          <motion.div variants={FADE_UP} className="mt-8">
+            <Link to={targetRoute}>
               <PrimaryButton
                 className="group gap-2 rounded-full px-8 py-4 text-sm font-semibold"
-                aria-label="Create your free account"
+                aria-label="Get Started"
               >
                 Get Started
                 <ArrowRight

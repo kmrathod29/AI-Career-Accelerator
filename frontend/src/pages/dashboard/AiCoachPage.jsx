@@ -4,6 +4,7 @@ import { PlaceholderPage } from '@components/dashboard/shared/PlaceholderPage.js
 export function AiCoachPage() {
 	return (
 		<PlaceholderPage
+			eyebrow="AI CAREER COACH"
 			title="AI Career Coach"
 			subtitle="Get personalized career guidance, job search strategies, and interview preparation from your AI coach."
 			icon={Bot}

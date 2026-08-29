@@ -24,6 +24,16 @@ function RequireAuth({ children }) {
 	return children
 }
 
+function RedirectIfAuth({ children }) {
+	const { isAuthenticated } = useAuth()
+
+	if (isAuthenticated) {
+		return <Navigate to={APP_ROUTES.DASHBOARD} replace />
+	}
+
+	return children
+}
+
 /* Dashboard feature pages */
 import { ResumeBuilderPage } from '@pages/dashboard/ResumeBuilderPage.jsx'
 import { AtsAnalyzerPage } from '@pages/dashboard/AtsAnalyzerPage.jsx'
@@ -46,7 +56,7 @@ export default function App() {
 			<Route element={<MainLayout />}>
 				<Route path={APP_ROUTES.HOME} element={<HomePage />} />
 			</Route>
-			<Route element={<AuthLayout />}>
+			<Route element={<RedirectIfAuth><AuthLayout /></RedirectIfAuth>}>
 				<Route path={APP_ROUTES.LOGIN} element={<LoginPage />} />
 				<Route path={APP_ROUTES.REGISTER} element={<RegisterPage />} />
 				<Route path={APP_ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />

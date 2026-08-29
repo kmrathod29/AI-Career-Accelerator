@@ -16,10 +16,13 @@ export function ResumeHeader() {
 		>
 			{/* Left — title + subtitle */}
 			<div className="min-w-0">
-				<h2 className="text-lg font-bold tracking-[-0.02em] text-[var(--color-text)] sm:text-2xl">
+				<p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
+					RESUME BUILDER
+				</p>
+				<h2 className="text-2xl font-black tracking-[-0.05em] leading-[1.05] text-[var(--color-text)] sm:text-[32px]">
 					Resume Builder
 				</h2>
-				<p className="mt-0.5 text-sm text-[var(--color-muted)]">
+				<p className="mt-1 text-base leading-[1.6] text-[var(--color-muted)]">
 					Build an ATS-optimized resume with AI assistance.
 				</p>
 			</div>
@@ -33,7 +36,7 @@ export function ResumeHeader() {
 					whileHover={{ scale: 1.02 }}
 					whileTap={{ scale: 0.97 }}
 					onClick={() => toast.info('Preview mode coming soon')}
-					className="hidden items-center gap-2 rounded-xl bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 sm:inline-flex"
+					className="hidden items-center gap-2 rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 sm:inline-flex"
 				>
 					<Eye className="h-4 w-4" />
 					Preview Resume
@@ -44,7 +47,7 @@ export function ResumeHeader() {
 					whileHover={{ scale: 1.02 }}
 					whileTap={{ scale: 0.97 }}
 					onClick={() => toast.info('PDF export coming soon')}
-					className="hidden items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)] sm:inline-flex"
+					className="hidden items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-surface-2)] sm:inline-flex"
 				>
 					<Download className="h-4 w-4" />
 					Export PDF

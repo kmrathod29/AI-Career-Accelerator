@@ -37,12 +37,12 @@ export const SIDEBAR_NAV = [
  */
 export const PAGE_META = {
 	[APP_ROUTES.DASHBOARD]: { title: 'Dashboard', subtitle: 'Your career at a glance' },
-	[APP_ROUTES.RESUME_BUILDER]: { title: 'Resume Builder', subtitle: 'Craft your perfect resume' },
-	[APP_ROUTES.ATS_ANALYZER]: { title: 'ATS Analyzer', subtitle: 'Check whether your resume is ATS-friendly and identify formatting, keyword, and structure issues that could hurt your chances of getting shortlisted.' },
-	[APP_ROUTES.RESUME_MATCH]: { title: 'Resume Match', subtitle: 'Compare your resume with a specific job description to see how closely your experience and skills match that job.' },
-	[APP_ROUTES.SKILL_GAP]: { title: 'Skill Gap Analysis', subtitle: 'Find the skills you are missing for your target role and get clear recommendations on what to learn next.' },
-	[APP_ROUTES.CAREER_ROADMAP]: { title: 'Career Roadmap', subtitle: 'Follow a step-by-step career path from your current level to your target role, with skills, milestones, and progression stages.' },
-	[APP_ROUTES.AI_COACH]: { title: 'AI Career Coach', subtitle: 'Get personalized career guidance' },
+	[APP_ROUTES.RESUME_BUILDER]: { title: 'Resume Builder', subtitle: 'Build ATS-optimized resumes with AI assistance.' },
+	[APP_ROUTES.ATS_ANALYZER]: { title: 'ATS Resume Analyzer', subtitle: 'Check your resume for ATS compatibility, formatting issues, and missing keywords before you apply.' },
+	[APP_ROUTES.RESUME_MATCH]: { title: 'Resume Match', subtitle: 'Compare your resume with a specific job description to see how closely your experience matches the role.' },
+	[APP_ROUTES.SKILL_GAP]: { title: 'Skill Gap Analysis', subtitle: 'Identify the skills you are missing for your target role and see what you should learn or strengthen next.' },
+	[APP_ROUTES.CAREER_ROADMAP]: { title: 'Career Roadmap', subtitle: 'Build a step-by-step career plan showing what to learn, build, and achieve to move toward your target role.' },
+	[APP_ROUTES.AI_COACH]: { title: 'AI Career Coach', subtitle: 'Get personalized career guidance and interview prep from your AI coach.' },
 	[APP_ROUTES.NOTIFICATIONS]: { title: 'Notifications', subtitle: 'Stay updated on your progress' },
 	[APP_ROUTES.ACCOUNT]: { title: 'Account Center', subtitle: 'Manage your profile and preferences' },
 	[APP_ROUTES.PROFILE]: { title: 'Account Center', subtitle: 'Manage your profile and preferences' },

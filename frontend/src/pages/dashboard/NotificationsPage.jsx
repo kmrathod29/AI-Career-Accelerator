@@ -111,6 +111,7 @@ export function NotificationsPage() {
 		>
 			<motion.div variants={fadeUp} transition={{ duration: 0.35 }}>
 				<PageHeader
+					eyebrow="NOTIFICATIONS"
 					title="Notifications"
 					subtitle="Stay updated on resume analyses, interview results, and career milestones."
 				/>
