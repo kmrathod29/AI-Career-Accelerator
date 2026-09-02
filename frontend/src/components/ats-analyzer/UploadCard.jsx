@@ -101,7 +101,7 @@ export function UploadCardHero() {
 
 				{/* Headline + description */}
 				<h3 className="mb-2 text-center text-xl font-bold tracking-[-0.04em] text-[var(--color-text)]">
-					Upload your resume
+					Analyze Your Resume
 				</h3>
 				<p className="mx-auto mb-6 max-w-sm text-center text-sm leading-relaxed text-[var(--color-muted)]">
 					Upload a PDF or DOCX file to receive an AI-powered ATS compatibility report.
@@ -131,17 +131,7 @@ export function UploadCardHero() {
 					</p>
 				</motion.div>
 
-				{/* Single CTA */}
-				<motion.button
-					type="button"
-					whileHover={{ scale: 1.02 }}
-					whileTap={{ scale: 0.97 }}
-					onClick={() => inputRef.current?.click()}
-					className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-primary)] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-				>
-					<Upload className="h-4 w-4" />
-					Upload Resume
-				</motion.button>
+
 			</div>
 		</motion.div>
 	)

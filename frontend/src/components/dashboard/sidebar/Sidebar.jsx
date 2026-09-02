@@ -79,7 +79,7 @@ export function Sidebar() {
 						alt=""
 						aria-hidden="true"
 						draggable={false}
-						className="h-8 w-8 shrink-0 object-contain"
+						className="h-8 w-8 shrink-0 rounded-md object-contain dark:bg-[var(--color-surface-2)] dark:p-0.5"
 					/>
 					{!isCollapsed && (
 						<motion.span

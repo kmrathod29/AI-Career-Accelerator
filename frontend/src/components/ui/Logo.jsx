@@ -14,7 +14,7 @@ export function Logo() {
         alt=""
         aria-hidden="true"
         draggable={false}
-        className="h-8 w-8 shrink-0 object-contain"
+        className="h-8 w-8 shrink-0 rounded-md object-contain dark:bg-[var(--color-surface-2)] dark:p-0.5"
       />
       <span className="text-[15px] font-bold tracking-[-0.02em] text-[var(--color-text)]">
         AI Career Accelerator

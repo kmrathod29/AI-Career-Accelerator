@@ -44,12 +44,12 @@ export function ConfirmDialog({
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						transition={{ duration: 0.2 }}
-						className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-[2px]"
+						className="fixed inset-0 z-[10001] bg-black/40 backdrop-blur-[2px]"
 						onClick={onClose}
 						aria-hidden
 					/>
 
-					<div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
+					<div className="fixed inset-0 z-[10002] flex items-center justify-center p-4">
 						<motion.div
 							role="alertdialog"
 							aria-modal="true"

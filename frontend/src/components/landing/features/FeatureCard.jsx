@@ -77,7 +77,7 @@ export const FeatureCard = memo(function FeatureCard({
       </h3>
 
       {/* Description */}
-      <p className="mb-5 flex-1 text-base leading-[1.6] text-[var(--color-muted)]">
+      <p className="mb-5 flex-1 text-sm leading-[1.6] text-[var(--color-muted)]">
         {description}
       </p>
 

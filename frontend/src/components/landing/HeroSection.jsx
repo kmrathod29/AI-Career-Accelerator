@@ -1,8 +1,9 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HeroDashboard } from "./HeroDashboard.jsx";
+import { PrimaryButton } from "@components/ui/PrimaryButton.jsx";
 import { APP_ROUTES } from "@constants/routes.js";
 import { useAuth } from "@providers/useAuth.js";
 
@@ -65,11 +66,10 @@ const HeroCTAs = memo(function HeroCTAs() {
       variants={FADE_UP}
       className="flex flex-wrap items-center gap-3"
     >
-      {/* Primary CTA — text ALWAYS "Get Started" */}
+      {/* Primary CTA — uses shared PrimaryButton for consistency */}
       <Link to={targetRoute}>
-        <button
-          type="button"
-          className="btn-ripple magnetic-btn group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(37,99,235,0.28)] dark:shadow-[0_10px_25px_rgba(37,99,235,0.2)] transition hover:-translate-y-0.5 cursor-pointer"
+        <PrimaryButton
+          className="group gap-2 rounded-full px-6 py-3.5 text-sm font-semibold shadow-[0_18px_36px_rgba(37,99,235,0.28)] dark:shadow-[0_10px_25px_rgba(37,99,235,0.2)]"
           aria-label="Get Started"
         >
           Get Started
@@ -77,44 +77,17 @@ const HeroCTAs = memo(function HeroCTAs() {
             className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5"
             aria-hidden="true"
           />
-        </button>
+        </PrimaryButton>
       </Link>
 
-      {/* Secondary CTA */}
+      {/* Secondary CTA — transparent outline, no grey fill */}
       <button
         type="button"
         onClick={scrollToFeatures}
-        className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-6 py-3.5 text-sm font-semibold text-slate-700 dark:text-slate-300 shadow-sm transition hover:border-blue-200 dark:hover:border-blue-700 hover:text-blue-700 dark:hover:text-blue-400 cursor-pointer"
+        className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--color-border)] bg-transparent px-6 py-3.5 text-sm font-semibold text-[var(--color-text)] shadow-sm transition hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)] cursor-pointer"
       >
         See how it works
       </button>
-    </motion.div>
-  );
-});
-
-const TrustRow = memo(function TrustRow() {
-  return (
-    <motion.div variants={FADE_UP} className="flex items-center gap-2.5">
-      {/* Star rating */}
-      <div
-        className="flex items-center gap-0.5"
-        aria-label="Rated 5 out of 5 stars"
-        role="img"
-      >
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            className="h-3.5 w-3.5 fill-amber-400 text-amber-400"
-            aria-hidden="true"
-          />
-        ))}
-      </div>
-
-      {/* User count */}
-      <p className="text-xs text-[var(--color-muted)]">
-        <span className="font-semibold text-[var(--color-text)]">10,000+</span>{" "}
-        students
-      </p>
     </motion.div>
   );
 });
@@ -140,7 +113,6 @@ export function HeroSection() {
             <HeroHeading />
             <HeroSubtitle />
             <HeroCTAs />
-            <TrustRow />
           </motion.div>
 
           {/* ── Right: product dashboard ─────────────────────── */}
@@ -150,3 +122,4 @@ export function HeroSection() {
     </section>
   );
 }
+
