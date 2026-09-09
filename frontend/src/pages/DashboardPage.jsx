@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { APP_ROUTES } from '@constants/routes.js'
+import { useAuth } from '@providers/useAuth.js'
 
 const fadeUp = {
 	initial: { opacity: 0, y: 16 },
@@ -52,6 +53,7 @@ function getGreeting() {
 }
 
 export function DashboardPage() {
+	const { user } = useAuth()
 	const today = new Date().toLocaleDateString('en-US', {
 		weekday: 'long',
 		year: 'numeric',
@@ -74,7 +76,7 @@ export function DashboardPage() {
 							OVERVIEW
 						</p>
 						<h2 className="text-[32px] font-black tracking-[-0.05em] leading-[1.05] text-[var(--color-text)]">
-							{getGreeting()}, Krunal 👋
+							{getGreeting()}, {user?.firstName || 'there'} 👋
 						</h2>
 						<p className="mt-1 text-base leading-[1.6] text-[var(--color-muted)]">
 							Here&apos;s what&apos;s happening with your career journey.

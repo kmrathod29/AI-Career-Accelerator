@@ -5,6 +5,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { registerSchema, getPasswordStrength } from '@constants/authSchemas.js'
 import { APP_ROUTES } from '@constants/routes.js'
+import { useAuth } from '@providers/useAuth.js'
+import { authService } from '@/services/authService.js'
 import { AuthHeader } from './AuthHeader.jsx'
 import { AuthTabs } from './AuthTabs.jsx'
 import { PasswordInput } from './PasswordInput.jsx'
@@ -13,6 +15,7 @@ import { cn } from '@utils/classNames.js'
 
 export const RegisterForm = memo(function RegisterForm() {
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const {
     register,
@@ -22,20 +25,36 @@ export const RegisterForm = memo(function RegisterForm() {
   } = useForm({
     resolver: zodResolver(registerSchema),
     mode: 'onChange',
-    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' },
   })
 
   const passwordValue = watch('password')
   const strength = getPasswordStrength(passwordValue)
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     const loadingId = toast.loading('Creating your account…')
-    await new Promise((r) => setTimeout(r, 800))
-    toast.success('Account created!', {
-      id: loadingId,
-      description: 'Please sign in with your new credentials.',
-    })
-    setTimeout(() => navigate(APP_ROUTES.LOGIN), 600)
+
+    try {
+      const response = await authService.register({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      })
+
+      if (response?.data?.user) {
+        login(response.data.user)
+        toast.success('Account created!', {
+          id: loadingId,
+          description: 'Welcome to AI Career Accelerator.',
+        })
+        navigate(APP_ROUTES.DASHBOARD, { replace: true })
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message || 'Something went wrong. Please try again.'
+      toast.error(message, { id: loadingId })
+    }
   }
 
   return (
@@ -49,26 +68,49 @@ export const RegisterForm = memo(function RegisterForm() {
       <AuthTabs />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full space-y-4">
-        {/* Full Name */}
-        <div>
-          <label htmlFor="reg-name" className="mb-1.5 block text-sm font-medium text-[var(--color-text)]">
-            Full Name
-          </label>
-          <input
-            id="reg-name"
-            type="text"
-            autoComplete="name"
-            placeholder="Alex Johnson"
-            className={cn(
-              'w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] outline-none transition-colors duration-200',
-              'placeholder:text-[var(--color-muted)]',
-              'focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20',
-              errors.name ? 'border-red-400' : 'border-[var(--color-border)]',
-            )}
-            aria-invalid={!!errors.name}
-            {...register('name')}
-          />
-          {errors.name && <p role="alert" className="mt-1.5 text-xs text-red-500">{errors.name.message}</p>}
+        {/* First Name + Last Name — side by side */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor="reg-first-name" className="mb-1.5 block text-sm font-medium text-[var(--color-text)]">
+              First Name
+            </label>
+            <input
+              id="reg-first-name"
+              type="text"
+              autoComplete="given-name"
+              placeholder="Alex"
+              className={cn(
+                'w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] outline-none transition-colors duration-200',
+                'placeholder:text-[var(--color-muted)]',
+                'focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20',
+                errors.firstName ? 'border-red-400' : 'border-[var(--color-border)]',
+              )}
+              aria-invalid={!!errors.firstName}
+              {...register('firstName')}
+            />
+            {errors.firstName && <p role="alert" className="mt-1.5 text-xs text-red-500">{errors.firstName.message}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="reg-last-name" className="mb-1.5 block text-sm font-medium text-[var(--color-text)]">
+              Last Name
+            </label>
+            <input
+              id="reg-last-name"
+              type="text"
+              autoComplete="family-name"
+              placeholder="Johnson"
+              className={cn(
+                'w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] outline-none transition-colors duration-200',
+                'placeholder:text-[var(--color-muted)]',
+                'focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20',
+                errors.lastName ? 'border-red-400' : 'border-[var(--color-border)]',
+              )}
+              aria-invalid={!!errors.lastName}
+              {...register('lastName')}
+            />
+            {errors.lastName && <p role="alert" className="mt-1.5 text-xs text-red-500">{errors.lastName.message}</p>}
+          </div>
         </div>
 
         {/* Email */}

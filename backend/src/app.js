@@ -1,0 +1,46 @@
+import express from 'express'
+import cors from 'cors'
+import helmet from 'helmet'
+import { createSessionMiddleware } from './config/session.js'
+import authRoutes from './routes/authRoutes.js'
+import healthRoutes from './routes/healthRoutes.js'
+import { sendError } from './utils/apiResponse.js'
+
+const app = express()
+
+/* ── Security headers ──────────────────────────────────────── */
+app.use(helmet())
+
+/* ── CORS ──────────────────────────────────────────────────── */
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }),
+)
+
+/* ── Body parsers with size limits ────────────────────────── */
+app.use(express.json({ limit: '1mb' }))
+app.use(express.urlencoded({ extended: false, limit: '1mb' }))
+
+/* ── Session ──────────────────────────────────────────────── */
+app.use(createSessionMiddleware())
+
+/* ── Routes ───────────────────────────────────────────────── */
+app.use('/api/health', healthRoutes)
+app.use('/api/auth', authRoutes)
+
+/* ── 404 handler ──────────────────────────────────────────── */
+app.use((_req, res) => {
+  sendError(res, 'Route not found', 404)
+})
+
+/* ── Global error handler ─────────────────────────────────── */
+app.use((err, _req, res, _next) => {
+  console.error('Unhandled error:', err)
+  sendError(res, 'Internal server error', 500)
+})
+
+export default app

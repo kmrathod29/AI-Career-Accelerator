@@ -5,19 +5,15 @@ import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { loginSchema } from '@constants/authSchemas.js'
 import { APP_ROUTES } from '@constants/routes.js'
-import { notificationEvents } from '@/services/notificationService.js'
 import { useAuth } from '@providers/useAuth.js'
+import { authService } from '@/services/authService.js'
 import { AuthHeader } from './AuthHeader.jsx'
 import { AuthTabs } from './AuthTabs.jsx'
 import { PasswordInput } from './PasswordInput.jsx'
 import { Divider } from './Divider.jsx'
 import { GoogleButton } from './GoogleButton.jsx'
-import { DeveloperCredentials } from './DeveloperCredentials.jsx'
 import { PrimaryButton } from '@components/ui/PrimaryButton.jsx'
 import { cn } from '@utils/classNames.js'
-
-const DEMO_EMAIL = 'demo@careeraccelerator.ai'
-const DEMO_PASS = 'Demo@123'
 
 export const LoginForm = memo(function LoginForm() {
   const navigate = useNavigate()
@@ -26,7 +22,6 @@ export const LoginForm = memo(function LoginForm() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting, isValid },
   } = useForm({
     resolver: zodResolver(loginSchema),
@@ -37,23 +32,22 @@ export const LoginForm = memo(function LoginForm() {
   const onSubmit = async (data) => {
     const loadingId = toast.loading('Signing you in...')
 
-    // Simulate network delay
-    await new Promise((r) => setTimeout(r, 800))
+    try {
+      const response = await authService.login({
+        email: data.email,
+        password: data.password,
+      })
 
-    // Temporary frontend-only demo auth
-    if (data.email === DEMO_EMAIL && data.password === DEMO_PASS) {
-      login({ userEmail: data.email })
-      toast.success('Welcome back!', { id: loadingId })
-      notificationEvents.welcomeBack('Krunal')
-      setTimeout(() => navigate(APP_ROUTES.DASHBOARD), 600)
-    } else {
-      toast.error('Invalid email or password.', { id: loadingId })
+      if (response?.data?.user) {
+        login(response.data.user)
+        toast.success('Welcome back!', { id: loadingId })
+        navigate(APP_ROUTES.DASHBOARD, { replace: true })
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message || 'Something went wrong. Please try again.'
+      toast.error(message, { id: loadingId })
     }
-  }
-
-  const handleAutoFill = (email, password) => {
-    setValue('email', email, { shouldValidate: true })
-    setValue('password', password, { shouldValidate: true })
   }
 
   return (
@@ -141,8 +135,6 @@ export const LoginForm = memo(function LoginForm() {
           Create account
         </Link>
       </p>
-
-      <DeveloperCredentials onFill={handleAutoFill} />
     </div>
   )
 })

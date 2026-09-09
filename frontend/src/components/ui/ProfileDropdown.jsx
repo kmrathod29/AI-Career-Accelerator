@@ -37,10 +37,13 @@ function getInitials(name) {
 	)
 }
 
-function getDisplayName(profile) {
-	const fullName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ').trim()
+function getDisplayName(profile, authUser) {
+	const fullName = [
+		profile?.firstName || authUser?.firstName,
+		profile?.lastName || authUser?.lastName,
+	].filter(Boolean).join(' ').trim()
 	if (fullName) return fullName
-	return profile?.email?.split('@')[0] ?? 'User'
+	return authUser?.email?.split('@')[0] ?? profile?.email?.split('@')[0] ?? 'User'
 }
 
 const menuItemClassName =
@@ -294,14 +297,14 @@ export function ProfileDropdown({
 	onNavigate,
 	menuPlacement,
 }) {
-	const { isAuthenticated, userEmail } = useAuth()
+	const { isAuthenticated, user: authUser } = useAuth()
 	const profile = useProfile()
 	const [isLogoutOpen, setIsLogoutOpen] = useState(false)
 
-	const displayName = useMemo(() => getDisplayName(profile), [profile])
+	const displayName = useMemo(() => getDisplayName(profile, authUser), [profile, authUser])
 	const initials = useMemo(() => getInitials(displayName), [displayName])
 	const avatarUrl = profile?.avatar ?? null
-	const email = userEmail ?? profile?.email ?? ''
+	const email = authUser?.email ?? profile?.email ?? ''
 
 	const openLogoutDialog = () => setIsLogoutOpen(true)
 

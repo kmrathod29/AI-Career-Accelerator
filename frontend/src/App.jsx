@@ -15,7 +15,11 @@ import { NotFoundPage } from '@pages/NotFoundPage.jsx'
 import { useAuth } from '@providers/useAuth.js'
 
 function RequireAuth({ children }) {
-	const { isAuthenticated } = useAuth()
+	const { isAuthenticated, isLoading } = useAuth()
+
+	if (isLoading) {
+		return <PageLoader />
+	}
 
 	if (!isAuthenticated) {
 		return <Navigate to={APP_ROUTES.LOGIN} replace />
@@ -25,7 +29,11 @@ function RequireAuth({ children }) {
 }
 
 function RedirectIfAuth({ children }) {
-	const { isAuthenticated } = useAuth()
+	const { isAuthenticated, isLoading } = useAuth()
+
+	if (isLoading) {
+		return <PageLoader />
+	}
 
 	if (isAuthenticated) {
 		return <Navigate to={APP_ROUTES.DASHBOARD} replace />

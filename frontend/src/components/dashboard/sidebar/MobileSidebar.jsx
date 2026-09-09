@@ -11,10 +11,33 @@ import { SIDEBAR_NAV } from '@constants/dashboardNav.js'
 import { APP_ROUTES } from '@constants/routes.js'
 import logoSrc from '@assets/logo/AI-Career-Accelerator-only-logo.png'
 import { SidebarItem } from './SidebarItem.jsx'
+import { useAuth } from '@providers/useAuth.js'
+import { useProfile } from '@/stores/accountStore.js'
 
 const ICON_MAP = {
 	LayoutDashboard, FileText, ScanSearch, GitCompareArrows,
 	Mic, BrainCircuit, Map, Bot, Bell, UserCircle, Settings,
+}
+
+function getInitials(name) {
+	if (!name) return 'U'
+	return (
+		name
+			.split(' ')
+			.filter(Boolean)
+			.slice(0, 2)
+			.map((word) => word[0].toUpperCase())
+			.join('') || 'U'
+	)
+}
+
+function getDisplayName(user, profile) {
+	const fullName = [
+		user?.firstName || profile?.firstName,
+		user?.lastName || profile?.lastName,
+	].filter(Boolean).join(' ').trim()
+	if (fullName) return fullName
+	return user?.email?.split('@')[0] ?? 'User'
 }
 
 /**
@@ -22,6 +45,13 @@ const ICON_MAP = {
  * Portalled to document.body. Backdrop blur + body scroll lock.
  */
 export function MobileSidebar({ isOpen, onClose }) {
+	const { user } = useAuth()
+	const profile = useProfile()
+
+	const displayName = getDisplayName(user, profile)
+	const initials = getInitials(displayName)
+	const email = user?.email ?? profile?.email ?? ''
+
 	/* ESC key + body scroll lock */
 	useEffect(() => {
 		if (!isOpen) return
@@ -117,15 +147,15 @@ export function MobileSidebar({ isOpen, onClose }) {
 							))}
 						</nav>
 
-						{/* Bottom user info placeholder */}
+						{/* Bottom user info — dynamic */}
 						<div className="shrink-0 border-t border-[var(--color-border)] p-4">
 							<div className="flex items-center gap-3">
 								<div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-xs font-bold text-white">
-									KR
+									{initials}
 								</div>
 								<div className="min-w-0 flex-1">
-									<p className="truncate text-sm font-medium text-[var(--color-text)]">Krunal Rathod</p>
-									<p className="truncate text-[11px] text-[var(--color-muted)]">krunal@example.com</p>
+									<p className="truncate text-sm font-medium text-[var(--color-text)]">{displayName}</p>
+									<p className="truncate text-[11px] text-[var(--color-muted)]">{email}</p>
 								</div>
 							</div>
 						</div>
@@ -136,3 +166,4 @@ export function MobileSidebar({ isOpen, onClose }) {
 		document.body,
 	)
 }
+

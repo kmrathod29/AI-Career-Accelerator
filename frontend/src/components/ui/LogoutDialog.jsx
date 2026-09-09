@@ -15,12 +15,14 @@ export function LogoutDialog({ open, onClose }) {
 	const handleConfirm = async () => {
 		setIsLoggingOut(true)
 		try {
-			logout({ clearStorage: true })
+			await logout()
 			accountStore.reset()
 			notificationStore.reset()
 			toast.success('Logged out successfully')
 			onClose()
 			navigate(APP_ROUTES.HOME, { replace: true })
+		} catch {
+			toast.error('Logout failed. Please try again.')
 		} finally {
 			setIsLoggingOut(false)
 		}

@@ -1,78 +1,80 @@
-import { useEffect, useMemo, useState } from 'react'
-import { getLocalStorageValue, setLocalStorageValue } from '@utils/storage.js'
-import { AUTH_STORAGE_KEY, AuthContext } from './authContext.js'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { authService } from '@/services/authService.js'
+import { AuthContext } from './authContext.js'
 
-function readStoredSession() {
-	try {
-		const stored = getLocalStorageValue(AUTH_STORAGE_KEY, null)
-		if (!stored) {
-			return { isAuthenticated: false, userEmail: null }
-		}
-
-		const parsed = JSON.parse(stored)
-		return {
-			isAuthenticated: Boolean(parsed?.isAuthenticated),
-			userEmail: parsed?.userEmail ?? null,
-		}
-	} catch {
-		return { isAuthenticated: false, userEmail: null }
-	}
-}
-
+/**
+ * AuthProvider — manages authentication state via server-side sessions.
+ *
+ * On mount, calls GET /api/auth/me to restore the session from the
+ * HttpOnly cookie. No auth tokens are stored in localStorage.
+ *
+ * Provides:
+ *   - user          : { id, firstName, lastName, email } | null
+ *   - isAuthenticated : boolean
+ *   - isLoading     : boolean  (true during initial session check)
+ *   - login(user)   : set authenticated user from server response
+ *   - logout()      : call server logout + clear state
+ */
 export function AuthProvider({ children }) {
-	const [session, setSession] = useState(readStoredSession)
+  const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-	useEffect(() => {
-		if (session.isAuthenticated) {
-			setLocalStorageValue(AUTH_STORAGE_KEY, JSON.stringify(session))
-			return
-		}
+  /**
+   * On mount — check if there's an existing session.
+   * GET /api/auth/me will succeed if the HttpOnly cookie is valid.
+   */
+  useEffect(() => {
+    let cancelled = false
 
-		if (typeof window !== 'undefined') {
-			window.localStorage.removeItem(AUTH_STORAGE_KEY)
-		}
-	}, [session])
+    async function checkSession() {
+      try {
+        const response = await authService.me()
+        if (!cancelled && response?.data?.user) {
+          setUser(response.data.user)
+        }
+      } catch {
+        // No valid session — user stays null (unauthenticated)
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false)
+        }
+      }
+    }
 
-	useEffect(() => {
-		const handleStorage = (event) => {
-			if (event.key === AUTH_STORAGE_KEY || event.key === null) {
-				setSession(readStoredSession())
-			}
-		}
+    checkSession()
+    return () => { cancelled = true }
+  }, [])
 
-		window.addEventListener('storage', handleStorage)
-		return () => window.removeEventListener('storage', handleStorage)
-	}, [])
+  /**
+   * Set authenticated user from a login/register response.
+   */
+  const login = useCallback((userData) => {
+    setUser(userData)
+  }, [])
 
-	const login = ({ userEmail = null } = {}) => {
-		const nextSession = { isAuthenticated: true, userEmail }
-		setSession(nextSession)
-		setLocalStorageValue(AUTH_STORAGE_KEY, JSON.stringify(nextSession))
-	}
+  /**
+   * Logout — calls the backend to destroy the session,
+   * then clears local state regardless.
+   */
+  const logout = useCallback(async () => {
+    try {
+      await authService.logout()
+    } catch {
+      // Even if the server call fails, clear local state
+    }
+    setUser(null)
+  }, [])
 
-	const logout = ({ clearStorage = false } = {}) => {
-		setSession({ isAuthenticated: false, userEmail: null })
+  const value = useMemo(
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      isLoading,
+      login,
+      logout,
+    }),
+    [user, isLoading, login, logout],
+  )
 
-		if (typeof window === 'undefined') {
-			return
-		}
-
-		if (clearStorage) {
-			window.localStorage.clear()
-			return
-		}
-
-		window.localStorage.removeItem(AUTH_STORAGE_KEY)
-	}
-
-	const value = useMemo(
-		() => ({
-			...session,
-			login,
-			logout,
-		}),
-		[session],
-	)
-
-	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
