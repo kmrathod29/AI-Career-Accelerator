@@ -22,6 +22,8 @@ export function createSessionMiddleware() {
     )
   }
 
+  const isProd = process.env.NODE_ENV === 'production'
+
   return session({
     secret,
     name: 'aca.sid',
@@ -34,8 +36,8 @@ export function createSessionMiddleware() {
     }),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
       maxAge: ONE_WEEK_MS,
       path: '/',
     },
