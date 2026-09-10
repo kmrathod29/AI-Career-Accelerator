@@ -7,7 +7,11 @@ import healthRoutes from './routes/healthRoutes.js'
 import { sendError } from './utils/apiResponse.js'
 
 const app = express()
-const configuredOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173'
+const configuredOrigin = process.env.CORS_ORIGIN || (
+  process.env.NODE_ENV === 'production'
+    ? 'https://ai-career-accelerator-bay.vercel.app'
+    : 'http://localhost:5173'
+)
 const corsOrigin = configuredOrigin.replace(/\/+$/, '')
 
 /* ── Security headers ──────────────────────────────────────── */

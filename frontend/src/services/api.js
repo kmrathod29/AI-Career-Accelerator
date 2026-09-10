@@ -11,7 +11,12 @@ import axios from 'axios'
  *   .env.production  → https://backend-kappa-seven-14.vercel.app/api
  */
 const rawUrl = import.meta.env.VITE_API_URL || ''
-const baseURL = rawUrl.replace(/\/+$/, '') // strip trailing slashes
+const configuredUrl = rawUrl.replace(/\/+$/, '')
+const baseURL = configuredUrl || (
+  import.meta.env.PROD
+    ? 'https://backend-kappa-seven-14.vercel.app/api'
+    : 'http://localhost:3000/api'
+)
 
 const api = axios.create({
   baseURL,
