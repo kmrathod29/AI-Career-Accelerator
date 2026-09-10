@@ -12,7 +12,12 @@ import axios from 'axios'
  */
 const rawUrl = import.meta.env.VITE_API_URL || ''
 const configuredUrl = rawUrl.replace(/\/+$/, '')
-const baseURL = configuredUrl || (
+const normalizedUrl = configuredUrl && configuredUrl.endsWith('/api')
+  ? configuredUrl
+  : configuredUrl
+    ? `${configuredUrl}/api`
+    : ''
+const baseURL = normalizedUrl || (
   import.meta.env.PROD
     ? 'https://backend-kappa-seven-14.vercel.app/api'
     : 'http://localhost:3000/api'
