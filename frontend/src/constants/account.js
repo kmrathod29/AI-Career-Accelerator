@@ -14,50 +14,6 @@ export const ACCOUNT_SECTIONS = [
 	{ id: 'danger', label: 'Danger Zone', icon: 'AlertTriangle' },
 ]
 
-export const DEFAULT_PROFILE = {
-	firstName: 'Krunal',
-	lastName: 'Rathod',
-	email: 'krunal@careeraccelerator.ai',
-	phone: '+91 74358 10025',
-	gender: 'male',
-	dateOfBirth: '2006-05-29',
-	country: 'India',
-	city: 'Gujarat',
-	state: 'Bhavnagar',
-	bio: 'Aspiring full-stack engineer passionate about building AI-powered products. Currently focused on React, Node.js, and system design.',
-	avatar: null,
-	coverImage: null,
-	role: 'Full Stack Developer',
-	joinedAt: '2024-09-12',
-	currentRole: 'Software Engineering Intern',
-	experienceLevel: 'entry',
-	education: 'bachelors',
-	university: 'Gyanmanjari Innovative University',
-	degree: 'B.Tech',
-	branch: 'Computer Engineering',
-	passingYear: '2026',
-	skills: ['React', 'Node.js', 'TypeScript', 'Python', 'System Design'],
-	preferredRole: 'Full Stack Developer',
-	preferredLocation: 'Remote / Bangalore',
-	expectedSalary: '8-12 LPA',
-	employmentType: 'full-time',
-	social: {
-		linkedin: 'https://linkedin.com/in/krunalrathod',
-		github: 'https://github.com/krunalrathod',
-		portfolio: 'https://krunal.dev',
-		leetcode: 'https://leetcode.com/krunalrathod',
-		codeforces: 'https://codeforces.com/profile/krunalrathod',
-		hackerrank: 'https://hackerrank.com/krunalrathod',
-		website: 'https://krunal.dev',
-	},
-}
-
-export const DEFAULT_STATS = {
-	resumesCreated: 3,
-	atsAnalyses: 12,
-	careerRoadmaps: 2,
-}
-
 export const DEFAULT_NOTIFICATION_PREFS = {
 	emailNotifications: true,
 	browserNotifications: true,
@@ -78,33 +34,6 @@ export const DEFAULT_APPEARANCE_PREFS = {
 	reducedMotion: false,
 	fontSize: 'default',
 }
-
-export const DUMMY_SESSIONS = [
-	{
-		id: 'session_1',
-		browser: 'Chrome',
-		os: 'Windows 11',
-		location: 'Mumbai, India',
-		lastActive: 'Active now',
-		isCurrent: true,
-	},
-	{
-		id: 'session_2',
-		browser: 'Safari',
-		os: 'macOS Sonoma',
-		location: 'Mumbai, India',
-		lastActive: '1 day ago',
-		isCurrent: false,
-	},
-	{
-		id: 'session_3',
-		browser: 'Firefox',
-		os: 'Ubuntu 24.04',
-		location: 'Pune, India',
-		lastActive: '3 days ago',
-		isCurrent: false,
-	},
-]
 
 export const GENDER_OPTIONS = [
 	{ value: '', label: 'Select gender' },

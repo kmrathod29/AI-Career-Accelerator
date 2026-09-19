@@ -1,28 +1,39 @@
-const PROFILE_FIELDS = [
-	'firstName',
-	'lastName',
-	'email',
-	'phone',
-	'gender',
-	'dateOfBirth',
-	'country',
-	'city',
-	'state',
-	'bio',
-	'currentRole',
-	'experienceLevel',
-	'education',
-	'university',
-	'degree',
-	'branch',
-	'passingYear',
-	'preferredRole',
-	'preferredLocation',
-	'expectedSalary',
-	'employmentType',
+import { formatDate } from './dateTime.js'
+
+/**
+ * Profile fields checked for completion calculation.
+ * These are the nested paths within the user object from the API.
+ */
+const PERSONAL_FIELDS = [
+	{ path: 'firstName' },
+	{ path: 'lastName' },
+	{ path: 'email' },
+	{ path: 'profile.phone' },
+	{ path: 'profile.country' },
+	{ path: 'profile.city' },
+	{ path: 'profile.bio' },
 ]
 
-const SOCIAL_FIELDS = ['linkedin', 'github', 'portfolio', 'leetcode', 'codeforces', 'hackerrank', 'website']
+const CAREER_FIELDS = [
+	{ path: 'career.currentRole' },
+	{ path: 'career.experienceLevel' },
+	{ path: 'career.preferredRole' },
+	{ path: 'career.skills', isArray: true },
+]
+
+const SOCIAL_FIELDS = [
+	{ path: 'socialLinks.linkedin' },
+	{ path: 'socialLinks.github' },
+]
+
+const ALL_COMPLETION_FIELDS = [...PERSONAL_FIELDS, ...CAREER_FIELDS, ...SOCIAL_FIELDS]
+
+/**
+ * Get a nested value from an object using a dot-separated path.
+ */
+function getNestedValue(obj, path) {
+	return path.split('.').reduce((acc, key) => acc?.[key], obj)
+}
 
 export function getInitials(firstName = '', lastName = '') {
 	const first = firstName.trim()[0] ?? ''
@@ -30,24 +41,24 @@ export function getInitials(firstName = '', lastName = '') {
 	return (first + last).toUpperCase() || '?'
 }
 
+/**
+ * Calculate profile completion from actual database data.
+ * Deterministic: completed fields / total fields × 100
+ */
 export function calculateProfileCompletion(profile) {
 	if (!profile) return 0
 
 	let filled = 0
-	let total = PROFILE_FIELDS.length + SOCIAL_FIELDS.length + 1
+	const total = ALL_COMPLETION_FIELDS.length
 
-	for (const field of PROFILE_FIELDS) {
-		const value = profile[field]
-		if (Array.isArray(value) ? value.length > 0 : Boolean(value?.toString().trim())) {
+	for (const { path, isArray } of ALL_COMPLETION_FIELDS) {
+		const value = getNestedValue(profile, path)
+		if (isArray) {
+			if (Array.isArray(value) && value.length > 0) filled += 1
+		} else if (value && String(value).trim()) {
 			filled += 1
 		}
 	}
-
-	for (const field of SOCIAL_FIELDS) {
-		if (profile.social?.[field]?.trim()) filled += 1
-	}
-
-	if (profile.avatar) filled += 1
 
 	return Math.round((filled / total) * 100)
 }
@@ -85,10 +96,6 @@ export function getPasswordStrength(password = '') {
 }
 
 export function formatJoinedDate(dateStr) {
-	if (!dateStr) return ''
-	return new Date(dateStr).toLocaleDateString('en-US', {
-		month: 'long',
-		day: 'numeric',
-		year: 'numeric',
-	})
+	if (!dateStr) return 'Unknown'
+	return formatDate(dateStr, { month: 'long', year: 'numeric' })
 }

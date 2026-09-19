@@ -3,6 +3,7 @@ import { History, Eye, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import { getScoreTier } from '@constants/atsAnalyzer.js'
 import { cn } from '@utils/classNames.js'
+import { formatDate } from '@utils/dateTime.js'
 
 const TIER_BADGE = {
 	emerald: 'bg-emerald-500/10 text-emerald-500',
@@ -45,11 +46,7 @@ export function AnalysisHistory({ history = [] }) {
 									{entry.fileName}
 								</p>
 								<p className="mt-0.5 text-[11px] text-[var(--color-muted)]">
-									{new Date(entry.date).toLocaleDateString('en-US', {
-										month: 'short',
-										day: 'numeric',
-										year: 'numeric',
-									})}
+									{formatDate(entry.date)}
 								</p>
 							</div>
 

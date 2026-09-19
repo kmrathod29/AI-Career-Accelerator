@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion'
-import { Camera, Mail, Calendar, Shield } from 'lucide-react'
+import { Camera, Mail, Calendar, ShieldAlert } from 'lucide-react'
 import { getInitials, formatJoinedDate } from '@utils/accountHelpers.js'
 import { cn } from '@utils/classNames.js'
 
 export function ProfileHeader({ profile, onUploadAvatar, onEditProfile }) {
-	const fullName = `${profile.firstName} ${profile.lastName}`.trim()
+	const fullName = `${profile.firstName} ${profile.lastName}`.trim() || 'Your Name'
 	const initials = getInitials(profile.firstName, profile.lastName)
+	const role = profile.career?.currentRole || profile.career?.preferredRole || ''
 
 	return (
 		<div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-elevated)]">
@@ -16,9 +17,9 @@ export function ProfileHeader({ profile, onUploadAvatar, onEditProfile }) {
 			<div className="relative px-4 pb-4 sm:px-6 sm:pb-6">
 				<div className="absolute -top-10 left-4 sm:-top-14 sm:left-6">
 					<div className="group relative">
-						{profile.avatar ? (
+						{profile.profile?.avatar ? (
 							<img
-								src={profile.avatar}
+								src={profile.profile.avatar}
 								alt={fullName}
 								className="h-20 w-20 rounded-2xl border-4 border-[var(--color-surface)] object-cover shadow-lg sm:h-28 sm:w-28"
 							/>
@@ -44,20 +45,26 @@ export function ProfileHeader({ profile, onUploadAvatar, onEditProfile }) {
 							<h2 className="text-lg font-semibold text-[var(--color-text)] sm:text-2xl">
 								{fullName}
 							</h2>
-							<p className="mt-0.5 text-sm text-[var(--color-muted)]">{profile.role}</p>
+							{role && (
+								<p className="mt-0.5 text-sm text-[var(--color-muted)]">{role}</p>
+							)}
 
 							<div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-[var(--color-muted)] sm:mt-3 sm:gap-x-4 sm:gap-y-2">
-								<span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
-									<Mail className="h-3.5 w-3.5 shrink-0" />
-									<span className="truncate">{profile.email}</span>
-								</span>
-								<span className="inline-flex items-center gap-1.5">
-									<Calendar className="h-3.5 w-3.5 shrink-0" />
-									Joined {formatJoinedDate(profile.joinedAt)}
-								</span>
-								<span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--badge-green-bg)] px-2.5 py-0.5 font-medium text-[var(--badge-green-text)]">
-									<Shield className="h-3 w-3 shrink-0" />
-									Verified
+								{profile.email && (
+									<span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+										<Mail className="h-3.5 w-3.5 shrink-0" />
+										<span className="truncate">{profile.email}</span>
+									</span>
+								)}
+								{profile.createdAt && (
+									<span className="inline-flex items-center gap-1.5">
+										<Calendar className="h-3.5 w-3.5 shrink-0" />
+										Joined {formatJoinedDate(profile.createdAt)}
+									</span>
+								)}
+								<span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-surface-2)] px-2.5 py-0.5 font-medium text-[var(--color-muted)]">
+									<ShieldAlert className="h-3 w-3 shrink-0" />
+									Unverified
 								</span>
 							</div>
 						</div>

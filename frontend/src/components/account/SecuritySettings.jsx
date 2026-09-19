@@ -6,6 +6,7 @@ import { SettingsCard, SettingsRow } from './shared/SettingsCard.jsx'
 import { getPasswordStrength } from '@utils/accountHelpers.js'
 import { PrimaryButton } from '@components/ui/PrimaryButton.jsx'
 import { cn } from '@utils/classNames.js'
+import { accountStore } from '@/stores/accountStore.js'
 
 export function SecuritySettings() {
 	const [currentPassword, setCurrentPassword] = useState('')
@@ -32,12 +33,21 @@ export function SecuritySettings() {
 		}
 
 		setSaving(true)
-		await new Promise((r) => setTimeout(r, 700))
+		const result = await accountStore.changePassword({ currentPassword, newPassword })
 		setSaving(false)
-		setCurrentPassword('')
-		setNewPassword('')
-		setConfirmPassword('')
-		toast.success('Password changed successfully')
+
+		if (result.success) {
+			setCurrentPassword('')
+			setNewPassword('')
+			setConfirmPassword('')
+			setErrors({})
+			toast.success('Password changed successfully')
+		} else {
+			toast.error(result.message || 'Failed to change password')
+			if (result.message?.toLowerCase().includes('current password')) {
+				setErrors({ current: result.message })
+			}
+		}
 	}
 
 	const handleComingSoon = (feature) => {

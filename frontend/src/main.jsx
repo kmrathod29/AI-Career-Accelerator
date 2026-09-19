@@ -6,10 +6,8 @@ import './index.css'
 import { ThemeProvider } from '@providers/ThemeProvider.jsx'
 import { AuthProvider } from '@providers/AuthProvider.jsx'
 import { notificationStore } from '@/stores/notificationStore.js'
-import { accountStore } from '@/stores/accountStore.js'
 
 notificationStore.init()
-accountStore.init()
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>

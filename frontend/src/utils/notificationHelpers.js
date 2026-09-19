@@ -1,3 +1,5 @@
+import { formatDate, getIndiaDateParts } from './dateTime.js'
+
 /**
  * Format a timestamp as a human-readable relative string.
  */
@@ -15,27 +17,30 @@ export function formatRelativeTime(timestamp) {
 	if (days === 1) return 'Yesterday'
 	if (days < 7) return `${days} days ago`
 
-	return new Date(timestamp).toLocaleDateString('en-US', {
+	return formatDate(timestamp, {
 		month: 'short',
-		day: 'numeric',
 		year: now - timestamp > 365 * 24 * 60 * 60 * 1000 ? 'numeric' : undefined,
 	})
+}
+
+function indiaDayNumber(value) {
+	const parts = getIndiaDateParts(value)
+	return Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day)) / (24 * 60 * 60 * 1000)
 }
 
 /**
  * Group notifications into Today / Yesterday / Earlier buckets.
  */
 export function groupNotificationsByDate(notifications) {
-	const now = new Date()
-	const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-	const startOfYesterday = startOfToday - 24 * 60 * 60 * 1000
+	const today = indiaDayNumber(new Date())
 
 	const groups = { today: [], yesterday: [], earlier: [] }
 
 	for (const notification of notifications) {
-		if (notification.timestamp >= startOfToday) {
+		const ageInDays = today - indiaDayNumber(notification.timestamp)
+		if (ageInDays === 0) {
 			groups.today.push(notification)
-		} else if (notification.timestamp >= startOfYesterday) {
+		} else if (ageInDays === 1) {
 			groups.yesterday.push(notification)
 		} else {
 			groups.earlier.push(notification)

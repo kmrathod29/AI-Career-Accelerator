@@ -303,7 +303,7 @@ export function ProfileDropdown({
 
 	const displayName = useMemo(() => getDisplayName(profile, authUser), [profile, authUser])
 	const initials = useMemo(() => getInitials(displayName), [displayName])
-	const avatarUrl = profile?.avatar ?? null
+	const avatarUrl = profile?.profile?.avatar ?? null
 	const email = authUser?.email ?? profile?.email ?? ''
 
 	const openLogoutDialog = () => setIsLogoutOpen(true)

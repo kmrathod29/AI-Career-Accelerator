@@ -14,65 +14,95 @@ export function CareerForm() {
 	const hasUnsaved = useHasUnsavedChanges()
 	const [saving, setSaving] = useState(false)
 	const [skillInput, setSkillInput] = useState('')
+	const [form, setForm] = useState(null)
 
-	const update = (field, value) => accountStore.updateProfile({ [field]: value })
+	// Merge form edits over career data from API
+	const career = form ?? {
+		currentRole: profile.career?.currentRole ?? '',
+		experienceLevel: profile.career?.experienceLevel ?? '',
+		education: profile.career?.education ?? '',
+		university: profile.career?.university ?? '',
+		degree: profile.career?.degree ?? '',
+		branch: profile.career?.branch ?? '',
+		passingYear: profile.career?.passingYear ?? '',
+		skills: profile.career?.skills ?? [],
+		preferredRole: profile.career?.preferredRole ?? '',
+		preferredLocation: profile.career?.preferredLocation ?? '',
+		expectedSalary: profile.career?.expectedSalary ?? '',
+		employmentType: profile.career?.employmentType ?? '',
+	}
+
+	const update = (field, value) => {
+		setForm((prev) => ({ ...career, ...prev, [field]: value }))
+		accountStore.updateProfile({})
+	}
 
 	const addSkill = () => {
 		const skill = skillInput.trim()
 		if (!skill) return
-		if (profile.skills.includes(skill)) {
+		if (career.skills.includes(skill)) {
 			toast.error('Skill already added')
 			return
 		}
-		update('skills', [...profile.skills, skill])
+		update('skills', [...career.skills, skill])
 		setSkillInput('')
 	}
 
 	const removeSkill = (skill) => {
-		update('skills', profile.skills.filter((s) => s !== skill))
+		update('skills', career.skills.filter((s) => s !== skill))
 	}
 
 	const handleSave = async () => {
 		setSaving(true)
-		await new Promise((r) => setTimeout(r, 500))
-		accountStore.saveProfile()
+		const result = await accountStore.saveCareer(career)
 		setSaving(false)
-		toast.success('Career information saved')
+		if (result.success) {
+			setForm(null)
+			toast.success('Career information saved')
+		} else {
+			toast.error(result.message || 'Failed to save career information')
+		}
+	}
+
+	const handleDiscard = async () => {
+		setForm(null)
+		await accountStore.discardChanges()
+		toast.info('Changes discarded')
 	}
 
 	return (
 		<div>
-			<UnsavedChangesBanner visible={hasUnsaved} onSave={handleSave} onDiscard={() => { accountStore.discardChanges(); toast.info('Changes discarded') }} saving={saving} />
+			<UnsavedChangesBanner visible={hasUnsaved || !!form} onSave={handleSave} onDiscard={handleDiscard} saving={saving} />
 
 			<SettingsCard
 				title="Career Information"
 				description="Help us personalize your AI career recommendations."
 				footer={
 					<div className="flex justify-end">
-						<PrimaryButton onClick={handleSave} disabled={saving || !hasUnsaved} className="px-5 py-2.5">
+						<PrimaryButton onClick={handleSave} disabled={saving || (!hasUnsaved && !form)} className="px-5 py-2.5">
 							{saving ? 'Saving...' : 'Save Changes'}
 						</PrimaryButton>
 					</div>
 				}
 			>
 				<div className="grid gap-4 sm:grid-cols-2">
-					<FormField label="Current Role" id="currentRole" value={profile.currentRole} onChange={(e) => update('currentRole', e.target.value)} className="sm:col-span-2" />
-					<FormField label="Experience Level" id="experienceLevel" as="select" options={EXPERIENCE_LEVELS} value={profile.experienceLevel} onChange={(e) => update('experienceLevel', e.target.value)} />
-					<FormField label="Education" id="education" as="select" options={EDUCATION_LEVELS} value={profile.education} onChange={(e) => update('education', e.target.value)} />
-					<FormField label="University" id="university" value={profile.university} onChange={(e) => update('university', e.target.value)} className="sm:col-span-2" />
-					<FormField label="Degree" id="degree" value={profile.degree} onChange={(e) => update('degree', e.target.value)} />
-					<FormField label="Branch" id="branch" value={profile.branch} onChange={(e) => update('branch', e.target.value)} />
-					<FormField label="Passing Year" id="passingYear" type="number" value={profile.passingYear} onChange={(e) => update('passingYear', e.target.value)} />
-					<FormField label="Preferred Role" id="preferredRole" value={profile.preferredRole} onChange={(e) => update('preferredRole', e.target.value)} />
-					<FormField label="Preferred Location" id="preferredLocation" value={profile.preferredLocation} onChange={(e) => update('preferredLocation', e.target.value)} />
-					<FormField label="Expected Salary" id="expectedSalary" value={profile.expectedSalary} onChange={(e) => update('expectedSalary', e.target.value)} hint="e.g. 8-12 LPA or $80k-$100k" />
-					<FormField label="Employment Type" id="employmentType" as="select" options={EMPLOYMENT_TYPES} value={profile.employmentType} onChange={(e) => update('employmentType', e.target.value)} />
+					<FormField label="Current Role" id="currentRole" value={career.currentRole} onChange={(e) => update('currentRole', e.target.value)} className="sm:col-span-2" />
+					<FormField label="Experience Level" id="experienceLevel" as="select" options={EXPERIENCE_LEVELS} value={career.experienceLevel} onChange={(e) => update('experienceLevel', e.target.value)} />
+					<FormField label="Education" id="education" as="select" options={EDUCATION_LEVELS} value={career.education} onChange={(e) => update('education', e.target.value)} />
+					<FormField label="University" id="university" value={career.university} onChange={(e) => update('university', e.target.value)} className="sm:col-span-2" />
+					<FormField label="Degree" id="degree" value={career.degree} onChange={(e) => update('degree', e.target.value)} />
+					<FormField label="Branch" id="branch" value={career.branch} onChange={(e) => update('branch', e.target.value)} />
+					<FormField label="Passing Year" id="passingYear" type="number" value={career.passingYear} onChange={(e) => update('passingYear', e.target.value)} />
+					<FormField label="Preferred Role" id="preferredRole" value={career.preferredRole} onChange={(e) => update('preferredRole', e.target.value)} />
+					<FormField label="Preferred Location" id="preferredLocation" value={career.preferredLocation} onChange={(e) => update('preferredLocation', e.target.value)} />
+					<FormField label="Expected Salary" id="expectedSalary" value={career.expectedSalary} onChange={(e) => update('expectedSalary', e.target.value)} hint="e.g. 8-12 LPA or $80k-$100k" />
+					<FormField label="Employment Type" id="employmentType" as="select" options={EMPLOYMENT_TYPES} value={career.employmentType} onChange={(e) => update('employmentType', e.target.value)} />
 				</div>
 
 				<div className="mt-6 border-t border-[var(--color-border)] pt-6">
 					<label className="mb-2 block text-sm font-medium text-[var(--color-text)]">Skills</label>
 					<div className="flex flex-wrap gap-2">
-						{profile.skills.map((skill) => (
+						{career.skills.map((skill) => (
 							<span
 								key={skill}
 								className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-1 text-xs font-medium text-[var(--color-text)]"
@@ -83,6 +113,9 @@ export function CareerForm() {
 								</button>
 							</span>
 						))}
+						{career.skills.length === 0 && (
+							<span className="text-xs text-[var(--color-muted)]">No skills added yet</span>
+						)}
 					</div>
 					<div className="mt-3 flex gap-2">
 						<input

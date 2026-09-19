@@ -22,16 +22,29 @@ export function SocialLinksForm() {
 	const hasUnsaved = useHasUnsavedChanges()
 	const [saving, setSaving] = useState(false)
 	const [errors, setErrors] = useState({})
+	const [form, setForm] = useState(null)
+
+	// Merge form edits over social data from API
+	const social = form ?? {
+		linkedin: profile.socialLinks?.linkedin ?? '',
+		github: profile.socialLinks?.github ?? '',
+		portfolio: profile.socialLinks?.portfolio ?? '',
+		leetcode: profile.socialLinks?.leetcode ?? '',
+		codeforces: profile.socialLinks?.codeforces ?? '',
+		hackerrank: profile.socialLinks?.hackerrank ?? '',
+		website: profile.socialLinks?.website ?? '',
+	}
 
 	const update = (key, value) => {
-		accountStore.updateSocial({ [key]: value })
+		setForm((prev) => ({ ...social, ...prev, [key]: value }))
 		setErrors((prev) => ({ ...prev, [key]: validateUrl(value) ? undefined : 'Enter a valid URL (https://...)' }))
+		accountStore.updateProfile({})
 	}
 
 	const handleSave = async () => {
 		const newErrors = {}
 		for (const { key } of SOCIAL_FIELDS) {
-			const val = profile.social[key]
+			const val = social[key]
 			if (val && !validateUrl(val)) newErrors[key] = 'Enter a valid URL (https://...)'
 		}
 		setErrors(newErrors)
@@ -41,18 +54,29 @@ export function SocialLinksForm() {
 		}
 
 		setSaving(true)
-		await new Promise((r) => setTimeout(r, 500))
-		accountStore.saveProfile()
+		const result = await accountStore.saveSocial(social)
 		setSaving(false)
-		toast.success('Social links updated')
+		if (result.success) {
+			setForm(null)
+			toast.success('Social links updated')
+		} else {
+			toast.error(result.message || 'Failed to save social links')
+		}
+	}
+
+	const handleDiscard = async () => {
+		setForm(null)
+		setErrors({})
+		await accountStore.discardChanges()
+		toast.info('Changes discarded')
 	}
 
 	return (
 		<div>
 			<UnsavedChangesBanner
-				visible={hasUnsaved}
+				visible={hasUnsaved || !!form}
 				onSave={handleSave}
-				onDiscard={() => { accountStore.discardChanges(); toast.info('Changes discarded') }}
+				onDiscard={handleDiscard}
 				saving={saving}
 			/>
 
@@ -61,7 +85,7 @@ export function SocialLinksForm() {
 				description="Connect your professional profiles to enhance your career presence."
 				footer={
 					<div className="flex justify-end">
-						<PrimaryButton onClick={handleSave} disabled={saving || !hasUnsaved} className="px-5 py-2.5">
+						<PrimaryButton onClick={handleSave} disabled={saving || (!hasUnsaved && !form)} className="px-5 py-2.5">
 							{saving ? 'Saving...' : 'Save Changes'}
 						</PrimaryButton>
 					</div>
@@ -73,7 +97,7 @@ export function SocialLinksForm() {
 							key={key}
 							label={label}
 							id={key}
-							value={profile.social[key] ?? ''}
+							value={social[key]}
 							onChange={(e) => update(key, e.target.value)}
 							placeholder={placeholder}
 							error={errors[key]}

@@ -1,4 +1,4 @@
-import { Component, useCallback } from 'react'
+import { Component, useCallback, useEffect } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -222,6 +222,11 @@ export function AccountPage() {
 	const isLoading = useAccountLoading()
 	const navigateToSection = useAccountSectionNavigation()
 
+	// Fetch profile data from backend on mount
+	useEffect(() => {
+		accountStore.init()
+	}, [])
+
 	const handleSectionChange = useCallback(
 		(id) => {
 			navigateToSection(id)
@@ -233,18 +238,25 @@ export function AccountPage() {
 		const input = document.createElement('input')
 		input.type = 'file'
 		input.accept = 'image/*'
-		input.onchange = (e) => {
+		input.onchange = async (e) => {
 			const file = e.target.files?.[0]
 			if (!file) return
 			if (!file.type.startsWith('image/')) {
 				toast.error('Please select a valid image file')
 				return
 			}
+			if (file.size > 2 * 1024 * 1024) {
+				toast.error('Image must be under 2MB')
+				return
+			}
 			const reader = new FileReader()
-			reader.onload = () => {
-				accountStore.setAvatar(reader.result)
-				accountStore.saveProfile()
-				toast.success('Avatar updated')
+			reader.onload = async () => {
+				const result = await accountStore.saveAvatar(reader.result)
+				if (result.success) {
+					toast.success('Avatar updated')
+				} else {
+					toast.error(result.message || 'Failed to upload avatar')
+				}
 			}
 			reader.readAsDataURL(file)
 		}

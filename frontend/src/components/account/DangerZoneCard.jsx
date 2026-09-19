@@ -1,26 +1,37 @@
 import { useState } from 'react'
 import { AlertTriangle, Trash2, PauseCircle } from 'lucide-react'
 import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom'
 import { SettingsCard } from './shared/SettingsCard.jsx'
 import { ConfirmDialog } from '@components/notifications/ConfirmDialog.jsx'
+import { accountStore } from '@/stores/accountStore.js'
+import { useAuth } from '@providers/useAuth.js'
+import { APP_ROUTES } from '@constants/routes.js'
 
 export function DangerZoneCard() {
 	const [confirmDelete, setConfirmDelete] = useState(false)
 	const [confirmDeactivate, setConfirmDeactivate] = useState(false)
 	const [loading, setLoading] = useState(false)
+	const navigate = useNavigate()
+	const { logout } = useAuth()
 
 	const handleDelete = async () => {
 		setLoading(true)
-		await new Promise((r) => setTimeout(r, 800))
+		const result = await accountStore.deleteAccount()
 		setLoading(false)
 		setConfirmDelete(false)
-		toast.info('Coming Soon', { description: 'Account deletion will require email verification in production.' })
+
+		if (result.success) {
+			toast.success('Account deleted successfully')
+			// Clear auth state and redirect to home
+			await logout()
+			navigate(APP_ROUTES.HOME, { replace: true })
+		} else {
+			toast.error(result.message || 'Failed to delete account')
+		}
 	}
 
-	const handleDeactivate = async () => {
-		setLoading(true)
-		await new Promise((r) => setTimeout(r, 800))
-		setLoading(false)
+	const handleDeactivate = () => {
 		setConfirmDeactivate(false)
 		toast.info('Coming Soon', { description: 'Account deactivation will be available in a future update.' })
 	}
@@ -83,7 +94,6 @@ export function DangerZoneCard() {
 				description="Your profile will be hidden and you won't receive notifications. You can reactivate by signing in again."
 				confirmLabel="Deactivate Account"
 				variant="default"
-				loading={loading}
 			/>
 
 			<ConfirmDialog

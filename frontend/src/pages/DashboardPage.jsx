@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { formatDate } from '@utils/dateTime.js'
 import {
 	FileText, ScanSearch, Mic, BrainCircuit, Map, Bot,
 	TrendingUp, Target, Award, BarChart3,
@@ -54,12 +55,7 @@ function getGreeting() {
 
 export function DashboardPage() {
 	const { user } = useAuth()
-	const today = new Date().toLocaleDateString('en-US', {
-		weekday: 'long',
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric',
-	})
+	const today = formatDate(new Date(), { weekday: 'long', month: 'long' })
 
 	return (
 		<motion.div
