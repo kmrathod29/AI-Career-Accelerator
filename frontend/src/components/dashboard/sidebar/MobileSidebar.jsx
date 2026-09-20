@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import {
@@ -8,7 +7,6 @@ import {
 	Mic, BrainCircuit, Map, Bot, Bell, UserCircle, Settings,
 } from 'lucide-react'
 import { SIDEBAR_NAV } from '@constants/dashboardNav.js'
-import { APP_ROUTES } from '@constants/routes.js'
 import logoSrc from '@assets/logo/AI-Career-Accelerator-only-logo.png'
 import { SidebarItem } from './SidebarItem.jsx'
 import { useAuth } from '@providers/useAuth.js'
@@ -51,6 +49,7 @@ export function MobileSidebar({ isOpen, onClose }) {
 	const displayName = getDisplayName(user, profile)
 	const initials = getInitials(displayName)
 	const email = user?.email ?? profile?.email ?? ''
+	const avatarUrl = profile?.profile?.avatar ?? null
 
 	/* ESC key + body scroll lock */
 	useEffect(() => {
@@ -98,10 +97,8 @@ export function MobileSidebar({ isOpen, onClose }) {
 					>
 						{/* Header */}
 						<div className="flex h-16 shrink-0 items-center justify-between border-b border-[var(--color-border)] px-4">
-							<Link
-								to={APP_ROUTES.HOME}
+							<div
 								className="inline-flex items-center gap-2.5"
-								aria-label="AI Career Accelerator"
 							>
 								<img
 									src={logoSrc}
@@ -113,7 +110,7 @@ export function MobileSidebar({ isOpen, onClose }) {
 								<span className="text-[14px] font-semibold tracking-tight text-[var(--color-text)]">
 									AI Career Accelerator
 								</span>
-							</Link>
+							</div>
 
 							<button
 								onClick={onClose}
@@ -150,9 +147,17 @@ export function MobileSidebar({ isOpen, onClose }) {
 						{/* Bottom user info — dynamic */}
 						<div className="shrink-0 border-t border-[var(--color-border)] p-4">
 							<div className="flex items-center gap-3">
-								<div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-xs font-bold text-white">
-									{initials}
-								</div>
+								{avatarUrl ? (
+									<img
+										src={avatarUrl}
+										alt={displayName}
+										className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-[var(--color-border)]"
+									/>
+								) : (
+									<div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-xs font-bold text-white">
+										{initials}
+									</div>
+								)}
 								<div className="min-w-0 flex-1">
 									<p className="truncate text-sm font-medium text-[var(--color-text)]">{displayName}</p>
 									<p className="truncate text-[11px] text-[var(--color-muted)]">{email}</p>
@@ -166,4 +171,3 @@ export function MobileSidebar({ isOpen, onClose }) {
 		document.body,
 	)
 }
-

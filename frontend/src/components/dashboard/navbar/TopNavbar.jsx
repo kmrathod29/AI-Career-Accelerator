@@ -62,9 +62,9 @@ export function TopNavbar({ onMenuClick }) {
 
 				{/* Mobile logo — sidebar has logo on desktop */}
 				<Link
-					to={APP_ROUTES.HOME}
+					to={APP_ROUTES.DASHBOARD}
 					className="inline-flex items-center rounded-lg md:hidden"
-					aria-label="AI Career Accelerator — go to home"
+					aria-label="AI Career Accelerator — go to dashboard"
 				>
 					<img
 						src={logoSrc}
@@ -94,4 +94,3 @@ export function TopNavbar({ onMenuClick }) {
 		</header>
 	)
 }
-

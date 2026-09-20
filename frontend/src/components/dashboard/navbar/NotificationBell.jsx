@@ -1,17 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import {
-	useFloating,
-	autoUpdate,
-	offset,
-	flip,
-	shift,
-	size,
-	useDismiss,
-	useClick,
-	useRole,
-	useInteractions,
-	FloatingPortal,
-} from '@floating-ui/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Bell } from 'lucide-react'
 import { NotificationPopup } from '@components/notifications/NotificationPopup.jsx'
@@ -22,9 +9,6 @@ import {
 	useLastArrivalAt,
 	notificationStore,
 } from '@/stores/notificationStore.js'
-
-const POPUP_MAX_WIDTH = 380
-const VIEWPORT_PADDING = 12
 
 /**
  * NotificationBell — bell icon with unread badge, arrival animation, and popup.
@@ -112,7 +96,7 @@ export function NotificationBell() {
 			<AnimatePresence>
 				{isOpen && (
 					<div
-						className="absolute right-0 top-full mt-2 z-50 w-[min(380px,calc(100vw-32px))] overflow-hidden rounded-2xl border shadow-lg"
+						className="absolute right-0 top-full z-50 mt-2 w-[min(380px,calc(100vw-32px))] overflow-hidden rounded-2xl border shadow-lg max-lg:fixed max-lg:left-1/2 max-lg:right-auto max-lg:top-[4.5rem] max-lg:mt-0 max-lg:-translate-x-1/2"
 						style={{
 							backgroundColor: 'var(--floating-bg)',
 							borderColor: 'var(--floating-border)',
