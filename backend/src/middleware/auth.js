@@ -22,6 +22,9 @@ export async function requireAuth(req, res, next) {
     }
 
     req.user = user
+    // Stored with the existing session record; it powers safe session-list
+    // metadata without ever exposing the cookie or raw session identifier.
+    req.session.lastActiveAt = new Date().toISOString()
     next()
   } catch (error) {
     console.error('Auth middleware error:', error.message)

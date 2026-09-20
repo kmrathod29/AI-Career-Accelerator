@@ -1,8 +1,17 @@
 import bcrypt from 'bcrypt'
 import User from '../models/User.js'
+import { getSessionCookieOptions } from '../config/session.js'
 import { sendSuccess, sendError } from '../utils/apiResponse.js'
 
 const BCRYPT_ROUNDS = 12
+
+function initializeSession(req, userId) {
+  const now = new Date().toISOString()
+  req.session.userId = userId.toString()
+  req.session.sessionCreatedAt = now
+  req.session.lastActiveAt = now
+  req.session.userAgent = (req.get('user-agent') || '').slice(0, 512)
+}
 
 /**
  * POST /api/auth/register
@@ -29,7 +38,7 @@ export async function register(req, res) {
     })
 
     // Create authenticated session
-    req.session.userId = user._id.toString()
+    initializeSession(req, user._id)
 
     return sendSuccess(res, { user: user.toSafeObject() }, 201)
   } catch (error) {
@@ -67,7 +76,7 @@ export async function login(req, res) {
     }
 
     // Create authenticated session
-    req.session.userId = user._id.toString()
+    initializeSession(req, user._id)
 
     return sendSuccess(res, { user: user.toSafeObject() })
   } catch (error) {
@@ -87,12 +96,7 @@ export async function logout(req, res) {
         return sendError(res, 'Logout failed. Please try again.', 500)
       }
 
-      res.clearCookie('aca.sid', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        path: '/',
-      })
+      res.clearCookie('aca.sid', getSessionCookieOptions())
 
       return sendSuccess(res, { message: 'Logged out successfully' })
     })

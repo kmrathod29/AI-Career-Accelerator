@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { body } from 'express-validator'
+import { body, param } from 'express-validator'
 import { validate } from '../middleware/validate.js'
 import { requireAuth } from '../middleware/auth.js'
 import {
@@ -12,6 +12,7 @@ import {
   exportData,
   deleteAccount,
 } from '../controllers/accountController.js'
+import { getSessions, revokeSession } from '../controllers/sessionController.js'
 
 const router = Router()
 
@@ -146,6 +147,13 @@ router.patch('/career', careerRules, validate, updateCareer)
 router.patch('/social', socialRules, validate, updateSocial)
 router.patch('/avatar', avatarRules, validate, updateAvatar)
 router.put('/password', passwordRules, validate, changePassword)
+router.get('/sessions', getSessions)
+router.delete(
+  '/sessions/:sessionKey',
+  param('sessionKey').isHexadecimal().isLength({ min: 64, max: 64 }),
+  validate,
+  revokeSession,
+)
 router.get('/export', exportData)
 router.delete('/', deleteAccount)
 

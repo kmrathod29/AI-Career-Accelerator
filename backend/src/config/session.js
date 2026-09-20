@@ -2,6 +2,31 @@ import session from 'express-session'
 import MongoStore from 'connect-mongo'
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000
+let mongoSessionStore = null
+
+export function getSessionCookieOptions() {
+  const isProd = process.env.NODE_ENV === 'production'
+
+  return {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
+    path: '/',
+  }
+}
+
+/**
+ * Return the existing connect-mongo store used by express-session.
+ * Session-management APIs use this store rather than creating a second
+ * collection or a parallel session system.
+ */
+export function getSessionStore() {
+  if (!mongoSessionStore) {
+    throw new Error('Session store has not been initialized')
+  }
+
+  return mongoSessionStore
+}
 
 /**
  * Create express-session middleware with MongoDB-backed store.
@@ -22,24 +47,23 @@ export function createSessionMiddleware() {
     )
   }
 
-  const isProd = process.env.NODE_ENV === 'production'
+  if (!mongoSessionStore) {
+    mongoSessionStore = MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      collectionName: 'sessions',
+      ttl: ONE_WEEK_MS / 1000,
+    })
+  }
 
   return session({
     secret,
     name: 'aca.sid',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,
-      collectionName: 'sessions',
-      ttl: ONE_WEEK_MS / 1000,
-    }),
+    store: mongoSessionStore,
     cookie: {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? 'none' : 'lax',
+      ...getSessionCookieOptions(),
       maxAge: ONE_WEEK_MS,
-      path: '/',
     },
   })
 }

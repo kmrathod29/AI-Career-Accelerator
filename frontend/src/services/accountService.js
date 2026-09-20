@@ -63,6 +63,22 @@ export const accountService = {
   },
 
   /**
+   * List safe metadata for the authenticated user's non-expired sessions.
+   */
+  async getSessions() {
+    const { data } = await api.get('/account/sessions')
+    return data
+  },
+
+  /**
+   * Revoke one authenticated user's session using its opaque public key.
+   */
+  async revokeSession(sessionKey) {
+    const { data } = await api.delete(`/account/sessions/${sessionKey}`)
+    return data
+  },
+
+  /**
    * Export account data as JSON.
    * @returns {{ exportedAt, format, account: Object }}
    */

@@ -4,35 +4,26 @@ import { formatDate } from './dateTime.js'
  * Profile fields checked for completion calculation.
  * These are the nested paths within the user object from the API.
  */
-const PERSONAL_FIELDS = [
-	{ path: 'firstName' },
-	{ path: 'lastName' },
-	{ path: 'email' },
-	{ path: 'profile.phone' },
-	{ path: 'profile.country' },
-	{ path: 'profile.city' },
-	{ path: 'profile.bio' },
-]
-
-const CAREER_FIELDS = [
-	{ path: 'career.currentRole' },
-	{ path: 'career.experienceLevel' },
-	{ path: 'career.preferredRole' },
-	{ path: 'career.skills', isArray: true },
-]
-
-const SOCIAL_FIELDS = [
-	{ path: 'socialLinks.linkedin' },
-	{ path: 'socialLinks.github' },
-]
-
-const ALL_COMPLETION_FIELDS = [...PERSONAL_FIELDS, ...CAREER_FIELDS, ...SOCIAL_FIELDS]
+function isCompletedValue(value) {
+	if (Array.isArray(value)) return value.length > 0
+	return value !== null && value !== undefined && String(value).trim() !== ''
+}
 
 /**
- * Get a nested value from an object using a dot-separated path.
+ * Collect leaf values from the persisted Account Center categories. The API
+ * already returns every field defined by the User schema with its defaults,
+ * so new profile/career/social fields participate without maintaining a
+ * second hard-coded field list on the frontend.
  */
-function getNestedValue(obj, path) {
-	return path.split('.').reduce((acc, key) => acc?.[key], obj)
+function getAccountCompletionValues(user) {
+	return [
+		user.firstName,
+		user.lastName,
+		user.email,
+		...Object.values(user.profile ?? {}),
+		...Object.values(user.career ?? {}),
+		...Object.values(user.socialLinks ?? {}),
+	]
 }
 
 export function getInitials(firstName = '', lastName = '') {
@@ -48,19 +39,11 @@ export function getInitials(firstName = '', lastName = '') {
 export function calculateProfileCompletion(profile) {
 	if (!profile) return 0
 
-	let filled = 0
-	const total = ALL_COMPLETION_FIELDS.length
+	const values = getAccountCompletionValues(profile)
+	if (!values.length) return 0
 
-	for (const { path, isArray } of ALL_COMPLETION_FIELDS) {
-		const value = getNestedValue(profile, path)
-		if (isArray) {
-			if (Array.isArray(value) && value.length > 0) filled += 1
-		} else if (value && String(value).trim()) {
-			filled += 1
-		}
-	}
-
-	return Math.round((filled / total) * 100)
+	const completed = values.filter(isCompletedValue).length
+	return Math.round((completed / values.length) * 100)
 }
 
 export function validateUrl(value) {
