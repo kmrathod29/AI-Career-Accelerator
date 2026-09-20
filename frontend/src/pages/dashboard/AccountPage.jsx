@@ -1,4 +1,4 @@
-import { Component, useCallback, useEffect } from 'react'
+import { Component, useCallback } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -221,11 +221,6 @@ function useAccountSectionNavigation() {
 export function AccountPage() {
 	const isLoading = useAccountLoading()
 	const navigateToSection = useAccountSectionNavigation()
-
-	// Fetch profile data from backend on mount
-	useEffect(() => {
-		accountStore.init()
-	}, [])
 
 	const handleSectionChange = useCallback(
 		(id) => {

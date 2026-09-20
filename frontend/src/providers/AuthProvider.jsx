@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { authService } from '@/services/authService.js'
+import { accountStore } from '@/stores/accountStore.js'
 import { AuthContext } from './authContext.js'
 
 /**
@@ -19,6 +20,30 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  const hydrateUser = useCallback((userData) => {
+    if (!userData) return
+
+    setUser(userData)
+    accountStore.setFromUser(userData)
+  }, [])
+
+  // Profile edits are saved through accountStore. Mirror its successful
+  // server responses into the global authenticated-user state as well.
+  useEffect(() => accountStore.subscribe(() => {
+    const profile = accountStore.getSnapshot().profile
+    setUser((currentUser) => {
+      if (
+        !currentUser ||
+        currentUser.id !== profile.id ||
+        currentUser.updatedAt === profile.updatedAt
+      ) {
+        return currentUser
+      }
+
+      return profile
+    })
+  }), [])
+
   /**
    * On mount — check if there's an existing session.
    * GET /api/auth/me will succeed if the HttpOnly cookie is valid.
@@ -30,9 +55,15 @@ export function AuthProvider({ children }) {
       try {
         const response = await authService.me()
         if (!cancelled && response?.data?.user) {
-          setUser(response.data.user)
+          hydrateUser(response.data.user)
         }
-      } catch {
+      } catch (error) {
+        if (!cancelled && error.response?.status === 401) {
+          setUser(null)
+          accountStore.reset()
+        } else if (!cancelled) {
+          console.error('Session hydration failed:', error.message)
+        }
         // No valid session — user stays null (unauthenticated)
       } finally {
         if (!cancelled) {
@@ -43,14 +74,14 @@ export function AuthProvider({ children }) {
 
     checkSession()
     return () => { cancelled = true }
-  }, [])
+  }, [hydrateUser])
 
   /**
    * Set authenticated user from a login/register response.
    */
   const login = useCallback((userData) => {
-    setUser(userData)
-  }, [])
+    hydrateUser(userData)
+  }, [hydrateUser])
 
   /**
    * Logout — calls the backend to destroy the session,
@@ -63,6 +94,7 @@ export function AuthProvider({ children }) {
       // Even if the server call fails, clear local state
     }
     setUser(null)
+    accountStore.reset()
   }, [])
 
   const value = useMemo(

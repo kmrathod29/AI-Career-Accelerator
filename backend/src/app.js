@@ -8,6 +8,10 @@ import healthRoutes from './routes/healthRoutes.js'
 import { sendError } from './utils/apiResponse.js'
 
 const app = express()
+
+/* ── Trust proxy (Vercel/NGINX terminate TLS and forward via HTTP) ── */
+app.set('trust proxy', 1)
+
 const configuredOrigin = process.env.CORS_ORIGIN || (
   process.env.NODE_ENV === 'production'
     ? 'https://ai-career-accelerator-bay.vercel.app'
