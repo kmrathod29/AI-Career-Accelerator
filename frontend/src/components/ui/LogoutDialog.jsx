@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { ConfirmDialog } from '@components/notifications/ConfirmDialog.jsx'
 import { APP_ROUTES } from '@constants/routes.js'
-import { notificationStore } from '@/stores/notificationStore.js'
-import { accountStore } from '@/stores/accountStore.js'
 import { useAuth } from '@providers/useAuth.js'
 
 export function LogoutDialog({ open, onClose }) {
@@ -16,8 +14,6 @@ export function LogoutDialog({ open, onClose }) {
 		setIsLoggingOut(true)
 		try {
 			await logout()
-			accountStore.reset()
-			notificationStore.reset()
 			toast.success('Logged out successfully')
 			onClose()
 			navigate(APP_ROUTES.HOME, { replace: true })

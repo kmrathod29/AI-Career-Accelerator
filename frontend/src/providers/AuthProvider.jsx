@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { authService } from '@/services/authService.js'
 import { accountStore } from '@/stores/accountStore.js'
+import { notificationStore } from '@/stores/notificationStore.js'
 import { AuthContext } from './authContext.js'
 
 /**
  * AuthProvider — manages authentication state via server-side sessions.
  *
  * On mount, calls GET /api/auth/me to restore the session from the
- * HttpOnly cookie. No auth tokens are stored in localStorage.
+ * HttpOnly cookie. On successful auth, hydrates:
+ *   - accountStore (profile, career, socialLinks, avatar)
+ *   - notificationStore (notifications + unread count)
  *
  * Provides:
- *   - user          : { id, firstName, lastName, email } | null
+ *   - user          : { id, firstName, lastName, email, profile, career, socialLinks } | null
  *   - isAuthenticated : boolean
  *   - isLoading     : boolean  (true during initial session check)
  *   - login(user)   : set authenticated user from server response
@@ -20,29 +23,16 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const hydrateUser = useCallback((userData) => {
-    if (!userData) return
-
-    setUser(userData)
+  /**
+   * Hydrate global stores after successful authentication.
+   */
+  const hydrateStores = useCallback((userData) => {
+    // Hydrate account store with full profile data
     accountStore.setFromUser(userData)
+
+    // Fetch notifications from backend
+    notificationStore.init()
   }, [])
-
-  // Profile edits are saved through accountStore. Mirror its successful
-  // server responses into the global authenticated-user state as well.
-  useEffect(() => accountStore.subscribe(() => {
-    const profile = accountStore.getSnapshot().profile
-    setUser((currentUser) => {
-      if (
-        !currentUser ||
-        currentUser.id !== profile.id ||
-        currentUser.updatedAt === profile.updatedAt
-      ) {
-        return currentUser
-      }
-
-      return profile
-    })
-  }), [])
 
   /**
    * On mount — check if there's an existing session.
@@ -55,15 +45,10 @@ export function AuthProvider({ children }) {
       try {
         const response = await authService.me()
         if (!cancelled && response?.data?.user) {
-          hydrateUser(response.data.user)
+          setUser(response.data.user)
+          hydrateStores(response.data.user)
         }
-      } catch (error) {
-        if (!cancelled && error.response?.status === 401) {
-          setUser(null)
-          accountStore.reset()
-        } else if (!cancelled) {
-          console.error('Session hydration failed:', error.message)
-        }
+      } catch {
         // No valid session — user stays null (unauthenticated)
       } finally {
         if (!cancelled) {
@@ -74,14 +59,15 @@ export function AuthProvider({ children }) {
 
     checkSession()
     return () => { cancelled = true }
-  }, [hydrateUser])
+  }, [hydrateStores])
 
   /**
    * Set authenticated user from a login/register response.
    */
   const login = useCallback((userData) => {
-    hydrateUser(userData)
-  }, [hydrateUser])
+    setUser(userData)
+    hydrateStores(userData)
+  }, [hydrateStores])
 
   /**
    * Logout — calls the backend to destroy the session,
@@ -95,6 +81,7 @@ export function AuthProvider({ children }) {
     }
     setUser(null)
     accountStore.reset()
+    notificationStore.reset()
   }, [])
 
   const value = useMemo(

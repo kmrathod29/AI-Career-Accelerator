@@ -1,133 +1,26 @@
 import { useSyncExternalStore, useCallback } from 'react'
-import { getLocalStorageValue, setLocalStorageValue } from '@utils/storage.js'
-import {
-	NOTIFICATION_STORAGE_KEY,
-	NOTIFICATION_TYPES,
-} from '@constants/notifications.js'
-import { APP_ROUTES } from '@constants/routes.js'
-
-function generateId() {
-	return `notif_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
-}
-
-const HOUR = 60 * 60 * 1000
-const DAY = 24 * HOUR
-const now = Date.now()
-
-/** Seed notifications for demo — varied types and timestamps */
-function createSeedNotifications() {
-	return [
-		{
-			id: generateId(),
-			title: 'Resume generated successfully',
-			description: 'Your "Senior Full Stack Developer" resume is ready to review and export.',
-			type: NOTIFICATION_TYPES.RESUME,
-			timestamp: now - 12 * 60 * 1000,
-			read: false,
-			actionUrl: APP_ROUTES.RESUME_BUILDER,
-			actionLabel: 'View Resume',
-		},
-		{
-			id: generateId(),
-			title: 'ATS score completed',
-			description: 'Your resume scored 92/100 — excellent keyword alignment for target roles.',
-			type: NOTIFICATION_TYPES.ATS,
-			timestamp: now - 45 * 60 * 1000,
-			read: false,
-			actionUrl: APP_ROUTES.ATS_ANALYZER,
-			actionLabel: 'View Report',
-		},
-		{
-			id: generateId(),
-			title: 'AI Roadmap generated',
-			description: 'Your personalized 90-day career roadmap with milestones is ready.',
-			type: NOTIFICATION_TYPES.AI,
-			timestamp: now - 8 * HOUR,
-			read: true,
-			actionUrl: APP_ROUTES.CAREER_ROADMAP,
-			actionLabel: 'Open Roadmap',
-		},
-		{
-			id: generateId(),
-			title: 'Job saved to tracker',
-			description: 'Stripe — Software Engineer II has been added to your saved jobs.',
-			type: NOTIFICATION_TYPES.JOB,
-			timestamp: now - DAY - 2 * HOUR,
-			read: true,
-			actionUrl: APP_ROUTES.DASHBOARD,
-			actionLabel: 'View Jobs',
-		},
-		{
-			id: generateId(),
-			title: 'Application submitted',
-			description: 'Your application to Vercel — Frontend Engineer was sent successfully.',
-			type: NOTIFICATION_TYPES.SUCCESS,
-			timestamp: now - DAY - 5 * HOUR,
-			read: true,
-			actionUrl: APP_ROUTES.DASHBOARD,
-			actionLabel: 'Track Status',
-		},
-		{
-			id: generateId(),
-			title: 'Profile updated',
-			description: 'Your career preferences and target roles have been saved.',
-			type: NOTIFICATION_TYPES.INFO,
-			timestamp: now - 2 * DAY,
-			read: true,
-			actionUrl: APP_ROUTES.ACCOUNT,
-			actionLabel: 'View Profile',
-		},
-		{
-			id: generateId(),
-			title: 'Subscription renewed',
-			description: 'Pro plan renewed until Jul 3, 2027. Thank you for your continued trust.',
-			type: NOTIFICATION_TYPES.SUBSCRIPTION,
-			timestamp: now - 3 * DAY,
-			read: true,
-			actionUrl: APP_ROUTES.ACCOUNT,
-			actionLabel: 'Manage Plan',
-		},
-		{
-			id: generateId(),
-			title: 'Search completed',
-			description: 'Found 24 matching roles for "React Developer" in your preferred locations.',
-			type: NOTIFICATION_TYPES.JOB,
-			timestamp: now - 4 * DAY,
-			read: true,
-			actionUrl: APP_ROUTES.DASHBOARD,
-			actionLabel: 'Browse Results',
-		},
-		{
-			id: generateId(),
-			title: 'System maintenance scheduled',
-			description: 'Planned maintenance on Jul 10, 2:00–4:00 AM UTC. No action required.',
-			type: NOTIFICATION_TYPES.SYSTEM,
-			timestamp: now - 5 * DAY,
-			read: true,
-		},
-	]
-}
-
-/** @typedef {import('@constants/notifications.js').NotificationType} NotificationType */
+import { notificationApi } from '@/services/notificationApi.js'
 
 /**
  * @typedef {Object} Notification
  * @property {string} id
  * @property {string} title
  * @property {string} description
- * @property {NotificationType} type
+ * @property {string} type
  * @property {number} timestamp
  * @property {boolean} read
  * @property {string} [actionUrl]
  * @property {string} [actionLabel]
  */
 
-/** @type {{ notifications: Notification[], popupDismissedIds: string[], isLoading: boolean, lastArrivalAt: number | null }} */
+/** @type {{ notifications: Notification[], popupDismissedIds: string[], isLoading: boolean, lastArrivalAt: number | null, unreadCount: number, error: string | null }} */
 let state = {
 	notifications: [],
 	popupDismissedIds: [],
 	isLoading: true,
 	lastArrivalAt: null,
+	unreadCount: 0,
+	error: null,
 }
 
 let popupNotificationsCacheState = null
@@ -139,25 +32,9 @@ function emit() {
 	listeners.forEach((listener) => listener())
 }
 
-function persist() {
-	setLocalStorageValue(
-		NOTIFICATION_STORAGE_KEY,
-		JSON.stringify({
-			notifications: state.notifications,
-			popupDismissedIds: state.popupDismissedIds,
-		}),
-	)
-}
-
 function setState(partial) {
 	state = { ...state, ...partial }
-	persist()
 	emit()
-}
-
-function updateNotifications(updater) {
-	const notifications = updater(state.notifications)
-	setState({ notifications })
 }
 
 /** @returns {Notification[]} */
@@ -181,7 +58,7 @@ function getPopupNotifications() {
 }
 
 function getUnreadCount() {
-	return state.notifications.filter((n) => !n.read).length
+	return state.unreadCount
 }
 
 export const notificationStore = {
@@ -197,109 +74,199 @@ export const notificationStore = {
 	getUnreadCount,
 	getPopupNotifications,
 
-	init() {
+	/**
+	 * Fetch notifications from the backend API.
+	 * Called on app startup (after auth) and when navigating to Notifications page.
+	 */
+	async init() {
+		setState({ isLoading: true, error: null })
 		try {
-			const stored = getLocalStorageValue(NOTIFICATION_STORAGE_KEY, null)
-			if (stored) {
-				const parsed = JSON.parse(stored)
-				state = {
-					...state,
-					notifications: parsed.notifications ?? [],
-					popupDismissedIds: parsed.popupDismissedIds ?? [],
+			const result = await notificationApi.getNotifications({ limit: 50 })
+			if (result?.data) {
+				setState({
+					notifications: result.data.notifications ?? [],
+					unreadCount: result.data.unreadCount ?? 0,
 					isLoading: false,
-				}
+					error: null,
+				})
 			} else {
-				state = {
-					...state,
-					notifications: createSeedNotifications(),
-					popupDismissedIds: [],
+				setState({ isLoading: false })
+			}
+		} catch (error) {
+			// 401 means not authenticated — don't show as error, just empty
+			if (error.response?.status === 401) {
+				setState({ isLoading: false, notifications: [], unreadCount: 0 })
+			} else {
+				console.error('Notification init error:', error)
+				setState({
 					isLoading: false,
-				}
-				persist()
+					error: error.response?.data?.message || 'Failed to load notifications',
+				})
 			}
-		} catch {
-			state = {
-				...state,
-				notifications: createSeedNotifications(),
-				popupDismissedIds: [],
-				isLoading: false,
-			}
-			persist()
 		}
-		emit()
 	},
 
 	/**
-	 * @param {Omit<Notification, 'id' | 'timestamp' | 'read'> & { id?: string, timestamp?: number, read?: boolean }} payload
+	 * Fetch just the unread count (lightweight).
 	 */
-	addNotification(payload) {
-		const notification = {
-			id: payload.id ?? generateId(),
-			title: payload.title,
-			description: payload.description,
-			type: payload.type,
-			timestamp: payload.timestamp ?? Date.now(),
-			read: payload.read ?? false,
-			actionUrl: payload.actionUrl,
-			actionLabel: payload.actionLabel,
+	async fetchUnreadCount() {
+		try {
+			const result = await notificationApi.getUnreadCount()
+			if (result?.data) {
+				setState({ unreadCount: result.data.unreadCount ?? 0 })
+			}
+		} catch {
+			// Silently fail — badge will show stale count
 		}
+	},
 
-		/* New notifications always reappear in popup */
-		const popupDismissedIds = state.popupDismissedIds.filter((id) => id !== notification.id)
-
+	/**
+	 * Mark a notification as read — optimistic UI update then API call.
+	 */
+	async markAsRead(id) {
+		// Optimistic update
+		const prev = state.notifications
 		setState({
-			notifications: [notification, ...state.notifications],
-			popupDismissedIds,
-			lastArrivalAt: Date.now(),
+			notifications: prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+			unreadCount: Math.max(0, state.unreadCount - (prev.find((n) => n.id === id && !n.read) ? 1 : 0)),
 		})
 
-		return notification
+		try {
+			await notificationApi.markAsRead(id)
+		} catch {
+			// Revert on error
+			setState({ notifications: prev })
+			notificationStore.fetchUnreadCount()
+		}
 	},
 
-	markAsRead(id) {
-		updateNotifications((items) =>
-			items.map((n) => (n.id === id ? { ...n, read: true } : n)),
-		)
-	},
-
-	markAsUnread(id) {
-		updateNotifications((items) =>
-			items.map((n) => (n.id === id ? { ...n, read: false } : n)),
-		)
-	},
-
-	markAllAsRead() {
-		updateNotifications((items) => items.map((n) => ({ ...n, read: true })))
-	},
-
-	deleteNotification(id) {
+	/**
+	 * Mark a notification as unread — optimistic UI update then API call.
+	 */
+	async markAsUnread(id) {
+		const prev = state.notifications
 		setState({
-			notifications: state.notifications.filter((n) => n.id !== id),
+			notifications: prev.map((n) => (n.id === id ? { ...n, read: false } : n)),
+			unreadCount: state.unreadCount + (prev.find((n) => n.id === id && n.read) ? 1 : 0),
+		})
+
+		try {
+			await notificationApi.markAsUnread(id)
+		} catch {
+			setState({ notifications: prev })
+			notificationStore.fetchUnreadCount()
+		}
+	},
+
+	/**
+	 * Mark all notifications as read — optimistic.
+	 */
+	async markAllAsRead() {
+		const prev = state.notifications
+		setState({
+			notifications: prev.map((n) => ({ ...n, read: true })),
+			unreadCount: 0,
+		})
+
+		try {
+			await notificationApi.markAllAsRead()
+		} catch {
+			setState({ notifications: prev })
+			notificationStore.fetchUnreadCount()
+		}
+	},
+
+	/**
+	 * Delete a notification — optimistic.
+	 */
+	async deleteNotification(id) {
+		const prev = state.notifications
+		const wasUnread = prev.find((n) => n.id === id && !n.read)
+		setState({
+			notifications: prev.filter((n) => n.id !== id),
 			popupDismissedIds: state.popupDismissedIds.filter((dId) => dId !== id),
+			unreadCount: Math.max(0, state.unreadCount - (wasUnread ? 1 : 0)),
 		})
+
+		try {
+			await notificationApi.deleteNotification(id)
+		} catch {
+			setState({ notifications: prev })
+			notificationStore.fetchUnreadCount()
+		}
 	},
 
-	deleteMultiple(ids) {
+	/**
+	 * Delete multiple notifications — optimistic.
+	 */
+	async deleteMultiple(ids) {
 		const idSet = new Set(ids)
+		const prev = state.notifications
+		const unreadRemoved = prev.filter((n) => idSet.has(n.id) && !n.read).length
 		setState({
-			notifications: state.notifications.filter((n) => !idSet.has(n.id)),
+			notifications: prev.filter((n) => !idSet.has(n.id)),
 			popupDismissedIds: state.popupDismissedIds.filter((dId) => !idSet.has(dId)),
+			unreadCount: Math.max(0, state.unreadCount - unreadRemoved),
 		})
+
+		try {
+			await Promise.all(ids.map((id) => notificationApi.deleteNotification(id)))
+		} catch {
+			setState({ notifications: prev })
+			notificationStore.fetchUnreadCount()
+		}
 	},
 
-	/** Dismiss from popup only — does NOT delete history */
+	/** Dismiss from popup only — does NOT delete from history */
 	clearPopup() {
 		const visibleIds = getPopupNotifications().map((n) => n.id)
 		const dismissed = new Set([...state.popupDismissedIds, ...visibleIds])
 		setState({ popupDismissedIds: [...dismissed] })
 	},
 
-	/** Permanently delete all notification history */
-	clearHistory() {
+	/** Permanently delete all notification history — API call. */
+	async clearHistory() {
+		const prev = state.notifications
 		setState({
 			notifications: [],
 			popupDismissedIds: [],
+			unreadCount: 0,
 		})
+
+		try {
+			await notificationApi.clearAll()
+		} catch {
+			setState({ notifications: prev })
+			notificationStore.fetchUnreadCount()
+		}
+	},
+
+	/**
+	 * Add a notification to local state (for real-time updates
+	 * when a backend module creates one during the same session).
+	 */
+	addNotification(notification) {
+		const newNotif = {
+			id: notification.id || `local_${Date.now()}`,
+			title: notification.title,
+			description: notification.description,
+			type: notification.type,
+			timestamp: notification.timestamp ?? Date.now(),
+			read: notification.read ?? false,
+			actionUrl: notification.actionUrl,
+			actionLabel: notification.actionLabel,
+		}
+
+		const popupDismissedIds = state.popupDismissedIds.filter((id) => id !== newNotif.id)
+
+		setState({
+			notifications: [newNotif, ...state.notifications],
+			popupDismissedIds,
+			lastArrivalAt: Date.now(),
+			unreadCount: newNotif.read ? state.unreadCount : state.unreadCount + 1,
+		})
+
+		return newNotif
 	},
 
 	clearLastArrival() {
@@ -312,10 +279,12 @@ export const notificationStore = {
 
 	reset() {
 		state = {
-			notifications: createSeedNotifications(),
+			notifications: [],
 			popupDismissedIds: [],
 			isLoading: false,
 			lastArrivalAt: null,
+			unreadCount: 0,
+			error: null,
 		}
 		emit()
 	},

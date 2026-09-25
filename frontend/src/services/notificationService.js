@@ -3,18 +3,19 @@ import { NOTIFICATION_TYPES } from '@constants/notifications.js'
 import { APP_ROUTES } from '@constants/routes.js'
 
 /**
- * Application-wide notification service.
- * Call from any module when an important action completes.
+ * Application-wide notification helper.
+ *
+ * These helpers add notifications to the local store for immediate UI feedback.
+ * Backend modules create persistent notifications via the backend notificationService.
+ *
+ * For frontend-initiated notifications (e.g. profile updated), the notification
+ * is added to local state. It will appear in the popup and bell immediately.
+ * On next page load, the authoritative list comes from MongoDB via notificationStore.init().
  *
  * @example
- * notify.success('Resume exported', 'PDF downloaded to your device.', { actionUrl: '/dashboard/resume-builder' })
+ * notify.success('Resume exported', 'PDF downloaded to your device.')
  */
 export const notify = {
-	/**
-	 * @param {string} title
-	 * @param {string} description
-	 * @param {{ actionUrl?: string, actionLabel?: string }} [options]
-	 */
 	success(title, description, options = {}) {
 		return notificationStore.addNotification({
 			title,

@@ -15,8 +15,6 @@ import {
 
 /** @typedef {'success'|'error'|'warning'|'info'|'ai'|'job'|'resume'|'interview'|'ats'|'career_roadmap'|'subscription'|'system'} NotificationType */
 
-export const NOTIFICATION_STORAGE_KEY = 'aca-notifications'
-
 export const NOTIFICATION_TYPES = {
 	SUCCESS: 'success',
 	ERROR: 'error',

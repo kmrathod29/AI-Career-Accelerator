@@ -4,6 +4,7 @@ import helmet from 'helmet'
 import { createSessionMiddleware } from './config/session.js'
 import authRoutes from './routes/authRoutes.js'
 import accountRoutes from './routes/accountRoutes.js'
+import notificationRoutes from './routes/notificationRoutes.js'
 import healthRoutes from './routes/healthRoutes.js'
 import { sendError } from './utils/apiResponse.js'
 
@@ -43,6 +44,7 @@ app.use(createSessionMiddleware())
 app.use('/api/health', healthRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/account', accountRoutes)
+app.use('/api/notifications', notificationRoutes)
 
 /* ── 404 handler ──────────────────────────────────────────── */
 app.use((_req, res) => {
