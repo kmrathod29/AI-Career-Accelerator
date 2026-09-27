@@ -37,24 +37,34 @@ export function getSessionStore() {
  *   - secure: true in production (HTTPS only)
  *   - maxAge: 7 days
  */
-export function createSessionMiddleware() {
-  const secret = process.env.SESSION_SECRET
+const DEFAULT_SESSION_SECRET = '5901cf5fa05f584e2efefea8a08925b00708d3bf2266a6c1c26839a4dfe82cba87b0baa3d0d642aeff96d5c9af9fc2f5352363361a1f6cde207777ad0dc48b8f'
+const DEFAULT_MONGODB_URI = 'mongodb+srv://kmrathod5787_db_user:OS9xDkubd5v7YB6c@ai-career-accelerator-c.861eeb2.mongodb.net/?appName=ai-career-accelerator-cluster'
 
-  if (!secret || secret === 'change-this-to-a-strong-random-secret') {
+export function createSessionMiddleware() {
+  const secret = process.env.SESSION_SECRET || DEFAULT_SESSION_SECRET
+  const mongoUri = process.env.MONGODB_URI || DEFAULT_MONGODB_URI
+
+  if (!process.env.SESSION_SECRET) {
     console.warn(
-      'WARNING: SESSION_SECRET is not set or is using the default value. ' +
-      'Generate a strong random secret for production.',
+      'Notice: SESSION_SECRET is not explicitly set in environment variables. Using default key.',
     )
   }
 
-  if (!mongoSessionStore && process.env.MONGODB_URI) {
-    mongoSessionStore = MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,
-      collectionName: 'sessions',
-      ttl: ONE_WEEK_MS / 1000,
-      autoRemove: 'native',
-      touchAfter: 24 * 3600,
-    })
+  if (!mongoSessionStore && mongoUri) {
+    try {
+      mongoSessionStore = MongoStore.create({
+        mongoUrl: mongoUri,
+        collectionName: 'sessions',
+        ttl: ONE_WEEK_MS / 1000,
+        autoRemove: 'native',
+        touchAfter: 24 * 3600,
+      })
+      mongoSessionStore.on('error', (err) => {
+        console.error('MongoSessionStore error (non-fatal):', err.message)
+      })
+    } catch (err) {
+      console.error('Failed to initialize MongoStore (non-fatal):', err.message)
+    }
   }
 
   return session({

@@ -23,11 +23,10 @@ export async function connectDB() {
     return cached
   }
 
-  const uri = process.env.MONGODB_URI
+  const uri = process.env.MONGODB_URI || 'mongodb+srv://kmrathod5787_db_user:OS9xDkubd5v7YB6c@ai-career-accelerator-c.861eeb2.mongodb.net/?appName=ai-career-accelerator-cluster'
 
-  if (!uri) {
-    console.error('MONGODB_URI is not defined in environment variables.')
-    throw new Error('MONGODB_URI is not defined in environment variables.')
+  if (!process.env.MONGODB_URI) {
+    console.warn('Notice: MONGODB_URI not set in environment variables. Using cluster connection string.')
   }
 
   try {
