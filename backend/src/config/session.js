@@ -37,16 +37,13 @@ export function getSessionStore() {
  *   - secure: true in production (HTTPS only)
  *   - maxAge: 7 days
  */
-const DEFAULT_SESSION_SECRET = '5901cf5fa05f584e2efefea8a08925b00708d3bf2266a6c1c26839a4dfe82cba87b0baa3d0d642aeff96d5c9af9fc2f5352363361a1f6cde207777ad0dc48b8f'
-const DEFAULT_MONGODB_URI = 'mongodb+srv://kmrathod5787_db_user:OS9xDkubd5v7YB6c@ai-career-accelerator-c.861eeb2.mongodb.net/?appName=ai-career-accelerator-cluster'
-
 export function createSessionMiddleware() {
-  const secret = process.env.SESSION_SECRET || DEFAULT_SESSION_SECRET
-  const mongoUri = process.env.MONGODB_URI || DEFAULT_MONGODB_URI
+  const secret = process.env.SESSION_SECRET || 'aca_session_development_fallback_secret_key'
+  const mongoUri = process.env.MONGODB_URI
 
   if (!process.env.SESSION_SECRET) {
     console.warn(
-      'Notice: SESSION_SECRET is not explicitly set in environment variables. Using default key.',
+      'Notice: SESSION_SECRET is not explicitly set in environment variables.',
     )
   }
 

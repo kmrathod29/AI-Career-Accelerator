@@ -47,7 +47,7 @@ function getDeviceLabel(userAgent) {
 }
 
 function getPublicSessionKey(sessionId) {
-  const secret = process.env.SESSION_SECRET || '5901cf5fa05f584e2efefea8a08925b00708d3bf2266a6c1c26839a4dfe82cba87b0baa3d0d642aeff96d5c9af9fc2f5352363361a1f6cde207777ad0dc48b8f'
+  const secret = process.env.SESSION_SECRET || 'aca_session_development_fallback_secret_key'
 
   return createHmac('sha256', secret).update(sessionId).digest('hex')
 }
