@@ -24,6 +24,8 @@ function createDefaultState() {
 		jobDescription: '',       // Optional target job description
 		isAnalyzing: false,
 		loadingStep: 0,
+		customLoadingMessage: null,
+		verificationOutcome: null,
 		error: null,
 		viewMode: 'empty',        // 'empty' | 'analyzing' | 'results' | 'error'
 		analysisHistory: [],      // User's past analyses from backend
@@ -394,6 +396,8 @@ export const atsStore = {
 			jobDescription: '',
 			viewMode: 'empty',
 			error: null,
+			customLoadingMessage: null,
+			verificationOutcome: null,
 			dismissedSuggestions: new Set(),
 		})
 	},
@@ -404,8 +408,180 @@ export const atsStore = {
 
 	reAnalyze() {
 		if (state.rawFile) {
-			atsStore.startAnalysis()
+			if (state.currentAnalysisId) {
+				return this.reAnalyzeWithFile(state.rawFile, state.currentAnalysisId, { type: 'reanalyze' })
+			}
+			return this.startAnalysis()
 		}
+	},
+
+	/**
+	 * Re-analyze an existing analysis using an updated resume file.
+	 * Preserves the analysis ID and route in MongoDB and in-memory store.
+	 * Evaluates whether verifyingTarget (issue or suggestion) has actually been resolved.
+	 */
+	async reAnalyzeWithFile(file, targetAnalysisId, verifyingTarget = null) {
+		if (state.isAnalyzing) return null
+		const analysisId = targetAnalysisId || state.currentAnalysisId
+
+		if (!analysisId) {
+			this.uploadFile(file)
+			return this.startAnalysis()
+		}
+
+		if (!file) {
+			setState({
+				error: 'Please upload an updated resume file to re-analyze.',
+				viewMode: state.currentAnalysis ? 'results' : 'error',
+			})
+			return null
+		}
+
+		setState({
+			isAnalyzing: true,
+			loadingStep: 0,
+			customLoadingMessage: 'Analyzing your updated resume...',
+			error: null,
+			viewMode: 'analyzing',
+		})
+
+		let step = 0
+		const stepInterval = setInterval(() => {
+			step += 1
+			if (step >= LOADING_STEPS.length) {
+				clearInterval(stepInterval)
+				return
+			}
+			setState({ loadingStep: step })
+		}, 2500)
+
+		try {
+			const result = await atsApi.reAnalyze(analysisId, file, state.jobDescription)
+			clearInterval(stepInterval)
+
+			if (result?.data?.analysis) {
+				const analysis = result.data.analysis
+
+				// Verify whether target issue or suggestion is still detected
+				let outcome = null
+				if (verifyingTarget?.type === 'issue') {
+					const targetText = (verifyingTarget.text || '').toLowerCase().trim()
+					const stillDetected = analysis.issues?.some((iss) => {
+						const issText = (iss.text || '').toLowerCase().trim()
+						return (
+							(verifyingTarget.id && iss.id === verifyingTarget.id) ||
+							issText === targetText ||
+							(targetText.length > 15 && issText.includes(targetText.slice(0, 30))) ||
+							(issText.length > 15 && targetText.includes(issText.slice(0, 30)))
+						)
+					})
+					outcome = {
+						type: 'issue',
+						resolved: !stillDetected,
+						text: verifyingTarget.text,
+						timestamp: Date.now(),
+					}
+				} else if (verifyingTarget?.type === 'suggestion') {
+					const targetText = (
+						verifyingTarget.replacement ||
+						verifyingTarget.context ||
+						verifyingTarget.text ||
+						''
+					)
+						.toLowerCase()
+						.trim()
+
+					const stillDetected = analysis.suggestions?.some((sug) => {
+						const sugText = (sug.replacement || sug.context || '').toLowerCase().trim()
+						return (
+							(verifyingTarget.id && sug.id === verifyingTarget.id) ||
+							sugText === targetText ||
+							(targetText.length > 15 && sugText.includes(targetText.slice(0, 30))) ||
+							(sugText.length > 15 && targetText.includes(sugText.slice(0, 30)))
+						)
+					})
+					outcome = {
+						type: 'suggestion',
+						resolved: !stillDetected,
+						text: verifyingTarget.replacement || verifyingTarget.text || 'AI Suggestion',
+						timestamp: Date.now(),
+					}
+				} else {
+					outcome = {
+						type: 'reanalyze',
+						resolved: true,
+						text: 'Resume re-analyzed with latest document.',
+						timestamp: Date.now(),
+					}
+				}
+
+				// Update history entry in place
+				const updatedHistory = state.analysisHistory.map((h) =>
+					h.id === analysis.id
+						? {
+								...h,
+								fileName: analysis.resumeFileName,
+								score: analysis.overallScore,
+								date: new Date().toISOString().split('T')[0],
+								analysisMode: analysis.analysisMode,
+							}
+						: h,
+				)
+
+				const updatedCache = { ...state.analysesById, [analysis.id]: analysis }
+
+				setState({
+					isAnalyzing: false,
+					loadingStep: 0,
+					customLoadingMessage: null,
+					currentAnalysisId: analysis.id,
+					currentAnalysis: analysis,
+					analysisResult: analysis,
+					analysesById: updatedCache,
+					viewMode: 'results',
+					analysisHistory: updatedHistory,
+					uploadedFile: {
+						name: analysis.resumeFileName,
+						size: file.size,
+						type: file.type,
+					},
+					rawFile: file,
+					verificationOutcome: outcome,
+					error: null,
+				})
+
+				accountStore.refreshStats().catch(() => {})
+				return { analysis, outcome }
+			} else {
+				setState({
+					isAnalyzing: false,
+					loadingStep: 0,
+					customLoadingMessage: null,
+					error: 'Unexpected response from server during re-analysis.',
+					viewMode: state.currentAnalysis ? 'results' : 'error',
+				})
+				return null
+			}
+		} catch (error) {
+			clearInterval(stepInterval)
+			const message =
+				error.response?.data?.message ||
+				error.message ||
+				'ATS re-analysis failed. Please try again.'
+
+			setState({
+				isAnalyzing: false,
+				loadingStep: 0,
+				customLoadingMessage: null,
+				error: message,
+				viewMode: state.currentAnalysis ? 'results' : 'error',
+			})
+			return null
+		}
+	},
+
+	clearVerificationOutcome() {
+		setState({ verificationOutcome: null })
 	},
 }
 
@@ -471,4 +647,12 @@ export function useAtsDismissed() {
 
 export function useAtsJobDescription() {
 	return useAtsStore((s) => s.jobDescription)
+}
+
+export function useAtsVerificationOutcome() {
+	return useAtsStore((s) => s.verificationOutcome)
+}
+
+export function useAtsLoadingMessage() {
+	return useAtsStore((s) => s.customLoadingMessage)
 }

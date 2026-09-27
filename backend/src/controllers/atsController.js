@@ -393,8 +393,138 @@ async function callGemini(client, prompt) {
   }
 }
 
+/* ── Shared ATS analysis execution engine ─────────────────────── */
+
+async function executeAtsAnalysis({ file, jobDescription, userId }) {
+  const filePath = file.path
+
+  if (jobDescription && jobDescription.length < 20) {
+    const err = new Error('Job description is too short. Please provide at least 20 characters or leave it empty for resume-only analysis.')
+    err.statusCode = 400
+    throw err
+  }
+
+  if (jobDescription && jobDescription.length > 10000) {
+    const err = new Error('Job description exceeds maximum length of 10,000 characters')
+    err.statusCode = 400
+    throw err
+  }
+
+  const hasJobDescription = Boolean(jobDescription && jobDescription.length >= 20)
+  const mode = hasJobDescription ? 'job_match' : 'resume_only'
+
+  /* Rate limit: max 10 analyses per hour per user */
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
+  const recentCount = await ATSAnalysis.countDocuments({
+    userId,
+    createdAt: { $gte: oneHourAgo },
+  })
+  if (recentCount >= 10) {
+    const err = new Error('Analysis limit reached. Please wait before running another analysis.')
+    err.statusCode = 429
+    throw err
+  }
+
+  /* Extract text from resume */
+  let resumeText
+  try {
+    resumeText = await extractText(filePath, file.mimetype)
+  } catch (extractError) {
+    console.error('Text extraction error:', extractError.message)
+    const err = new Error('Failed to extract text from resume. Please ensure the file is not corrupted.')
+    err.statusCode = 422
+    throw err
+  }
+
+  if (!resumeText || resumeText.trim().length < 50) {
+    const err = new Error('Could not extract sufficient text from the resume. The file may be image-based or empty.')
+    err.statusCode = 422
+    throw err
+  }
+
+  /* Call Gemini AI via Interactions API */
+  const geminiClient = getGeminiClient()
+  if (!geminiClient) {
+    const err = new Error('AI analysis is temporarily unavailable')
+    err.statusCode = 503
+    throw err
+  }
+
+  const prompt = hasJobDescription
+    ? buildJobMatchPrompt(resumeText, jobDescription)
+    : buildResumeOnlyPrompt(resumeText)
+  const interaction = await callGemini(geminiClient, prompt)
+  const responseText = extractTextFromInteraction(interaction)
+
+  if (!responseText) {
+    throw new Error('AI returned an empty response')
+  }
+
+  /* Parse and validate AI response */
+  let parsed
+  try {
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) throw new Error('No JSON found in AI response')
+    parsed = JSON.parse(jsonMatch[0])
+  } catch (parseError) {
+    console.error('Gemini JSON parse error:', parseError.message)
+    const err = new Error('AI returned an unexpected response format. Please try again.')
+    err.statusCode = 502
+    throw err
+  }
+
+  const validatedResult = validateAnalysisResponse(parsed, mode)
+
+  return {
+    mode,
+    hasJobDescription,
+    validatedResult,
+  }
+}
+
+function handleAtsControllerError(error, res) {
+  const safeMsg = (error.message || '').replace(/key=[^&\s]+/gi, 'key=***')
+  console.error('ATS analysis error:', safeMsg, error.statusCode || error.status)
+
+  if (error.statusCode && error.statusCode !== 500) {
+    return sendError(res, error.message, error.statusCode)
+  }
+
+  if (
+    error.message?.includes('API_KEY') ||
+    error.statusCode === 404 ||
+    error.status === 404 ||
+    error.code === 'not_found' ||
+    /\b(not found|unsupported model)\b/i.test(error.message || '')
+  ) {
+    return sendError(res, 'AI analysis service is temporarily misconfigured or unavailable.', 503)
+  }
+
+  const status = error.statusCode || error.status
+  const isRateLimit =
+    status === 429 ||
+    error.code === 'resource_exhausted' ||
+    error.code === 'RESOURCE_EXHAUSTED' ||
+    error.code === 'rate_limit_exceeded' ||
+    /\b(quota|rate limit|too many requests)\b/i.test(error.message || '')
+
+  if (isRateLimit) {
+    return sendError(res, 'AI request limit reached. Please wait a minute before trying again.', 429)
+  }
+
+  if (status === 502 || status === 503 || status === 504 || /\b(overloaded|temporarily busy|service unavailable)\b/i.test(error.message || '')) {
+    return sendError(res, 'AI service is temporarily busy. Please try again in a moment.', 503)
+  }
+
+  if (status === 400 || error.code === 'invalid_request') {
+    return sendError(res, 'Unable to process resume with AI. Please check the resume format.', 400)
+  }
+
+  return sendError(res, 'ATS analysis failed. Please try again.', 500)
+}
+
 /* ══════════════════════════════════════════════════════════════════
-   POST /api/ats/analyze
+   POST /api/ats/analyze — fresh ATS analysis creation
    ══════════════════════════════════════════════════════════════════ */
 
 export async function analyzeResume(req, res) {
@@ -402,78 +532,20 @@ export async function analyzeResume(req, res) {
 
   try {
     const file = req.file
-    const jobDescription = req.body.jobDescription ? req.body.jobDescription.trim() : ''
-
     if (!file) {
       return sendError(res, 'Resume file is required', 400)
     }
 
     filePath = file.path
+    const jobDescription = req.body.jobDescription ? req.body.jobDescription.trim() : ''
 
-    if (jobDescription && jobDescription.length < 20) {
-      return sendError(res, 'Job description is too short. Please provide at least 20 characters or leave it empty for resume-only analysis.', 400)
-    }
-
-    if (jobDescription && jobDescription.length > 10000) {
-      return sendError(res, 'Job description exceeds maximum length of 10,000 characters', 400)
-    }
-
-    const hasJobDescription = Boolean(jobDescription && jobDescription.length >= 20)
-    const mode = hasJobDescription ? 'job_match' : 'resume_only'
-
-    /* ── Rate limit: max 10 analyses per hour per user ── */
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
-    const recentCount = await ATSAnalysis.countDocuments({
+    const { mode, hasJobDescription, validatedResult } = await executeAtsAnalysis({
+      file,
+      jobDescription,
       userId: req.user._id,
-      createdAt: { $gte: oneHourAgo },
     })
-    if (recentCount >= 10) {
-      return sendError(res, 'Analysis limit reached. Please wait before running another analysis.', 429)
-    }
 
-    /* ── Extract text from resume ── */
-    let resumeText
-    try {
-      resumeText = await extractText(filePath, file.mimetype)
-    } catch (extractError) {
-      console.error('Text extraction error:', extractError.message)
-      return sendError(res, 'Failed to extract text from resume. Please ensure the file is not corrupted.', 422)
-    }
-
-    if (!resumeText || resumeText.trim().length < 50) {
-      return sendError(res, 'Could not extract sufficient text from the resume. The file may be image-based or empty.', 422)
-    }
-
-    /* ── Call Gemini AI via Interactions API ── */
-    const geminiClient = getGeminiClient()
-    if (!geminiClient) {
-      return sendError(res, 'AI analysis is temporarily unavailable', 503)
-    }
-
-    const prompt = hasJobDescription
-      ? buildJobMatchPrompt(resumeText, jobDescription)
-      : buildResumeOnlyPrompt(resumeText)
-    const interaction = await callGemini(geminiClient, prompt)
-    const responseText = extractTextFromInteraction(interaction)
-
-    if (!responseText) {
-      throw new Error('AI returned an empty response')
-    }
-
-    /* ── Parse and validate AI response ── */
-    let parsed
-    try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/)
-      if (!jsonMatch) throw new Error('No JSON found in AI response')
-      parsed = JSON.parse(jsonMatch[0])
-    } catch (parseError) {
-      console.error('Gemini JSON parse error:', parseError.message)
-      return sendError(res, 'AI returned an unexpected response format. Please try again.', 502)
-    }
-
-    const validatedResult = validateAnalysisResponse(parsed, mode)
-
-    /* ── Store analysis in MongoDB ── */
+    /* Store analysis in MongoDB */
     const analysis = await ATSAnalysis.create({
       userId: req.user._id,
       resumeFileName: file.originalname,
@@ -483,14 +555,14 @@ export async function analyzeResume(req, res) {
       status: 'completed',
     })
 
-    /* ── Create notification (best-effort) ── */
+    /* Create notification (best-effort) */
     try {
       await createNotification({
         userId: req.user._id,
         type: 'ats',
         title: 'ATS analysis completed',
         description: `Your resume "${file.originalname}" scored ${validatedResult.overallScore}/100.`,
-        actionUrl: '/dashboard/ats-analyzer',
+        actionUrl: `/dashboard/ats-analyzer/${analysis._id.toString()}`,
         actionLabel: 'View Report',
         metadata: { analysisId: analysis._id.toString() },
       })
@@ -500,44 +572,94 @@ export async function analyzeResume(req, res) {
 
     return sendSuccess(res, { analysis: analysis.toJSON() }, 201)
   } catch (error) {
-    const safeMsg = (error.message || '').replace(/key=[^&\s]+/gi, 'key=***')
-    console.error('analyzeResume error:', safeMsg, error.statusCode || error.status)
+    return handleAtsControllerError(error, res)
+  } finally {
+    cleanupFile(filePath)
+  }
+}
 
-    // Configuration / missing key / model not found (must NOT be reported as 429)
-    if (
-      error.message?.includes('API_KEY') ||
-      error.statusCode === 404 ||
-      error.status === 404 ||
-      error.code === 'not_found' ||
-      /\b(not found|unsupported model)\b/i.test(error.message || '')
-    ) {
-      return sendError(res, 'AI analysis service is temporarily misconfigured or unavailable.', 503)
+/* ══════════════════════════════════════════════════════════════════
+   POST /api/ats/analyses/:id/re-analyze — in-place resume re-analysis
+   Updates the existing analysis document with newly extracted content.
+   ══════════════════════════════════════════════════════════════════ */
+
+export async function reAnalyzeResume(req, res) {
+  let filePath = null
+
+  try {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return sendError(res, 'Invalid analysis ID', 400)
     }
 
-    // Genuine rate limit / quota exceeded
-    const status = error.statusCode || error.status
-    const isRateLimit =
-      status === 429 ||
-      error.code === 'resource_exhausted' ||
-      error.code === 'RESOURCE_EXHAUSTED' ||
-      error.code === 'rate_limit_exceeded' ||
-      /\b(quota|rate limit|too many requests)\b/i.test(error.message || '')
+    const existing = await ATSAnalysis.findOne({
+      _id: id,
+      userId: req.user._id,
+    })
 
-    if (isRateLimit) {
-      return sendError(res, 'AI request limit reached. Please wait a minute before trying again.', 429)
+    if (!existing) {
+      return sendError(res, 'Analysis not found', 404)
     }
 
-    // Upstream unavailable / busy (502 / 503 / 504)
-    if (status === 502 || status === 503 || status === 504 || /\b(overloaded|temporarily busy|service unavailable)\b/i.test(error.message || '')) {
-      return sendError(res, 'AI service is temporarily busy. Please try again in a moment.', 503)
+    const file = req.file
+    if (!file) {
+      return sendError(res, 'Updated resume file is required for re-analysis', 400)
     }
 
-    // Upstream client error (400)
-    if (status === 400 || error.code === 'invalid_request') {
-      return sendError(res, 'Unable to process resume with AI. Please check the resume format.', 400)
+    filePath = file.path
+
+    // Use passed job description if provided; otherwise keep existing
+    const jobDescription =
+      req.body.jobDescription !== undefined && req.body.jobDescription !== null && req.body.jobDescription.trim() !== ''
+        ? req.body.jobDescription.trim()
+        : (existing.jobDescription || '')
+
+    const { mode, hasJobDescription, validatedResult } = await executeAtsAnalysis({
+      file,
+      jobDescription,
+      userId: req.user._id,
+    })
+
+    // Update the existing document in place to maintain the same analysis ID and route
+    existing.resumeFileName = file.originalname
+    existing.jobDescription = hasJobDescription ? jobDescription : ''
+    existing.analysisMode = mode
+    existing.overallScore = validatedResult.overallScore
+    existing.scoreBreakdown = validatedResult.scoreBreakdown
+    existing.matchedKeywords = validatedResult.matchedKeywords
+    existing.missingKeywords = validatedResult.missingKeywords
+    existing.suggestedKeywords = validatedResult.suggestedKeywords
+    existing.issues = validatedResult.issues
+    existing.suggestions = validatedResult.suggestions
+    existing.compatibility = validatedResult.compatibility
+    existing.skillsCoverage = validatedResult.skillsCoverage
+    existing.checklist = validatedResult.checklist
+    existing.insights = validatedResult.insights
+    existing.timeline = validatedResult.timeline
+    existing.summary = validatedResult.summary
+    existing.status = 'completed'
+
+    await existing.save()
+
+    /* Create notification (best-effort) */
+    try {
+      await createNotification({
+        userId: req.user._id,
+        type: 'ats',
+        title: 'ATS analysis updated',
+        description: `Your updated resume "${file.originalname}" scored ${validatedResult.overallScore}/100.`,
+        actionUrl: `/dashboard/ats-analyzer/${existing._id.toString()}`,
+        actionLabel: 'View Report',
+        metadata: { analysisId: existing._id.toString() },
+      })
+    } catch {
+      /* notification failure is non-critical */
     }
 
-    return sendError(res, 'ATS analysis failed. Please try again.', 500)
+    return sendSuccess(res, { analysis: existing.toJSON() }, 200)
+  } catch (error) {
+    return handleAtsControllerError(error, res)
   } finally {
     cleanupFile(filePath)
   }

@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ScanSearch } from 'lucide-react'
 import { LOADING_STEPS } from '@constants/atsAnalyzer.js'
-import { useAtsLoading } from '@/stores/atsStore.js'
+import { useAtsLoading, useAtsLoadingMessage } from '@/stores/atsStore.js'
 
 /**
  * AtsLoadingState — premium multi-step loading animation with skeleton.
  */
 export function AtsLoadingState() {
 	const { loadingStep } = useAtsLoading()
+	const customMessage = useAtsLoadingMessage()
 	const [dots, setDots] = useState('')
 
 	/* Animate dots */
@@ -19,7 +20,8 @@ export function AtsLoadingState() {
 		return () => clearInterval(interval)
 	}, [])
 
-	const stepMessage = LOADING_STEPS[loadingStep] ?? LOADING_STEPS[0]
+	const primaryMessage = customMessage || (LOADING_STEPS[loadingStep] ?? LOADING_STEPS[0])
+	const subMessage = customMessage ? (LOADING_STEPS[loadingStep] ?? '') : ''
 	const progress = ((loadingStep + 1) / LOADING_STEPS.length) * 100
 
 	return (
@@ -46,16 +48,23 @@ export function AtsLoadingState() {
 
 			{/* Step message */}
 			<AnimatePresence mode="wait">
-				<motion.p
-					key={loadingStep}
+				<motion.div
+					key={`${primaryMessage}-${loadingStep}`}
 					initial={{ opacity: 0, y: 8 }}
 					animate={{ opacity: 1, y: 0 }}
 					exit={{ opacity: 0, y: -8 }}
 					transition={{ duration: 0.25 }}
-					className="mb-3 text-base font-semibold text-[var(--color-text)]"
+					className="text-center"
 				>
-					{stepMessage}{dots}
-				</motion.p>
+					<p className="mb-1 text-base font-semibold text-[var(--color-text)]">
+						{primaryMessage}{dots}
+					</p>
+					{subMessage && (
+						<p className="mb-3 text-xs text-[var(--color-muted)]">
+							{subMessage}
+						</p>
+					)}
+				</motion.div>
 			</AnimatePresence>
 
 			{/* Progress bar */}

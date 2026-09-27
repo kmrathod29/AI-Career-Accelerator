@@ -23,6 +23,25 @@ export const atsApi = {
   },
 
   /**
+   * POST /api/ats/analyses/:id/re-analyze
+   * Re-analyze an existing analysis with an updated resume file.
+   * Keeps the same analysis ID and route.
+   */
+  async reAnalyze(id, file, jobDescription) {
+    const formData = new FormData()
+    formData.append('resume', file)
+    if (jobDescription !== undefined && jobDescription !== null) {
+      formData.append('jobDescription', jobDescription)
+    }
+
+    const response = await api.post(`/ats/analyses/${id}/re-analyze`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000,
+    })
+    return response.data
+  },
+
+  /**
    * GET /api/ats/analyses
    * Fetch authenticated user's analysis history.
    */
