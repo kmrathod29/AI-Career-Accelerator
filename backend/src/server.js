@@ -1,6 +1,11 @@
-import 'dotenv/config'
-import app from './app.js'
-import { connectDB } from './config/db.js'
+globalThis.DOMMatrix ??= class DOMMatrix {}
+
+await import('dotenv/config')
+
+const [{ default: app }, { connectDB }] = await Promise.all([
+  import('./app.js'),
+  import('./config/db.js'),
+])
 
 /**
  * Cleanly separate local server startup:
