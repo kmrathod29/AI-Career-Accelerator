@@ -34,8 +34,10 @@ export function KeywordAnalysis({
 	matched = [],
 	missing = [],
 	suggested = [],
+	mode = 'resume_only',
 }) {
 	const [search, setSearch] = useState('')
+	const isResumeOnly = mode === 'resume_only' || missing.length === 0
 
 	const filteredMatched = useMemo(
 		() => matched.filter((k) => k.toLowerCase().includes(search.toLowerCase())),
@@ -54,10 +56,10 @@ export function KeywordAnalysis({
 		<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)]">
 			<div className="mb-4 flex items-center justify-between">
 				<h3 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">
-					Keyword Analysis
+					{isResumeOnly ? 'Detected Keywords & Skills' : 'Keyword Match Analysis'}
 				</h3>
 				<span className="text-xs text-[var(--color-muted)]">
-					{matched.length + missing.length} total
+					{isResumeOnly ? `${matched.length} detected` : `${matched.length + missing.length} total`}
 				</span>
 			</div>
 
@@ -77,12 +79,12 @@ export function KeywordAnalysis({
 				/>
 			</div>
 
-			{/* Matched Keywords */}
+			{/* Matched / Detected Keywords */}
 			{filteredMatched.length > 0 && (
 				<div className="mb-4">
 					<p className="mb-2 flex items-center gap-2 text-xs font-semibold text-[var(--color-muted)]">
 						<span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-						Matched Keywords
+						{isResumeOnly ? 'Detected in Resume' : 'Matched with Job Description'}
 					</p>
 					<div className="flex flex-wrap gap-2">
 						{filteredMatched.map((k) => (
@@ -92,12 +94,15 @@ export function KeywordAnalysis({
 				</div>
 			)}
 
-			{/* Missing Keywords */}
-			{filteredMissing.length > 0 && (
+			{/* Missing Keywords (Job Match mode only) */}
+			{!isResumeOnly && filteredMissing.length > 0 && (
 				<div className="mb-4">
-					<p className="mb-2 flex items-center gap-2 text-xs font-semibold text-[var(--color-muted)]">
+					<p className="mb-1 flex items-center gap-2 text-xs font-semibold text-red-500">
 						<span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-						Missing Keywords
+						Not Detected in Resume
+					</p>
+					<p className="mb-2 text-[11px] text-[var(--color-muted)]">
+						Required or preferred in the job description, but not explicitly found in your resume text.
 					</p>
 					<div className="flex flex-wrap gap-2">
 						{filteredMissing.map((k) => (

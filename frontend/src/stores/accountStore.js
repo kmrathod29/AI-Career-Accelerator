@@ -142,6 +142,7 @@ export const accountStore = {
       if (result?.data?.user) {
         setState({
           profile: mergeUserData(result.data.user),
+          stats: result.data.stats || state.stats,
           isLoading: false,
           error: null,
         })
@@ -154,6 +155,23 @@ export const accountStore = {
         isLoading: false,
         error: error.response?.data?.message || 'Failed to load profile',
       })
+    }
+  },
+
+  /**
+   * Refresh account statistics (e.g. ATS analysis count) without resetting full form state.
+   */
+  async refreshStats() {
+    try {
+      const result = await accountService.getProfile()
+      if (result?.data?.stats) {
+        setState((prev) => ({
+          ...prev,
+          stats: result.data.stats,
+        }))
+      }
+    } catch (error) {
+      console.error('refreshStats error:', error)
     }
   },
 

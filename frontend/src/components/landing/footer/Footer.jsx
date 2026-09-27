@@ -6,9 +6,9 @@ import { APP_ROUTES } from '@constants/routes.js'
 
 /* ── Footer link data ───────────────────────────────────────────── */
 const PLATFORM_LINKS = [
-  { label: 'Resume Builder', href: '#' },
   { label: 'ATS Analyzer',  href: '#' },
   { label: 'Resume Match',  href: '#' },
+  { label: 'Skill Gap Analysis', href: '#' },
   { label: 'Career Roadmap', href: '#' },
   { label: 'AI Coach',      href: '#' },
 ]

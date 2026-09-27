@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import User from '../models/User.js'
+import ATSAnalysis from '../models/ATSAnalysis.js'
 import { sendSuccess, sendError } from '../utils/apiResponse.js'
 
 const BCRYPT_ROUNDS = 12
@@ -42,7 +43,16 @@ function pick(source, allowedKeys) {
 
 export async function getProfile(req, res) {
   try {
-    return sendSuccess(res, { user: req.user.toSafeObject() })
+    const atsAnalysesCount = await ATSAnalysis.countDocuments({ userId: req.user._id })
+    const stats = {
+      atsAnalyses: atsAnalysesCount,
+      resumesCreated: 0,
+      careerRoadmaps: 0,
+    }
+    return sendSuccess(res, {
+      user: req.user.toSafeObject(),
+      stats,
+    })
   } catch (error) {
     console.error('getProfile error:', error.message)
     return sendError(res, 'Failed to retrieve profile', 500)

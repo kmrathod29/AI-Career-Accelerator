@@ -50,6 +50,7 @@ import { SkillGapPage } from '@pages/dashboard/SkillGapPage.jsx'
 import { CareerRoadmapPage } from '@pages/dashboard/CareerRoadmapPage.jsx'
 import { AiCoachPage } from '@pages/dashboard/AiCoachPage.jsx'
 import { NotificationsPage } from '@pages/dashboard/NotificationsPage.jsx'
+import { RESUME_BUILDER_ENABLED } from '@/config/features.js'
 
 const AccountPage = lazy(() =>
 	import('@pages/dashboard/AccountPage.jsx').then((m) => ({ default: m.AccountPage })),
@@ -72,8 +73,18 @@ export default function App() {
 			</Route>
 			<Route element={<RequireAuth><DashboardLayout /></RequireAuth>}>
 				<Route path={APP_ROUTES.DASHBOARD} element={<DashboardPage />} />
-				<Route path={APP_ROUTES.RESUME_BUILDER} element={<ResumeBuilderPage />} />
+				<Route
+					path={APP_ROUTES.RESUME_BUILDER}
+					element={
+						RESUME_BUILDER_ENABLED ? (
+							<ResumeBuilderPage />
+						) : (
+							<Navigate to={APP_ROUTES.DASHBOARD} replace />
+						)
+					}
+				/>
 				<Route path={APP_ROUTES.ATS_ANALYZER} element={<AtsAnalyzerPage />} />
+				<Route path={`${APP_ROUTES.ATS_ANALYZER}/:analysisId`} element={<AtsAnalyzerPage />} />
 				<Route path={APP_ROUTES.RESUME_MATCH} element={<ResumeMatchPage />} />
 				<Route path={APP_ROUTES.SKILL_GAP} element={<SkillGapPage />} />
 				<Route path={APP_ROUTES.CAREER_ROADMAP} element={<CareerRoadmapPage />} />

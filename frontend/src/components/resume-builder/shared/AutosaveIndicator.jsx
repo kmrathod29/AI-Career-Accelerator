@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, Loader2, Circle } from 'lucide-react'
+import { Check, Loader2, Circle, AlertCircle } from 'lucide-react'
 import { useAutosaveStatus } from '@/stores/resumeStore.js'
 
 const STATUS_CONFIG = {
@@ -21,6 +21,12 @@ const STATUS_CONFIG = {
 		label: 'Changes pending',
 		color: 'text-amber-500',
 		dotColor: 'bg-amber-500',
+	},
+	error: {
+		icon: AlertCircle,
+		label: 'Save failed',
+		color: 'text-red-500',
+		dotColor: 'bg-red-500',
 	},
 }
 

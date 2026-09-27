@@ -4,7 +4,6 @@ import { z } from 'zod'
    Resume Builder — Constants & Configuration
    ───────────────────────────────────────────────────────────────── */
 
-export const RESUME_STORAGE_KEY = 'aca_resume_data'
 
 /* ─── Section definitions ───────────────────────────────────────── */
 
@@ -193,40 +192,6 @@ export const LANGUAGE_PROFICIENCY_LEVELS = [
 	'Native',
 ]
 
-/* ─── Dummy AI suggestions ──────────────────────────────────────── */
-
-export const DUMMY_AI_SUGGESTIONS = [
-	{
-		id: 'sug-1',
-		text: 'Improve your summary with stronger action verbs',
-		type: 'improvement',
-		section: 'summary',
-	},
-	{
-		id: 'sug-2',
-		text: 'Add quantified achievements to your experience',
-		type: 'enhancement',
-		section: 'experience',
-	},
-	{
-		id: 'sug-3',
-		text: 'ATS keyword "project management" is missing',
-		type: 'ats',
-		section: 'skills',
-	},
-	{
-		id: 'sug-4',
-		text: 'Replace passive language in your descriptions',
-		type: 'improvement',
-		section: 'experience',
-	},
-	{
-		id: 'sug-5',
-		text: 'Add a professional headline to stand out',
-		type: 'enhancement',
-		section: 'personalInfo',
-	},
-]
 
 /* ─── Completion calculation ────────────────────────────────────── */
 

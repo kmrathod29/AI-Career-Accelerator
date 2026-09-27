@@ -5,6 +5,9 @@ import { createSessionMiddleware } from './config/session.js'
 import authRoutes from './routes/authRoutes.js'
 import accountRoutes from './routes/accountRoutes.js'
 import notificationRoutes from './routes/notificationRoutes.js'
+import resumeRoutes from './routes/resumeRoutes.js'
+import atsRoutes from './routes/atsRoutes.js'
+import dashboardRoutes from './routes/dashboardRoutes.js'
 import healthRoutes from './routes/healthRoutes.js'
 import { sendError } from './utils/apiResponse.js'
 
@@ -45,6 +48,9 @@ app.use('/api/health', healthRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/account', accountRoutes)
 app.use('/api/notifications', notificationRoutes)
+app.use('/api/resume', resumeRoutes)
+app.use('/api/ats', atsRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 /* ── 404 handler ──────────────────────────────────────────── */
 app.use((_req, res) => {

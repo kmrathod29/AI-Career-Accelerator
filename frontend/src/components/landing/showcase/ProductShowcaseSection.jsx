@@ -13,16 +13,21 @@ import { FeatureTabs } from './FeatureTabs.jsx'
 import { FeaturePreview } from './FeaturePreview.jsx'
 import { DashboardPreview } from './DashboardPreview.jsx'
 import { cn } from '@utils/classNames.js'
+import { RESUME_BUILDER_ENABLED } from '@/config/features.js'
 
 /* ── Feature data ───────────────────────────────────────────────── */
-const FEATURES = [
-  { id: 'resume-builder', label: 'Resume Builder',           icon: FileText,   desc: 'Build ATS-optimized resumes with AI assistance.' },
+const ALL_FEATURES = [
+  ...(RESUME_BUILDER_ENABLED
+    ? [{ id: 'resume-builder', label: 'Resume Builder', icon: FileText, desc: 'Build ATS-optimized resumes with AI assistance.' }]
+    : []),
   { id: 'ats-analyzer',   label: 'ATS Analyzer',             icon: ScanSearch, desc: 'Check your resume for ATS compatibility, formatting issues, and missing keywords before you apply.' },
   { id: 'resume-vs-jd',   label: 'Resume Match',            icon: GitCompare, desc: 'Compare your resume with a specific job description to see how closely your experience matches the role.' },
   { id: 'skill-gap',      label: 'Skill Gap Analysis',       icon: TrendingUp, desc: 'Identify the skills you are missing for your target role and see what you should learn or strengthen next.' },
   { id: 'career-roadmap', label: 'Career Roadmap',           icon: Map,        desc: 'Build a step-by-step career plan showing what to learn, build, and achieve to move toward your target role.' },
   { id: 'ai-coach',       label: 'AI Career Coach',          icon: Bot,        desc: 'Get personalized career guidance from your AI coach.' },
 ]
+
+const FEATURES = ALL_FEATURES
 
 /* ── Framer Motion presets ──────────────────────────────────────── */
 const FADE_UP = {
@@ -36,7 +41,7 @@ const FADE_UP = {
 
 /* ── ProductShowcaseSection ─────────────────────────────────────── */
 export const ProductShowcaseSection = memo(function ProductShowcaseSection() {
-  const [activeId, setActiveId] = useState(FEATURES[0].id)
+  const [activeId, setActiveId] = useState(FEATURES[0]?.id || 'ats-analyzer')
 
   return (
     <section

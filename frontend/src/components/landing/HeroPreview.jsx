@@ -33,12 +33,12 @@ function StatusDot({ status }) {
   return <Circle className="h-3.5 w-3.5 shrink-0 text-[var(--color-muted)]" aria-label="Pending" />
 }
 
-/* ─── Card 1: Resume Builder ─────────────────────────────────────── */
+/* ─── Card 1: Resume Optimization ─────────────────────────────────── */
 
 const ResumeBuilderCard = memo(function ResumeBuilderCard() {
   return (
     <FeatureCard
-      title="Resume Builder"
+      title="Resume Optimization"
       badge="ATS: 87/100"
       badgeVariant="blue"
       icon={FileText}

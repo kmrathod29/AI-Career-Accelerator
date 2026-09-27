@@ -8,6 +8,7 @@ export const APP_ROUTES = {
 	DASHBOARD: '/dashboard',
 	RESUME_BUILDER: '/dashboard/resume-builder',
 	ATS_ANALYZER: '/dashboard/ats-analyzer',
+	ATS_ANALYZER_DETAIL: '/dashboard/ats-analyzer/:analysisId',
 	RESUME_MATCH: '/dashboard/resume-match',
 	SKILL_GAP: '/dashboard/skill-gap',
 	CAREER_ROADMAP: '/dashboard/career-roadmap',
@@ -24,4 +25,8 @@ export const APP_ROUTES = {
 
 export function getAccountSectionRoute(sectionId) {
 	return `${APP_ROUTES.ACCOUNT}/${sectionId}`
+}
+
+export function getAtsAnalyzerRoute(analysisId) {
+	return analysisId ? `${APP_ROUTES.ATS_ANALYZER}/${analysisId}` : APP_ROUTES.ATS_ANALYZER
 }

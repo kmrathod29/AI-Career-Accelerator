@@ -1,6 +1,6 @@
 import { useSyncExternalStore, useCallback, useRef } from 'react'
+import { resumeApi } from '@/services/resumeApi.js'
 import {
-	RESUME_STORAGE_KEY,
 	createDefaultResumeState,
 	createDefaultExperience,
 	createDefaultEducation,
@@ -9,45 +9,32 @@ import {
 	createDefaultAchievement,
 	createDefaultLanguage,
 	createDefaultCustomSection,
+	calculateResumeCompletion,
 } from '@constants/resumeBuilder.js'
 
 /* ─────────────────────────────────────────────────────────────────
    Resume Store — useSyncExternalStore pattern
-   Mirrors accountStore.js architecture for consistency.
+   Backend-persistent via resumeApi. Autosave with debounce.
    ───────────────────────────────────────────────────────────────── */
 
-function loadPersistedState() {
-	try {
-		const raw = localStorage.getItem(RESUME_STORAGE_KEY)
-		if (!raw) return createDefaultResumeState()
-		const saved = JSON.parse(raw)
-		const defaults = createDefaultResumeState()
-		return {
-			...defaults,
-			personalInfo: { ...defaults.personalInfo, ...saved.personalInfo },
-			summary: saved.summary ?? '',
-			experiences: saved.experiences ?? [],
-			education: saved.education ?? [],
-			skills: saved.skills ?? [],
-			projects: saved.projects ?? [],
-			certifications: saved.certifications ?? [],
-			achievements: saved.achievements ?? [],
-			languages: saved.languages ?? [],
-			socialLinks: { ...defaults.socialLinks, ...saved.socialLinks },
-			customSections: saved.customSections ?? [],
-			sectionOrder: saved.sectionOrder ?? defaults.sectionOrder,
-			activeTemplate: saved.activeTemplate ?? 'modern',
-			expandedSections: new Set(saved.expandedSections ?? ['personalInfo']),
-			autosaveStatus: 'saved',
-			isLoading: false,
-		}
-	} catch {
-		return createDefaultResumeState()
-	}
+let state = { ...createDefaultResumeState(), isLoading: true, autosaveStatus: 'saved' }
+const listeners = new Set()
+let autosaveTimer = null
+let saveInFlight = false
+let pendingAfterSave = false
+
+function emit() {
+	listeners.forEach((l) => l())
 }
 
-function serializeForStorage(state) {
-	return JSON.stringify({
+function setState(partial) {
+	state = { ...state, ...partial }
+	emit()
+}
+
+/* ── Serialize resume data for API (strip UI-only fields) ──── */
+function getResumePayload() {
+	return {
 		personalInfo: state.personalInfo,
 		summary: state.summary,
 		experiences: state.experiences,
@@ -61,38 +48,68 @@ function serializeForStorage(state) {
 		customSections: state.customSections,
 		sectionOrder: state.sectionOrder,
 		activeTemplate: state.activeTemplate,
-		expandedSections: [...state.expandedSections],
-	})
+	}
 }
 
-let state = loadPersistedState()
-const listeners = new Set()
-let autosaveTimer = null
-
-function emit() {
-	listeners.forEach((l) => l())
-}
-
+/* ── Debounced autosave ──────────────────────────────────────── */
 function scheduleAutosave() {
 	if (autosaveTimer) clearTimeout(autosaveTimer)
-	state = { ...state, autosaveStatus: 'pending' }
-	emit()
+	setState({ autosaveStatus: 'pending' })
 
-	autosaveTimer = setTimeout(() => {
-		state = { ...state, autosaveStatus: 'saving' }
-		emit()
+	autosaveTimer = setTimeout(async () => {
+		if (saveInFlight) {
+			pendingAfterSave = true
+			return
+		}
 
-		/* Simulate async save delay */
-		setTimeout(() => {
-			try {
-				localStorage.setItem(RESUME_STORAGE_KEY, serializeForStorage(state))
-				state = { ...state, autosaveStatus: 'saved' }
-			} catch {
-				state = { ...state, autosaveStatus: 'pending' }
+		setState({ autosaveStatus: 'saving' })
+		saveInFlight = true
+
+		try {
+			const result = await resumeApi.saveResume(getResumePayload())
+			if (result?.data?.resume) {
+				// Update completionPercentage from server
+				setState({
+					autosaveStatus: pendingAfterSave ? 'pending' : 'saved',
+					completionPercentage: result.data.resume.completionPercentage,
+				})
+			} else {
+				setState({ autosaveStatus: 'saved' })
 			}
-			emit()
-		}, 400)
-	}, 600)
+		} catch (error) {
+			console.error('Autosave failed:', error)
+			setState({ autosaveStatus: 'error' })
+		} finally {
+			saveInFlight = false
+			if (pendingAfterSave) {
+				pendingAfterSave = false
+				scheduleAutosave()
+			}
+		}
+	}, 800)
+}
+
+/* ── Hydrate state from backend resume doc ────────────────── */
+function hydrateFromBackend(resume) {
+	const defaults = createDefaultResumeState()
+	setState({
+		personalInfo: { ...defaults.personalInfo, ...resume.personalInfo },
+		summary: resume.summary ?? '',
+		experiences: resume.experiences ?? [],
+		education: resume.education ?? [],
+		skills: resume.skills ?? [],
+		projects: resume.projects ?? [],
+		certifications: resume.certifications ?? [],
+		achievements: resume.achievements ?? [],
+		languages: resume.languages ?? [],
+		socialLinks: { ...defaults.socialLinks, ...resume.socialLinks },
+		customSections: resume.customSections ?? [],
+		sectionOrder: resume.sectionOrder?.length ? resume.sectionOrder : defaults.sectionOrder,
+		activeTemplate: resume.activeTemplate ?? 'modern',
+		completionPercentage: resume.completionPercentage ?? 0,
+		isLoading: false,
+		autosaveStatus: 'saved',
+	})
 }
 
 export const resumeStore = {
@@ -105,11 +122,37 @@ export const resumeStore = {
 		return state
 	},
 
-	init() {
-		setTimeout(() => {
-			state = { ...state, isLoading: false }
-			emit()
-		}, 300)
+	/**
+	 * Fetch resume from backend API.
+	 */
+	async init() {
+		setState({ isLoading: true })
+		try {
+			const result = await resumeApi.getResume()
+			if (result?.data?.resume) {
+				hydrateFromBackend(result.data.resume)
+			} else {
+				// No resume exists yet — show clean empty state
+				const defaults = createDefaultResumeState()
+				setState({
+					...defaults,
+					isLoading: false,
+					autosaveStatus: 'saved',
+					completionPercentage: 0,
+				})
+			}
+		} catch (error) {
+			// 401 means not authenticated
+			if (error.response?.status === 401) {
+				setState({ isLoading: false })
+			} else {
+				console.error('Resume init error:', error)
+				setState({
+					isLoading: false,
+					autosaveStatus: 'error',
+				})
+			}
+		}
 	},
 
 	/* ── Personal Info ─────────────────────────────────────────── */
@@ -432,9 +475,8 @@ export const resumeStore = {
 
 	/* ── Reset ─────────────────────────────────────────────────── */
 	reset() {
-		state = { ...createDefaultResumeState(), isLoading: false }
+		state = { ...createDefaultResumeState(), isLoading: false, autosaveStatus: 'saved', completionPercentage: 0 }
 		emit()
-		scheduleAutosave()
 	},
 }
 

@@ -20,8 +20,8 @@ const TESTIMONIALS = [
     initials: 'RV',
     gradient: 'linear-gradient(135deg, #8B5CF6, #6D28D9)',
     feedback:
-      'Built my resume from scratch using the AI builder. The templates are clean and the live preview made formatting effortless.',
-    badge: 'Resume Builder',
+      'Optimized my resume for campus placements using Resume Match. The keyword recommendations and live feedback made tailoring effortless.',
+    badge: 'Resume Match',
   },
   {
     name: 'Ananya Patel',

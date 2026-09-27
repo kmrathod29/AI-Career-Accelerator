@@ -8,16 +8,18 @@ import {
   Map,
   Bot,
 } from 'lucide-react'
+import { RESUME_BUILDER_ENABLED } from '@/config/features.js'
 import { FeatureCard } from './FeatureCard.jsx'
 
 /* ── Feature data ───────────────────────────────────────────────── */
-const FEATURES = [
-  {
-    icon: FileText,
-    title: 'AI Resume Builder',
-    description:
-      'Build ATS-optimized resumes with AI assistance and real-time guidance.',
-  },
+const ALL_FEATURES = [
+  ...(RESUME_BUILDER_ENABLED
+    ? [{
+        icon: FileText,
+        title: 'AI Resume Builder',
+        description: 'Build ATS-optimized resumes with AI assistance and real-time guidance.',
+      }]
+    : []),
   {
     icon: ScanSearch,
     title: 'ATS Resume Analyzer',
@@ -49,6 +51,8 @@ const FEATURES = [
       'Get AI-powered career guidance, interview prep tips and resume improvement suggestions.',
   },
 ]
+
+const FEATURES = ALL_FEATURES
 
 /* ── Framer Motion presets ──────────────────────────────────────── */
 const FADE_UP = {

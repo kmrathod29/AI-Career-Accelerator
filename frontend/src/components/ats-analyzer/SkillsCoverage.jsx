@@ -4,24 +4,26 @@ import { BarChart3 } from 'lucide-react'
 /**
  * SkillsCoverage — dual progress bars showing current vs recommended match.
  */
-export function SkillsCoverage({ skills = [] }) {
+export function SkillsCoverage({ skills = [], mode = 'resume_only' }) {
+	const isResumeOnly = mode === 'resume_only'
+
 	return (
 		<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)]">
 			<div className="mb-4 flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					<BarChart3 className="h-4 w-4 text-[var(--color-primary)]" strokeWidth={1.8} />
 					<h3 className="text-sm font-semibold text-[var(--color-text)]">
-						Skills Coverage
+						{isResumeOnly ? 'Detected Skills & Strength' : 'Job Skills Coverage'}
 					</h3>
 				</div>
 				<div className="flex items-center gap-3">
 					<div className="flex items-center gap-1.5">
 						<span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
-						<span className="text-[10px] text-[var(--color-muted)]">Current</span>
+						<span className="text-[10px] text-[var(--color-muted)]">{isResumeOnly ? 'Detected' : 'Current'}</span>
 					</div>
 					<div className="flex items-center gap-1.5">
 						<span className="h-2 w-2 rounded-full bg-[var(--color-surface-3)]" />
-						<span className="text-[10px] text-[var(--color-muted)]">Recommended</span>
+						<span className="text-[10px] text-[var(--color-muted)]">{isResumeOnly ? 'Optimal' : 'Recommended'}</span>
 					</div>
 				</div>
 			</div>

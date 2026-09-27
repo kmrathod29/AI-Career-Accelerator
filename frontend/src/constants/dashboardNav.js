@@ -1,4 +1,5 @@
 import { APP_ROUTES } from './routes.js'
+import { RESUME_BUILDER_ENABLED } from '@/config/features.js'
 
 /**
  * Dashboard sidebar navigation configuration.
@@ -15,7 +16,9 @@ export const SIDEBAR_NAV = [
 	{
 		section: 'AI Tools',
 		items: [
-			{ label: 'Resume Builder', path: APP_ROUTES.RESUME_BUILDER, icon: 'FileText' },
+			...(RESUME_BUILDER_ENABLED
+				? [{ label: 'Resume Builder', path: APP_ROUTES.RESUME_BUILDER, icon: 'FileText' }]
+				: []),
 			{ label: 'ATS Analyzer', path: APP_ROUTES.ATS_ANALYZER, icon: 'ScanSearch' },
 			{ label: 'Resume Match', path: APP_ROUTES.RESUME_MATCH, icon: 'GitCompareArrows' },
 			{ label: 'Skill Gap', path: APP_ROUTES.SKILL_GAP, icon: 'BrainCircuit' },

@@ -1,4 +1,4 @@
-import { Component, useCallback } from 'react'
+import { Component, useCallback, useEffect } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -11,6 +11,7 @@ import {
 	Pencil,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { RESUME_BUILDER_ENABLED } from '@/config/features.js'
 import { AccountLayout } from '@components/account/AccountLayout.jsx'
 import { AccountSkeleton } from '@components/account/shared/AccountSkeleton.jsx'
 import { SectionHeader } from '@components/account/shared/SettingsCard.jsx'
@@ -53,7 +54,9 @@ const SECTION_META = {
 }
 
 const STAT_CONFIG = [
-	{ key: 'resumesCreated', label: 'Resumes Created', icon: FileText, color: 'from-blue-500 to-blue-600' },
+	...(RESUME_BUILDER_ENABLED
+		? [{ key: 'resumesCreated', label: 'Resumes Created', icon: FileText, color: 'from-blue-500 to-blue-600' }]
+		: []),
 	{ key: 'atsAnalyses', label: 'ATS Analyses', icon: ScanSearch, color: 'from-emerald-500 to-emerald-600' },
 	{ key: 'careerRoadmaps', label: 'Career Roadmaps', icon: Map, color: 'from-cyan-500 to-cyan-600' },
 ]
@@ -67,15 +70,19 @@ function getSafeSectionId(sectionId) {
 }
 
 function AccountQuickActions({ onNavigate, onUploadAvatar }) {
+	const actions = [
+		{ label: 'Edit Profile', icon: Pencil, action: () => onNavigate('personal') },
+		{ label: 'Upload Avatar', icon: Camera, action: onUploadAvatar },
+		...(RESUME_BUILDER_ENABLED
+			? [{ label: 'Download Resume', icon: Download, action: () => toast.info('Coming Soon', { description: 'Resume download will be available from the Resume Builder.' }) }]
+			: []),
+	]
+
 	return (
 		<div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-card)] sm:p-5">
 			<h3 className="text-sm font-semibold text-[var(--color-text)]">Quick Actions</h3>
-			<div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-3">
-				{[
-					{ label: 'Edit Profile', icon: Pencil, action: () => onNavigate('personal') },
-					{ label: 'Upload Avatar', icon: Camera, action: onUploadAvatar },
-					{ label: 'Download Resume', icon: Download, action: () => toast.info('Coming Soon', { description: 'Resume download will be available from the Resume Builder.' }) },
-				].map(({ label, icon: Icon, action }) => (
+			<div className={`mt-3 grid grid-cols-1 gap-2 sm:mt-4 ${RESUME_BUILDER_ENABLED ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
+				{actions.map(({ label, icon: Icon, action }) => (
 					<motion.button
 						key={label}
 						type="button"
@@ -221,6 +228,10 @@ function useAccountSectionNavigation() {
 export function AccountPage() {
 	const isLoading = useAccountLoading()
 	const navigateToSection = useAccountSectionNavigation()
+
+	useEffect(() => {
+		accountStore.init()
+	}, [])
 
 	const handleSectionChange = useCallback(
 		(id) => {

@@ -47,7 +47,7 @@ const HeroSubtitle = memo(function HeroSubtitle() {
       variants={FADE_UP}
       className="max-w-[480px] text-[15px] leading-6 text-[var(--color-muted)] sm:text-base"
     >
-      Build an ATS-ready resume, close skill gaps, and get a personalised career
+      Analyze your resume for ATS compatibility, close skill gaps, and get a personalised career
       roadmap — in minutes, not months.
     </motion.p>
   );

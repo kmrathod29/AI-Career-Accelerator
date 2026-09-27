@@ -81,7 +81,7 @@ export const CTASection = memo(function CTASection() {
             variants={FADE_UP}
             className="mx-auto mt-3 max-w-xl text-[15px] leading-6 text-[var(--color-muted)] sm:text-base"
           >
-            Build ATS-ready resumes, discover skill gaps, prepare for interviews
+            Analyze resumes for ATS compatibility, discover skill gaps, prepare for interviews
             and achieve your career goals with one AI-powered platform.
           </motion.p>
 

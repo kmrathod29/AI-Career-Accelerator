@@ -5,6 +5,8 @@ import { Check, ExternalLink, Trash2, MailOpen } from 'lucide-react'
 import { NotificationTypeIcon } from './NotificationTypeIcon.jsx'
 import { formatRelativeTime } from '@utils/notificationHelpers.js'
 import { cn } from '@utils/classNames.js'
+import { APP_ROUTES } from '@constants/routes.js'
+import { RESUME_BUILDER_ENABLED } from '@/config/features.js'
 
 /**
  * Reusable notification row — used in popup and full page.
@@ -24,6 +26,10 @@ export const NotificationItem = memo(function NotificationItem({
 }) {
 	const { id, title, description, type, timestamp, read, actionUrl, actionLabel } = notification
 	const isCompact = variant === 'compact'
+
+	const isResumeAction = actionUrl === APP_ROUTES.RESUME_BUILDER || actionUrl === '/dashboard/resume-builder'
+	const effectiveActionUrl = (!RESUME_BUILDER_ENABLED && isResumeAction) ? null : actionUrl
+	const effectiveActionLabel = (!RESUME_BUILDER_ENABLED && isResumeAction) ? null : actionLabel
 
 	const handleOpen = () => {
 		if (!read && onMarkRead) onMarkRead(id)
@@ -83,9 +89,9 @@ export const NotificationItem = memo(function NotificationItem({
 					{description}
 				</p>
 
-				{actionUrl && actionLabel && !showActions && (
+				{effectiveActionUrl && effectiveActionLabel && !showActions && (
 					<span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-primary)]">
-						{actionLabel}
+						{effectiveActionLabel}
 						<ExternalLink className="h-3 w-3" strokeWidth={2} />
 					</span>
 				)}
@@ -128,9 +134,9 @@ export const NotificationItem = memo(function NotificationItem({
 						</button>
 					)}
 
-					{actionUrl && (
+					{effectiveActionUrl && (
 						<Link
-							to={actionUrl}
+							to={effectiveActionUrl}
 							onClick={(e) => {
 								e.stopPropagation()
 								handleOpen()
@@ -160,10 +166,10 @@ export const NotificationItem = memo(function NotificationItem({
 		</div>
 	)
 
-	if (actionUrl && !showActions && !showCompactActions) {
+	if (effectiveActionUrl && !showActions && !showCompactActions) {
 		return (
 			<motion.div layout initial={false}>
-				<Link to={actionUrl} onClick={handleOpen} className="block">
+				<Link to={effectiveActionUrl} onClick={handleOpen} className="block">
 					{content}
 				</Link>
 			</motion.div>
