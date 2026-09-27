@@ -5,7 +5,7 @@ const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000
 let mongoSessionStore = null
 
 export function getSessionCookieOptions() {
-  const isProd = process.env.NODE_ENV === 'production'
+  const isProd = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL)
 
   return {
     httpOnly: true,
@@ -33,7 +33,7 @@ export function getSessionStore() {
  *
  * Cookie properties:
  *   - httpOnly: prevents JavaScript access (XSS protection)
- *   - sameSite: 'lax' blocks cross-site POST (CSRF mitigation)
+ *   - sameSite: 'lax' blocks cross-site POST (CSRF mitigation); 'none' in production
  *   - secure: true in production (HTTPS only)
  *   - maxAge: 7 days
  */
@@ -47,11 +47,13 @@ export function createSessionMiddleware() {
     )
   }
 
-  if (!mongoSessionStore) {
+  if (!mongoSessionStore && process.env.MONGODB_URI) {
     mongoSessionStore = MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
       collectionName: 'sessions',
       ttl: ONE_WEEK_MS / 1000,
+      autoRemove: 'native',
+      touchAfter: 24 * 3600,
     })
   }
 
@@ -60,7 +62,7 @@ export function createSessionMiddleware() {
     name: 'aca.sid',
     resave: false,
     saveUninitialized: false,
-    store: mongoSessionStore,
+    store: mongoSessionStore || undefined,
     cookie: {
       ...getSessionCookieOptions(),
       maxAge: ONE_WEEK_MS,
