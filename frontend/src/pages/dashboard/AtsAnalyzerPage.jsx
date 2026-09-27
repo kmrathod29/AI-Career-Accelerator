@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ScanSearch, RefreshCw } from 'lucide-react'
+import { ScanSearch } from 'lucide-react'
 import {
 	atsStore,
 	useAtsViewMode,
@@ -72,13 +72,11 @@ export function AtsAnalyzerPage() {
 	const isMatchingResultLoaded = isDetailRoute && Boolean(result && result.id === analysisId)
 	const isDetailLoading = isDetailRoute && (!result || result.id !== analysisId || viewMode === 'analyzing') && !error
 
-	const mobileCta = !file
+	const mobileCta = !file || isDetailRoute
 		? null
-		: isMatchingResultLoaded
-			? { label: 'Re-analyze Resume', icon: RefreshCw }
-			: viewMode !== 'analyzing' && canAnalyze
-				? { label: jdLength >= 20 ? 'Analyze Match' : 'Analyze Resume', icon: ScanSearch }
-				: null
+		: viewMode !== 'analyzing' && canAnalyze
+			? { label: jdLength >= 20 ? 'Analyze Match' : 'Analyze Resume', icon: ScanSearch }
+			: null
 
 	const handleMobileAnalyze = async () => {
 		const analysis = await atsStore.startAnalysis()
@@ -92,7 +90,10 @@ export function AtsAnalyzerPage() {
 	return (
 		<div className="space-y-5">
 			{/* Page header */}
-			<AtsHeader />
+			<AtsHeader
+				isDetail={isDetailRoute}
+				onBack={() => navigate(APP_ROUTES.ATS_ANALYZER)}
+			/>
 
 			{/* Main content area */}
 			<AnimatePresence mode="wait">
@@ -177,9 +178,6 @@ export function AtsAnalyzerPage() {
 						transition={{ duration: 0.25 }}
 						className="space-y-5"
 					>
-						{/* Top compact file card + Re-analyze */}
-						<UploadCardCompact showAnalyzeButton isReAnalyze />
-
 						{/* Two-column dashboard layout */}
 						<div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
 							{/* LEFT COLUMN — Analysis details (rendered directly without broken opacity: 0 wrappers) */}

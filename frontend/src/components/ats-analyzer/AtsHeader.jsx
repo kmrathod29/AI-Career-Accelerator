@@ -1,33 +1,20 @@
-import { motion, AnimatePresence } from 'framer-motion'
-import { ScanSearch, Upload, RefreshCw } from 'lucide-react'
-import { atsStore, useAtsFile, useAtsViewMode } from '@/stores/atsStore.js'
+import { motion } from 'framer-motion'
+import { ArrowLeft } from 'lucide-react'
 
 /**
- * AtsHeader — page header with a single contextual CTA.
+ * AtsHeader — page header for ATS Analyzer.
  *
- * Before upload  → "Upload Resume"
- * After upload   → "Analyze Resume"
- * After analysis → "Re-analyze Resume"
+ * Supports:
+ * - Title + Subtitle
+ * - Detail page header with "Back to ATS Analyzer" action
  */
-export function AtsHeader() {
-	const file = useAtsFile()
-	const viewMode = useAtsViewMode()
-
-	/* Determine which single button to show */
-	const cta = !file
-		? { label: 'Upload Resume', icon: Upload, action: () => document.getElementById('ats-file-input')?.click() }
-		: viewMode === 'results'
-			? { label: 'Re-analyze Resume', icon: RefreshCw, action: () => atsStore.startAnalysis() }
-			: viewMode !== 'analyzing'
-				? { label: 'Analyze Resume', icon: ScanSearch, action: () => atsStore.startAnalysis() }
-				: null
-
+export function AtsHeader({ isDetail = false, onBack = null }) {
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 12 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.35 }}
-			className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-end sm:justify-between"
+			className="mb-5 flex flex-col items-start gap-4 sm:mb-6 sm:flex-row sm:items-end sm:justify-between"
 		>
 			{/* Left — title + subtitle */}
 			<div className="min-w-0">
@@ -42,29 +29,19 @@ export function AtsHeader() {
 				</p>
 			</div>
 
-			{/* Right — single contextual CTA */}
-			{/* <AnimatePresence mode="wait">
-				{cta && (
-					<motion.button
-						key={cta.label}
+			{/* Right — Back button on detail page */}
+			{isDetail && onBack && (
+				<div className="shrink-0">
+					<button
 						type="button"
-						initial={{ opacity: 0, scale: 0.95 }}
-						animate={{ opacity: 1, scale: 1 }}
-						exit={{ opacity: 0, scale: 0.95 }}
-						whileHover={{ scale: 1.02 }}
-						whileTap={{ scale: 0.97 }}
-						transition={{ duration: 0.2 }}
-						onClick={cta.action}
-						className="hidden items-center gap-2 rounded-xl bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 sm:inline-flex"
+						onClick={onBack}
+						className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-medium text-[var(--color-text)] shadow-sm transition-all hover:bg-[var(--color-surface-2)] hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)] cursor-pointer"
 					>
-						<cta.icon className="h-4 w-4" />
-						{cta.label}
-					</motion.button>
-				)}
-			</AnimatePresence> */}
+						<ArrowLeft className="h-4 w-4" />
+						Back to ATS Analyzer
+					</button>
+				</div>
+			)}
 		</motion.div>
-
-
-		
 	)
 }
