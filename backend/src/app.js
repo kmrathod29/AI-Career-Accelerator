@@ -9,6 +9,7 @@ import accountRoutes from './routes/accountRoutes.js'
 import notificationRoutes from './routes/notificationRoutes.js'
 import resumeRoutes from './routes/resumeRoutes.js'
 import atsRoutes from './routes/atsRoutes.js'
+import resumeMatchRoutes from './routes/resumeMatchRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
 import healthRoutes from './routes/healthRoutes.js'
 import { sendError } from './utils/apiResponse.js'
@@ -92,6 +93,7 @@ app.use('/api/account', accountRoutes)
 app.use('/api/notifications', notificationRoutes)
 app.use('/api/resume', resumeRoutes)
 app.use('/api/ats', atsRoutes)
+app.use('/api/resume-match', resumeMatchRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 
 /* ── 404 handler ──────────────────────────────────────────── */

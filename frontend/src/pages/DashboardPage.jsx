@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { formatDate } from '@utils/dateTime.js'
 import {
-	ScanSearch, Bot, BrainCircuit, Map,
+	ScanSearch, GitCompareArrows, Bot, BrainCircuit, Map,
 	TrendingUp, Target,
 	ArrowRight, Clock, CheckCircle2, Sparkles,
 	BarChart3, Loader2,
@@ -21,6 +21,7 @@ const fadeUp = {
 /** Quick action buttons */
 const ALL_QUICK_ACTIONS = [
 	{ label: 'Analyze ATS', icon: ScanSearch, path: APP_ROUTES.ATS_ANALYZER, color: 'text-emerald-500' },
+	{ label: 'Resume Match', icon: GitCompareArrows, path: APP_ROUTES.RESUME_MATCH, color: 'text-violet-500' },
 	{ label: 'AI Coach', icon: Bot, path: APP_ROUTES.AI_COACH, color: 'text-amber-500' },
 	{ label: 'Skill Gap', icon: BrainCircuit, path: APP_ROUTES.SKILL_GAP, color: 'text-pink-500' },
 	{ label: 'Roadmap', icon: Map, path: APP_ROUTES.CAREER_ROADMAP, color: 'text-cyan-500' },
@@ -97,6 +98,13 @@ export function DashboardPage() {
 			color: 'from-emerald-500 to-emerald-600',
 		},
 		{
+			label: 'Resume Matches',
+			value: stats?.resumeMatches != null ? String(stats.resumeMatches) : '—',
+			change: stats?.resumeMatches ? 'Role-specific comparisons' : 'Compare against a job description',
+			icon: GitCompareArrows,
+			color: 'from-violet-500 to-violet-600',
+		},
+		{
 			label: 'Avg. ATS Score',
 			value: stats?.avgAtsScore != null ? `${stats.avgAtsScore}%` : '—',
 			change: stats?.avgAtsScore != null
@@ -171,7 +179,7 @@ export function DashboardPage() {
 			</motion.div>
 
 			{/* ── Stats Cards ── */}
-			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 				{STATS.map((stat) => (
 					<motion.div
 						key={stat.label}
@@ -203,8 +211,8 @@ export function DashboardPage() {
 					<div className="mb-4 flex items-center justify-between">
 						<h3 className="text-base font-bold tracking-[-0.02em] text-[var(--color-text)]">Recent Activity</h3>
 						{recentActivity.length > 0 && (
-							<Link
-								to={APP_ROUTES.ATS_ANALYZER}
+									<Link
+										to={APP_ROUTES.RESUME_MATCH}
 								className="text-[12px] font-medium text-[var(--color-primary)] transition-colors hover:text-[var(--color-secondary)]"
 							>
 								View all
@@ -220,7 +228,7 @@ export function DashboardPage() {
 									className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors duration-150 hover:bg-[var(--color-surface-2)]"
 								>
 									<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-2)]">
-										<ScanSearch className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} />
+										{item.type === 'resume_match' ? <GitCompareArrows className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} /> : <ScanSearch className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} />}
 									</div>
 									<div className="min-w-0 flex-1">
 										<p className="truncate text-sm text-[var(--color-text)]">{item.text}</p>

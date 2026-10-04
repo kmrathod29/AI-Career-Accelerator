@@ -1,4 +1,5 @@
 import ATSAnalysis from '../models/ATSAnalysis.js'
+import ResumeMatch from '../models/ResumeMatch.js'
 import Notification from '../models/Notification.js'
 import { sendSuccess, sendError } from '../utils/apiResponse.js'
 
@@ -42,6 +43,8 @@ export async function getDashboard(req, res) {
       atsAnalyses,
       totalAtsAnalyses,
       latestAnalysis,
+      resumeMatches,
+      totalResumeMatches,
       recentNotifications,
       unreadNotificationCount,
     ] = await Promise.all([
@@ -60,6 +63,14 @@ export async function getDashboard(req, res) {
         .sort({ createdAt: -1 })
         .select('overallScore createdAt resumeFileName')
         .lean(),
+
+      ResumeMatch.find({ userId })
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select('resumeFileName jobTitle overallMatchScore createdAt status')
+        .lean(),
+
+      ResumeMatch.countDocuments({ userId }),
 
       // Recent notifications
       Notification.find({ userId })
@@ -97,6 +108,7 @@ export async function getDashboard(req, res) {
       latestAtsScore: latestAnalysis?.overallScore ?? null,
       avgAtsScore,
       latestAnalysisDate: latestAnalysis?.createdAt ?? null,
+      resumeMatches: totalResumeMatches,
     }
 
     /* ── Build recent activity from real events ── */
@@ -108,6 +120,16 @@ export async function getDashboard(req, res) {
         type: 'ats_analysis',
         text: `ATS analysis completed — Score: ${analysis.overallScore}/100`,
         detail: analysis.resumeFileName,
+        time: analysis.createdAt,
+        status: analysis.status || 'completed',
+      })
+    }
+
+    for (const analysis of resumeMatches) {
+      recentActivity.push({
+        type: 'resume_match',
+        text: `Resume match completed — Score: ${analysis.overallMatchScore}/100`,
+        detail: analysis.jobTitle || analysis.resumeFileName,
         time: analysis.createdAt,
         status: analysis.status || 'completed',
       })
@@ -140,6 +162,14 @@ export async function getDashboard(req, res) {
       stats,
       recentActivity: recentActivity.slice(0, 10),
       recentAnalyses,
+      recentResumeMatches: resumeMatches.map((a) => ({
+        id: a._id.toString(),
+        fileName: a.resumeFileName,
+        jobTitle: a.jobTitle || '',
+        score: a.overallMatchScore,
+        date: a.createdAt ? new Date(a.createdAt).toISOString().split('T')[0] : '',
+        status: a.status || 'completed',
+      })),
       notifications,
       unreadNotificationCount,
     })

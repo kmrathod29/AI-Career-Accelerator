@@ -8,6 +8,7 @@ import {
 	FileText,
 	Mic,
 	ScanSearch,
+	GitCompareArrows,
 	Map,
 	CreditCard,
 	Settings,
@@ -25,6 +26,7 @@ export const NOTIFICATION_TYPES = {
 	RESUME: 'resume',
 	INTERVIEW: 'interview',
 	ATS: 'ats',
+	RESUME_MATCH: 'resume_match',
 	CAREER_ROADMAP: 'career_roadmap',
 	SUBSCRIPTION: 'subscription',
 	SYSTEM: 'system',
@@ -85,6 +87,12 @@ export const NOTIFICATION_TYPE_CONFIG = {
 		icon: ScanSearch,
 		color: 'var(--notif-ats)',
 		bg: 'var(--notif-ats-bg)',
+	},
+	resume_match: {
+		label: 'Resume Match',
+		icon: GitCompareArrows,
+		color: 'var(--notif-ai)',
+		bg: 'var(--notif-ai-bg)',
 	},
 	career_roadmap: {
 		label: 'Career Roadmap',

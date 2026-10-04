@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const NOTIFICATION_TYPES = [
   'success', 'error', 'warning', 'info', 'ai', 'job',
-  'resume', 'interview', 'ats', 'career_roadmap', 'subscription', 'system',
+  'resume', 'interview', 'ats', 'resume_match', 'career_roadmap', 'subscription', 'system',
 ]
 
 const notificationSchema = new mongoose.Schema(
