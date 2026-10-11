@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { resumeMatchApi } from '@/services/resumeMatchApi.js'
+import { accountStore } from '@/stores/accountStore.js'
+import { notificationStore } from '@/stores/notificationStore.js'
 
 /* ─────────────────────────────────────────────────────────────────
    Resume Match Store — useSyncExternalStore pattern
@@ -184,6 +186,10 @@ export const resumeMatchStore = {
 					jobDescription: analysis.jobDescription || trimmedJd,
 				})
 
+				// Synchronize account statistics and notifications
+				accountStore.refreshStats().catch(() => {})
+				notificationStore.init().catch(() => {})
+
 				return analysis
 			} else {
 				setState({
@@ -325,6 +331,9 @@ export const resumeMatchStore = {
 				})
 			}
 
+			// Synchronize account statistics
+			accountStore.refreshStats().catch(() => {})
+
 			return { success: true, wasActive }
 		} catch (error) {
 			return {
@@ -407,6 +416,10 @@ export const resumeMatchStore = {
 					rawFile: file,
 					error: null,
 				})
+
+				// Synchronize account statistics and notifications
+				accountStore.refreshStats().catch(() => {})
+				notificationStore.init().catch(() => {})
 
 				return { analysis }
 			} else {
