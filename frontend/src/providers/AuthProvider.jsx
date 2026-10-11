@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { authService } from '@/services/authService.js'
 import { accountStore } from '@/stores/accountStore.js'
 import { notificationStore } from '@/stores/notificationStore.js'
+import { coachStore } from '@/stores/coachStore.js'
 import { AuthContext } from './authContext.js'
 
 /**
@@ -82,6 +83,7 @@ export function AuthProvider({ children }) {
     setUser(null)
     accountStore.reset()
     notificationStore.reset()
+    coachStore.reset()
   }, [])
 
   const value = useMemo(
