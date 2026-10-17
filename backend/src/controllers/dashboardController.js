@@ -1,5 +1,6 @@
 import ATSAnalysis from '../models/ATSAnalysis.js'
 import ResumeMatch from '../models/ResumeMatch.js'
+import SkillGapAnalysis from '../models/SkillGapAnalysis.js'
 import Notification from '../models/Notification.js'
 import { sendSuccess, sendError } from '../utils/apiResponse.js'
 
@@ -45,6 +46,8 @@ export async function getDashboard(req, res) {
       latestAnalysis,
       resumeMatches,
       totalResumeMatches,
+      skillGapAnalyses,
+      totalSkillGapAnalyses,
       recentNotifications,
       unreadNotificationCount,
     ] = await Promise.all([
@@ -71,6 +74,15 @@ export async function getDashboard(req, res) {
         .lean(),
 
       ResumeMatch.countDocuments({ userId }),
+
+      // Recent skill gap analyses
+      SkillGapAnalysis.find({ userId })
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select('targetRole readinessScore createdAt status')
+        .lean(),
+
+      SkillGapAnalysis.countDocuments({ userId }),
 
       // Recent notifications
       Notification.find({ userId })
@@ -109,6 +121,7 @@ export async function getDashboard(req, res) {
       avgAtsScore,
       latestAnalysisDate: latestAnalysis?.createdAt ?? null,
       resumeMatches: totalResumeMatches,
+      skillGapAnalyses: totalSkillGapAnalyses,
     }
 
     /* ── Build recent activity from real events ── */
@@ -130,6 +143,16 @@ export async function getDashboard(req, res) {
         type: 'resume_match',
         text: `Resume match completed — Score: ${analysis.overallMatchScore}/100`,
         detail: analysis.jobTitle || analysis.resumeFileName,
+        time: analysis.createdAt,
+        status: analysis.status || 'completed',
+      })
+    }
+
+    for (const analysis of skillGapAnalyses) {
+      recentActivity.push({
+        type: 'skill_gap',
+        text: `Skill gap analysis completed — Readiness: ${analysis.readinessScore}/100`,
+        detail: analysis.targetRole,
         time: analysis.createdAt,
         status: analysis.status || 'completed',
       })

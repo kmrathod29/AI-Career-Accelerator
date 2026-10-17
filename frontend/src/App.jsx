@@ -88,6 +88,7 @@ export default function App() {
 				<Route path={APP_ROUTES.RESUME_MATCH} element={<ResumeMatchPage />} />
 				<Route path={`${APP_ROUTES.RESUME_MATCH}/:analysisId`} element={<ResumeMatchPage />} />
 				<Route path={APP_ROUTES.SKILL_GAP} element={<SkillGapPage />} />
+				<Route path={`${APP_ROUTES.SKILL_GAP}/:analysisId`} element={<SkillGapPage />} />
 				<Route path={APP_ROUTES.CAREER_ROADMAP} element={<CareerRoadmapPage />} />
 				<Route path={APP_ROUTES.AI_COACH} element={<AiCoachPage />} />
 				<Route path={APP_ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />

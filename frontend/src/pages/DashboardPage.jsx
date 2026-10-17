@@ -122,6 +122,13 @@ export function DashboardPage() {
 			icon: TrendingUp,
 			color: 'from-amber-500 to-amber-600',
 		},
+		{
+			label: 'Skill Gap Analyses',
+			value: stats?.skillGapAnalyses != null ? String(stats.skillGapAnalyses) : '—',
+			change: stats?.skillGapAnalyses ? 'Role-specific gap analyses' : 'Discover missing skills',
+			icon: BrainCircuit,
+			color: 'from-pink-500 to-pink-600',
+		},
 	]
 
 	/* ── Loading skeleton ── */
@@ -228,7 +235,11 @@ export function DashboardPage() {
 									className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors duration-150 hover:bg-[var(--color-surface-2)]"
 								>
 									<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-2)]">
-										{item.type === 'resume_match' ? <GitCompareArrows className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} /> : <ScanSearch className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} />}
+										{item.type === 'resume_match'
+									? <GitCompareArrows className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} />
+									: item.type === 'skill_gap'
+									? <BrainCircuit className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} />
+									: <ScanSearch className="h-4 w-4 text-[var(--color-muted)]" strokeWidth={1.8} />}
 									</div>
 									<div className="min-w-0 flex-1">
 										<p className="truncate text-sm text-[var(--color-text)]">{item.text}</p>

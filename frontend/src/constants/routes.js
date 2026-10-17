@@ -12,6 +12,7 @@ export const APP_ROUTES = {
 	RESUME_MATCH: '/dashboard/resume-match',
 	RESUME_MATCH_DETAIL: '/dashboard/resume-match/:analysisId',
 	SKILL_GAP: '/dashboard/skill-gap',
+	SKILL_GAP_DETAIL: '/dashboard/skill-gap/:analysisId',
 	CAREER_ROADMAP: '/dashboard/career-roadmap',
 	AI_COACH: '/dashboard/ai-coach',
 	NOTIFICATIONS: '/dashboard/notifications',
@@ -34,4 +35,8 @@ export function getAtsAnalyzerRoute(analysisId) {
 
 export function getResumeMatchRoute(analysisId) {
 	return analysisId ? `${APP_ROUTES.RESUME_MATCH}/${analysisId}` : APP_ROUTES.RESUME_MATCH
+}
+
+export function getSkillGapRoute(analysisId) {
+	return analysisId ? `${APP_ROUTES.SKILL_GAP}/${analysisId}` : APP_ROUTES.SKILL_GAP
 }
