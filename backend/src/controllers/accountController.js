@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import User from '../models/User.js'
 import ATSAnalysis from '../models/ATSAnalysis.js'
+import CareerRoadmapProgress from '../models/CareerRoadmapProgress.js'
 import { sendSuccess, sendError } from '../utils/apiResponse.js'
 
 const BCRYPT_ROUNDS = 12
@@ -43,11 +44,14 @@ function pick(source, allowedKeys) {
 
 export async function getProfile(req, res) {
   try {
-    const atsAnalysesCount = await ATSAnalysis.countDocuments({ userId: req.user._id })
+    const [atsAnalysesCount, careerRoadmapsCount] = await Promise.all([
+      ATSAnalysis.countDocuments({ userId: req.user._id }),
+      CareerRoadmapProgress.countDocuments({ userId: req.user._id }),
+    ])
     const stats = {
       atsAnalyses: atsAnalysesCount,
       resumesCreated: 0,
-      careerRoadmaps: 0,
+      careerRoadmaps: careerRoadmapsCount,
     }
     return sendSuccess(res, {
       user: req.user.toSafeObject(),

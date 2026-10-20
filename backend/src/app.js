@@ -14,6 +14,7 @@ import dashboardRoutes from './routes/dashboardRoutes.js'
 import coachRoutes from './routes/coachRoutes.js'
 import healthRoutes from './routes/healthRoutes.js'
 import skillGapRoutes from './routes/skillGapRoutes.js'
+import careerRoadmapRoutes from './routes/careerRoadmapRoutes.js'
 import { sendError } from './utils/apiResponse.js'
 
 const app = express()
@@ -97,6 +98,7 @@ app.use('/api/resume', resumeRoutes)
 app.use('/api/ats', atsRoutes)
 app.use('/api/resume-match', resumeMatchRoutes)
 app.use('/api/skill-gap', skillGapRoutes)
+app.use('/api/career-roadmaps', careerRoadmapRoutes)
 app.use('/api/coach', coachRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 
